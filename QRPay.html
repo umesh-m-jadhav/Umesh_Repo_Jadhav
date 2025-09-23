@@ -323,23 +323,20 @@
   	
 	<div class="form-group">
 	 <a id="PayButtonIdLink" href="#"> 
-          <button type="button" class="pay-btn" onclick="pay()" >💳 Pay using UPI app</button>
+          <button type="button" class="pay-btn" onclick="pay()" > Pay using UPI app</button>
 	 </a>
-      <p class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
-	  <p class="secure-text"><B>Kindly confirm the above name prior to proceeding with the payment via your UPI application</B></p>
-        
+             
       </div>
-	  
-   
-     
+	 
+	 <!-- Divider Line -->
 	 <!-- Divider Line -->
       <hr>
-
+	  <hr>
       <!-- QR Payment Section -->
       <div class="qr-section">
         <p><B>Having trouble with the above option? Scan below QR code to pay.</B></p>
-		<a id="QRCodeClickId" href="upi://pay?pa=8983646362@kotak&am=200"> 
-           <img id="qrImage" src="Kotak_QR_Code.png" alt="QR Code">
+		<a id="QRCodeClickId" href="#"> 
+           <img id="qrImage" onclick="pay()" src="Kotak_QR_Code.png" alt="QR Code" > </img>
 		</a>
 		<div class="qr-buttons">
           <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
@@ -415,8 +412,8 @@
 		return;
 	  }
 	  		
-	 const finalMessageBeforePay = "Redirecting you to UPI App\n"+
-	  "Please Verify below details on your UPI App and then only Pay\n"
+	 const finalMessageBeforePay = "Redirecting you to UPI App\n\n"+
+	  "Please Verify below details on your UPI App and then only Pay.\n"
 	  showAlert1(finalMessageBeforePay);
 	}
 	
