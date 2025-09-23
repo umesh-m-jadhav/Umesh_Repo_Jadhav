@@ -160,27 +160,66 @@
       font-size: 12px;
       color: #636e72;
     }
+	
+	 .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+	.form-row label {
+      font-size: 16px;
+      font-weight: bold;
+      margin-right: 10px;
+      min-width: 80px; /* keeps label aligned neatly */
+    }
+	
+	.form-row input[type="text"] {
+      flex: 1; /* textbox grows to take available space */
+      padding: 10px;
+      border: 2px solid #007BFF;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+	
+	.required-star {
+      color: red;
+      margin-left: 4px;
+    }
+	
   </style>
 </head>
 <body>
 
-
-	
   <div class="payment-container">
     <h2>Payment</h2>
 	
 	<button class="back-btn" onclick="window.close();">Close</button>
 	
+	 <form>
+	 
+	  <div class="form-row">
+    <label for="tower">Tower<span class="required-star">*</span></label>
+    <input type="text" id="tower" name="tower" maxlength="7" pattern="[A-Za-z0-9\s\-]+" required>
+  </div>
+
+  <div class="form-row">
+    <label for="flat">Flat<span class="required-star">*</span></label>
+    <input type="text" id="flat" name="flat" maxlength="10" pattern="[A-Za-z0-9\s\-]+" required>
+  </div>
+  	
 	<div class="form-group">
-	 <a id="PayButtonId" href="upi://pay?pa=8983646362@kotak;am=200;pn=Umesh Jadhav;mc=1234;cu=INR;tn=RCL-T30-1308"> 
-          <button type="submit" class="pay-btn">💳 Click here to pay using your UPI app</button>
+	 <a id="PayButtonIdLink" href="upi://pay?pa=8983646362@kotak;am=200;pn=Umesh Jadhav;mc=1234;cu=INR;tn=RCL-T30-1308"> 
+          <button type="button" class="pay-btn" onclick="pay()" >💳 Click here to pay using your UPI app</button>
 	 </a>
       <p class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
 	  <p class="secure-text"><B>Kindly confirm the above name prior to proceeding with the payment via your UPI application</B></p>
         
       </div>
 	  
-    <form>
+   
      
 	 <!-- Divider Line -->
       <hr>
@@ -201,6 +240,56 @@
   </div>
   
   <script>
+  
+  function pay() {
+      const tower = document.getElementById("tower");
+	  if(tower==null || tower.value.trim().length==0){
+		alert("Please enter your Tower and Flat number to include it in the payment note.");
+		return;
+	  }
+	  
+	  const flat = document.getElementById("flat");
+	  if(flat==null || flat.value.trim().length==0){
+		alert("Please enter your Flat number to include it in the payment note.");
+		return;
+	  }
+	  
+	  const towerValue = tower.value.trim();
+	  const filteredtowerValue =  processInput(towerValue);  
+	  
+	  const flatValue = flat.value.trim();
+	  const filteredflatValue =  processInput(flatValue); 
+	  
+	  const paymentNote = filteredtowerValue+"-"+filteredflatValue;
+	  	  
+	  const paymentLink = document.getElementById("PayButtonIdLink");
+	  const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=200;tn="+paymentNote;
+	  
+	  paymentLink.href = paymentLinkValue;
+	  paymentLink.click();
+	  alert(paymentLinkValue);
+	  }
+	
+	 function processInput(input1Value) {
+	 var newInput = "";
+      let inputValue = input1Value;
+	  let allowedNumbers = ["0","1","2","3","4","5","6","7","8","9","10"];
+	  let allowedChars = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+      // Loop through each character
+      for (let i = 0; i < inputValue.length; i++) {
+	  let char1 = inputValue[i];
+	   if (allowedNumbers.includes(char1)) {
+			newInput = newInput+char1;
+		}else{
+			char1 = char1.toUpperCase();
+			if (allowedChars.includes(char1)) {
+			newInput = newInput+char1;
+			}
+		}
+		}
+		return newInput;
+    }
+	
     function downloadQR() {
       const qr = document.getElementById("qrImage");
       const link = document.createElement("a");
