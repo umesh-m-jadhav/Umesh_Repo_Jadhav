@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+.button {
+    padding: 1px 6px;
+    border: 1px outset buttonborder;
+    border-radius: 3px;
+    color: buttontext;
+    background-color: buttonface;
+    text-decoration: none;
+}
+</style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My HTML Page</title>
 </head>
 <body>
-
-	<a href="upi://pay?pa=UPIID@oksbi&amp;pn=FNAME SNAME K&amp;cu=INR" class="upi-pay1">Pay Now !</a>
+	
+	<a href="upi://pay?pa=UPIID@oksbi&amp;pn=FNAME SNAME K&amp;cu=INR">
+    <button>Pay Now !</button>
+</a>
 	
     <h1>Click below QR Code to Pay</h1>
 	 <img src="Kotak QR Code.png" alt="Sholay Movie Poster">
