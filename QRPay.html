@@ -1,37 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-<style>
-.button {
-    padding: 1px 6px;
-    border: 1px outset buttonborder;
-    border-radius: 3px;
-    color: buttontext;
-    background-color: buttonface;
-    text-decoration: none;
-}
-</style>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My HTML Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Screen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .payment-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      width: 380px;
+      text-align: center;
+    }
+
+    .payment-container h2 {
+      margin-bottom: 20px;
+      color: #2d3436;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #636e72;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #dfe6e9;
+      outline: none;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #0984e3;
+    }
+
+    .card-details {
+      display: flex;
+      gap: 10px;
+    }
+
+    .card-details input {
+      flex: 1;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #dfe6e9;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    hr::after {
+      content: "OR";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      padding: 0 10px;
+      color: #636e72;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .qr-section {
+      margin: 10px 0 20px 0;
+    }
+
+    .qr-section img {
+      width: 150px;
+      height: 150px;
+      border: 2px solid #dfe6e9;
+      border-radius: 8px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      padding: 14px;
+      background: #0984e3;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .pay-btn:hover {
+      background: #74b9ff;
+      transform: scale(1.03);
+    }
+
+    .secure-text {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #636e72;
+    }
+  </style>
 </head>
 <body>
-	
-	<a href="upi://pay?pa=8983646362@kotak&am=200"> 
-   		 <button>Pay Now113 !</button> 
-	</a>
-		</BR> </BR>
-		<a href="upi://pay?pa=8983646362@kotak;am=200;pn=Umesh Jadhav;mc=1234;cu=INR"> 
-    <button>Pay Now21 !</button>
-	</a>
-	
-    <h1>Click below QR Code to Pay</h1>
-	 <img src="Kotak QR Code.png" alt="Sholay Movie Poster">
+  <div class="payment-container">
+    <h2>Payment</h2>
+    <form>
+     
+	 <div class="form-group">
+          <button type="submit" class="pay-btn">💳 Click here to pay using your UPI app</button>
+
+      <p class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
+	  <p class="secure-text"><B>Kindly confirm the above name prior to proceeding with the payment via your UPI application</B></p>
+        
+      </div>
+
+      <!-- Divider Line -->
+      <hr>
+
+      <!-- QR Payment Section -->
+      <div class="qr-section">
+        <p><B>Having trouble with the above option? Scan the QR code to pay.</B></p>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=test@upi&pn=Merchant" alt="QR Code">
+      </div>
+
+    </form>
+  </div>
 </body>
-
 </html>
-
-
-
-
-
