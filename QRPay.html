@@ -189,6 +189,100 @@
       margin-left: 4px;
     }
 	
+	#overlay {
+      position: fixed;
+      display: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
+
+    /* Alert box styling */
+    #customAlert, #customAlert1 {
+      position: fixed;
+      display: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1001;
+      min-width: 250px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    #customAlert button,#customAlert1 button {
+      margin-top: 15px;
+      padding: 8px 20px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #customAlert button:hover {
+      background-color: #0056b3;
+    }
+	
+	#customAlert1 button:hover {
+      background-color: #0056b3;
+    }
+	
+	 #confirmDialog {
+      position: fixed;
+      display: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1001;
+      min-width: 300px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    #confirmDialog p {
+      margin-bottom: 20px;
+    }
+
+    #confirmDialog button {
+      padding: 8px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #confirmOk {
+      background-color: #28a745;
+      color: white;
+    }
+
+    #confirmOk:hover {
+      background-color: #218838;
+    }
+
+    #confirmCancel {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    #confirmCancel:hover {
+      background-color: #c82333;
+    }
+	
   </style>
 </head>
 <body>
@@ -199,7 +293,24 @@
 	<button class="back-btn" onclick="window.close();">Close</button>
 	
 	 <form>
-	 
+	  <div id="overlay"></div>
+	  <!-- Custom Alert -->
+  <div id="customAlert">
+    <p id="alertMessage"></p>
+    <button onclick="closeAlert()">OK</button>
+  </div>
+  
+    <div id="overlay1"></div>
+	  <!-- Custom Alert -->
+  <div id="customAlert1">
+    <p id="alertMessage1"></p>
+	<p  id="alertMessage2" class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
+	<p  id="alertMessage3" class="secure-text" style="font-size:15px; color:blue;">🔒 Amount - 200rs </p>
+    <button type="button" onclick="OkToProceed()">OK</button>
+	<button type="button" onclick="cancelAlert1()">Cancel</button>
+  </div>
+  
+    
 	  <div class="form-row">
     <label for="tower">Tower<span class="required-star">*</span></label>
     <input type="text" id="tower" name="tower" maxlength="7" pattern="[A-Za-z0-9\s\-]+" required>
@@ -211,8 +322,8 @@
   </div>
   	
 	<div class="form-group">
-	 <a id="PayButtonIdLink" href="upi://pay?pa=8983646362@kotak;am=200;pn=Umesh Jadhav;mc=1234;cu=INR;tn=RCL-T30-1308"> 
-          <button type="button" class="pay-btn" onclick="pay()" >💳 Click here to pay using your UPI app</button>
+	 <a id="PayButtonIdLink" href="#"> 
+          <button type="button" class="pay-btn" onclick="pay()" >💳 Pay using UPI app</button>
 	 </a>
       <p class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
 	  <p class="secure-text"><B>Kindly confirm the above name prior to proceeding with the payment via your UPI application</B></p>
@@ -240,37 +351,77 @@
   </div>
   
   <script>
-  
+     	
+  function showAlert(message) {
+      document.getElementById('alertMessage').innerText = message;
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('customAlert').style.display = 'block';
+    }
+
+    function closeAlert() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('customAlert').style.display = 'none';
+    }
+	
+	 function showAlert1(message) {
+      document.getElementById('alertMessage1').innerText = message;
+      document.getElementById('overlay1').style.display = 'block';
+      document.getElementById('customAlert1').style.display = 'block';
+    }
+
+    function OkToProceed() {
+	  redirectingToUPIApp();
+	  document.getElementById('overlay1').style.display = 'none';
+      document.getElementById('customAlert1').style.display = 'none';
+	  window.close();
+    }
+	
+	function cancelAlert1() {
+      document.getElementById('overlay1').style.display = 'none';
+      document.getElementById('customAlert1').style.display = 'none';
+    }
+	
+	function redirectingToUPIApp() {
+	  const amountToPay = 200;
+	  const payeeUPIID = "8983646362@kotak";
+      const tower = document.getElementById("tower");
+	  const towerValue = tower.value.trim();
+	  const filteredtowerValue =  processInput(towerValue);  
+	  
+	  const flat = document.getElementById("flat");
+	  const flatValue = flat.value.trim();
+	  const filteredflatValue =  processInput(flatValue); 
+	  
+	  const paymentNote = "RPL-"+filteredtowerValue+"-"+filteredflatValue;
+	  	  
+	  const paymentLink = document.getElementById("PayButtonIdLink");
+	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=200;tn="+paymentNote;
+	  const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote;
+	  paymentLink.href = paymentLinkValue;
+	  paymentLink.click();
+	  //showAlert(paymentLinkValue);
+	 }
+	
   function pay() {
       const tower = document.getElementById("tower");
 	  if(tower==null || tower.value.trim().length==0){
-		alert("Please enter your Tower and Flat number to include it in the payment note.");
+		showAlert("Please enter your Tower number to include it in the payment note.");
 		return;
 	  }
 	  
 	  const flat = document.getElementById("flat");
 	  if(flat==null || flat.value.trim().length==0){
-		alert("Please enter your Flat number to include it in the payment note.");
+		showAlert("Please enter your Flat number to include it in the payment note.");
 		return;
 	  }
-	  
-	  const towerValue = tower.value.trim();
-	  const filteredtowerValue =  processInput(towerValue);  
-	  
-	  const flatValue = flat.value.trim();
-	  const filteredflatValue =  processInput(flatValue); 
-	  
-	  const paymentNote = filteredtowerValue+"-"+filteredflatValue;
-	  	  
-	  const paymentLink = document.getElementById("PayButtonIdLink");
-	  const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=200;tn="+paymentNote;
-	  
-	  paymentLink.href = paymentLinkValue;
-	  paymentLink.click();
-	  alert(paymentLinkValue);
-	  }
+	  		
+	 const finalMessageBeforePay = "Redirecting you to UPI App\n"+
+	  "Please Verify below details on your UPI App and then only Pay\n"
+	  showAlert1(finalMessageBeforePay);
+	}
 	
-	 function processInput(input1Value) {
+		
+ function processInput(input1Value) {
 	 var newInput = "";
       let inputValue = input1Value;
 	  let allowedNumbers = ["0","1","2","3","4","5","6","7","8","9","10"];
