@@ -172,7 +172,7 @@
 	<button class="back-btn" onclick="window.close();">Close</button>
 	
 	<div class="form-group">
-	 <a id="PayButtonId" href="upi://pay?pa=8983646362@kotak;am=200;pn=Umesh Jadhav;mc=1234;cu=INR"> 
+	 <a id="PayButtonId" href="upi://pay?pa=8983646362@kotak;am=200;pn=Umesh Jadhav;mc=1234;cu=INR;tn=RCL-T30-1308"> 
           <button type="submit" class="pay-btn">💳 Click here to pay using your UPI app</button>
 	 </a>
       <p class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
@@ -221,7 +221,7 @@
           });
           //alert('QR code shared successfully!');
         } catch (err) {
-          alert('Share canceled or failed.');
+          //alert('Share canceled or failed.');
         }
       } else {
         alert('Sharing not supported on this browser.');
