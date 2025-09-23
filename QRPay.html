@@ -95,7 +95,7 @@
       border-radius: 8px;
     }
 
-    .pay-btn {
+    .pay-btn, .download-btn {
       width: 100%;
       padding: 14px;
       background: #0984e3;
@@ -113,6 +113,17 @@
       transform: scale(1.03);
     }
 
+
+.download-btn {
+      background: #00b894;
+      color: #fff;
+    }
+
+    .download-btn:hover {
+      background: #55efc4;
+      transform: scale(1.03);
+    }
+	
     .secure-text {
       margin-top: 12px;
       font-size: 12px;
@@ -140,10 +151,24 @@
       <!-- QR Payment Section -->
       <div class="qr-section">
         <p><B>Having trouble with the above option? Scan below QR code to pay.</B></p>
-        <img src="Kotak_QR_Code.png" alt="QR Code">
+		<a href="upi://pay?pa=8983646362@kotak&am=200"> 
+        <img id="qrImage" src="Kotak_QR_Code.png" alt="QR Code">
+		</a>
+		<button type="button" class="download-btn" onclick="downloadQR()">⬇ Download QR Code</button>
       </div>
 
     </form>
   </div>
+  
+  <script>
+    function downloadQR() {
+      const qr = document.getElementById("qrImage");
+      const link = document.createElement("a");
+      link.href = qr.src;
+      link.download = "QR_Code.png";
+      link.click();
+    }
+  </script>
+  
 </body>
 </html>
