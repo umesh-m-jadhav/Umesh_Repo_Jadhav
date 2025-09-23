@@ -23,7 +23,32 @@
       width: 380px;
       text-align: center;
     }
+	
+	.back-btn {
+   position: absolute;       /* Position it over the popup */
+    top: 15px;
+    left: 15px;             /* Distance from right */
+    width: 30px;              /* Circular width */
+    height: 30px;             /* Circular height */
+    background-color: #f44336; /* Red background */
+    color: white;             /* White X */
+    border: none;             /* No border */
+    border-radius: 50%;       /* Circle shape */
+    font-size: 20px;          /* X size */
+    font-weight: bold;
+    cursor: pointer;          /* Pointer on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+	
+    }
 
+    .back-btn:hover {
+      background: #b2bec3;
+      transform: scale(1.05);
+    }
+	
     .payment-container h2 {
       margin-bottom: 20px;
       color: #2d3436;
@@ -135,7 +160,7 @@
   <div class="payment-container">
     <h2>Payment</h2>
     <form>
-     
+     <button class="back-btn" onclick="window.close();">Close</button>
 	 <div class="form-group">
 	 <a href="upi://pay?pa=8983646362@kotak&am=200"> 
           <button type="submit" class="pay-btn">💳 Click here to pay using your UPI app</button>
