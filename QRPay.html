@@ -339,7 +339,7 @@
            <img id="qrImage" onclick="pay()" src="Kotak_QR_Code.png" alt="QR Code" > </img>
 		</a>
 		<div class="qr-buttons">
-          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download5</button>
+          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download6</button>
           <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button>
         </div>
       </div>
@@ -380,7 +380,8 @@
 	
 	function redirectingToUPIApp() {
 	  const amountToPay = 200;
-	  const payeeUPIID = "8983646362@kotak";
+	  //const payeeUPIID = "8983646362@kotak";
+	  const payeeUPIID = "7843026362@ybl";
       const tower = document.getElementById("tower");
 	  const towerValue = tower.value.trim();
 	  const filteredtowerValue =  processInput(towerValue);  
@@ -393,8 +394,8 @@
 	  	  
 	  const paymentLink = document.getElementById("PayButtonIdLink");
 	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=20;tn="+paymentNote+"&cu=INR&pn=%20&tr=%20";
-	  const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=$20;tn="+paymentNote+"&cu=INR&pn=%20&tr=%20";
-	  //const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote;
+	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=$20;tn="+paymentNote+"&cu=INR&pn=%20&tr=%20";
+	  const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote;
 	  paymentLink.href = paymentLinkValue;
 	  paymentLink.click();
 	  //showAlert(paymentLinkValue);
