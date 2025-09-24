@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #74b9ff, #a29bfe);
-      display: flex;
+      //display: flex;
       justify-content: center;
       align-items: center;
       height: 99vh;
@@ -25,7 +25,7 @@
     }
 	
 	.back-btn {
-   position: absolute;       /* Position it over the popup */
+    position: absolute;       /* Position it over the popup */
     top: 15px;
     left: 15px;             /* Distance from right */
     width: 30px;              /* Circular width */
@@ -44,6 +44,26 @@
 	
     }
 
+.back-btn1 {
+    position: absolute;       /* Position it over the popup */
+    top: 15px;
+    right: 15px;             /* Distance from right */
+    width: 30px;              /* Circular width */
+    height: 30px;             /* Circular height */
+    background-color: #f44336; /* Red background */
+    color: white;             /* White X */
+    border: none;             /* No border */
+    border-radius: 50%;       /* Circle shape */
+    font-size: 20px;          /* X size */
+    font-weight: bold;
+    cursor: pointer;          /* Pointer on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+	
+    }
+	
     .back-btn:hover {
       background: #b2bec3;
       transform: scale(1.05);
@@ -323,9 +343,12 @@
 <body>
 
   <div class="payment-container">
-    <h2>Pay for R21 Premier League (RPL)</h2>
+<button class="back-btn" onclick="window.close();">&times;</button>
+	<button class="back-btn1" onclick="window.close();">&times;</button>
 	
-	<button class="back-btn" onclick="window.close();">Close1</button>
+ <h2>Pay for R21 Premier League (RPL)</h2>
+	
+	
 	
 	 <form>
 	  <div id="overlay"></div>
@@ -443,13 +466,14 @@
 	  
 	  const paymentNote = "RPL-"+filteredtowerValue+"-"+filteredflatValue;
 	  	  
-	  const paymentLink = document.getElementById("PayButtonIdLink");
+	  
 	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak;tn=%20;&cu=INR&pn=%20&tr=%20";
 	  //const paymentLinkValue="phonepe://pay?pa=8983646362@kotak&pn=UMESH MAHADEV JADHAV HUF&cu=INR";
 	  
 	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=$20;tn="+paymentNote+"&cu=INR&pn=%20&tr=%20";
 	  //const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote; **/
 	  
+	  const paymentLink = document.getElementById("PayButtonIdLink");
 	  const paymentLinkValue="phonepe://open";
 	  paymentLink.href = paymentLinkValue;
 	  paymentLink.click();
