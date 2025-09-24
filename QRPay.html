@@ -339,7 +339,7 @@
            <img id="qrImage" onclick="pay()" src="Kotak_QR_Code.png" alt="QR Code" > </img>
 		</a>
 		<div class="qr-buttons">
-          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download9</button>
+          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download1</button>
           <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button>
         </div>
       </div>
@@ -395,7 +395,8 @@
 	  	  
 	  const paymentLink = document.getElementById("PayButtonIdLink");
 	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak;tn=%20;&cu=INR&pn=%20&tr=%20";
-	  const paymentLinkValue="phonepe://pay?pa=8983646362@kotak&pn=UMESH MAHADEV JADHAV HUF&cu=INR";
+	  //const paymentLinkValue="phonepe://pay?pa=8983646362@kotak&pn=UMESH MAHADEV JADHAV HUF&cu=INR";
+	  const paymentLinkValue="phonepe://open";
 	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=$20;tn="+paymentNote+"&cu=INR&pn=%20&tr=%20";
 	  //const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote;
 	  paymentLink.href = paymentLinkValue;
