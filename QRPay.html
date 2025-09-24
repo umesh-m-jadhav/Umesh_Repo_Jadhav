@@ -283,6 +283,41 @@
       background-color: #c82333;
     }
 	
+	ul {
+      list-style: none; /* remove default bullets */
+      padding: 0;
+      max-width: 400px;
+      margin: auto;
+    }
+
+    ul li {
+      background: #eef3ff;
+      margin: 10px 0;
+      padding: 12px 15px;
+      border-left: 6px solid #3366cc;
+      border-radius: 6px;
+      font-size: 16px;
+      color: #333;
+      position: relative;
+    }
+
+    /* Add custom circle bullets */
+    ul li::before {
+      content: "•";
+      color: #3366cc;
+      font-weight: bold;
+      position: absolute;
+      left: -20px;
+      font-size: 20px;
+    }
+
+    /* Hover effect */
+    ul li:hover {
+      background: #dfe8ff;
+      transform: translateX(5px);
+      transition: 0.2s ease;
+    }
+	
   </style>
 </head>
 <body>
@@ -310,7 +345,7 @@
 	<button type="button" onclick="cancelAlert1()">Cancel</button>
   </div>
   
-    
+    <!--
 	  <div class="form-row">
     <label for="tower">Tower<span class="required-star">*</span></label>
     <input type="text" id="tower" name="tower" maxlength="7" pattern="[A-Za-z0-9\s\-]+" required>
@@ -328,21 +363,36 @@
              
       </div>
 	 
-	 <!-- Divider Line -->
-	 <!-- Divider Line -->
-      <hr>
+	 
+      <hr> -->
 	  <hr>
       <!-- QR Payment Section -->
       <div class="qr-section">
-        <p><B>Having trouble with the above option? Scan below QR code to pay.</B></p>
+      <!--  <p><B>Having trouble with the above option? Scan below QR code to pay.</B></p> -->
+	  <p><B>Step1 - Download below QR</B></p>
 		<a id="QRCodeClickId" href="#"> 
            <img id="qrImage" onclick="pay()" src="Kotak_QR_Code.png" alt="QR Code" > </img>
 		</a>
 		<div class="qr-buttons">
-          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download1</button>
+          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
           <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button>
         </div>
       </div>
+	  <hr>
+	<p><B>Step2</B></p>
+	<div class="form-group">
+	
+	 <a id="PayButtonIdLink" href="#"> 
+          <button type="button" class="pay-btn" onclick="pay()" > Open UPI App</button>
+	 </a>
+      </div>
+	  <hr>
+	 <p><B>Step3 - Pay in App (Rs 200)</B></p>
+	  <ul>
+    <li>Scan Downloaded QR Code</li>
+    <li>Pay</li>
+	</ul>
+   <hr>
 
     </form>
   </div>
