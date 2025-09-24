@@ -403,11 +403,13 @@
       </div>
 	  <hr>
 	<p><B>Step2</B></p>
-	<div class="form-group">
+	<div class="qr-buttons">
 	
-	 <a id="PayButtonIdLink" href="#"> 
-          <button type="button" class="pay-btn" onclick="redirectingToUPIApp()" > Open UPI App</button>
-	 </a>
+	 <a id="PayButtonIdLink" href="#">  </a>
+          <button type="button" class="download-btn" onclick="redirectingToUPIApp()" > Open PhonePay</button>
+		  <button type="button" class="share-btn" onclick="redirectingToUPIApp_GPAY()" > Open GPay</button>
+		  
+	 
       </div>
 	  <hr>
 	 <p><B>Step3 - Pay in App (Rs 200)</B></p>
@@ -451,6 +453,14 @@
       document.getElementById('customAlert1').style.display = 'none';
     }
 	
+	function redirectingToUPIApp_GPAY() {
+	  const paymentLink = document.getElementById("PayButtonIdLink");
+	  const paymentLinkValue="phonepe://open";
+	  paymentLink.href = paymentLinkValue;
+	  paymentLink.click();
+	  window.close();	 
+	 }
+	 
 	function redirectingToUPIApp() {
 	  /**const amountToPay = 1;
 	  //const payeeUPIID = "8983646362@kotak";
@@ -474,7 +484,7 @@
 	  //const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote; **/
 	  
 	  const paymentLink = document.getElementById("PayButtonIdLink");
-	  const paymentLinkValue="upi://open";
+	  const paymentLinkValue="phonepe://open";
 	  paymentLink.href = paymentLinkValue;
 	  paymentLink.click();
 	  window.close();
