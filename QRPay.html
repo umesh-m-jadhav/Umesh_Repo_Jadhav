@@ -474,7 +474,7 @@
 	  //const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote; **/
 	  
 	  const paymentLink = document.getElementById("PayButtonIdLink");
-	  const paymentLinkValue="phonepe://open";
+	  const paymentLinkValue="upi://open";
 	  paymentLink.href = paymentLinkValue;
 	  paymentLink.click();
 	  window.close();
