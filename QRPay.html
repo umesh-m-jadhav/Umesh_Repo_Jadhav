@@ -339,7 +339,7 @@
            <img id="qrImage" onclick="pay()" src="Kotak_QR_Code.png" alt="QR Code" > </img>
 		</a>
 		<div class="qr-buttons">
-          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download6</button>
+          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download7</button>
           <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button>
         </div>
       </div>
@@ -379,9 +379,10 @@
     }
 	
 	function redirectingToUPIApp() {
-	  const amountToPay = 200;
+	  const amountToPay = 1;
 	  //const payeeUPIID = "8983646362@kotak";
-	  const payeeUPIID = "7843026362@ybl";
+	  //const payeeUPIID = "7843026362@ybl";
+	  const payeeUPIID = "Q659488962@ybl";
       const tower = document.getElementById("tower");
 	  const towerValue = tower.value.trim();
 	  const filteredtowerValue =  processInput(towerValue);  
