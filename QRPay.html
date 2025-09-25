@@ -399,7 +399,7 @@
 		<div class="qr-buttons">
           <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
           <!-- <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button> -->
-		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share4</button>
+		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share5</button>
 		  
         </div>
       </div>
@@ -561,29 +561,19 @@
     }
 	
 	async function shareQRFile() {
-  try {
-    // Fetch the file as a Blob
-	const qr = document.getElementById("qrImage");
-    const response = await fetch("https://raw.githubusercontent.com/umesh-m-jadhav/Umesh_Repo_Jadhav/main/Kotak-QR-Code.png");
-    const blob = await response.blob();
+	  const response = await fetch("https://raw.githubusercontent.com/umesh-m-jadhav/Umesh_Repo_Jadhav/main/Kotak-QR-Code.png");
+	  const blob = await response.blob();
+	  const file = new File([blob], "Kotak-QR-Code.png", { type: blob.type });
 
-    // Convert Blob into File
-    const file = new File([blob], "QR_Code", { type: blob.type });
-
-    // Check if Web Share API supports file sharing
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        title: 'Shared File',
-        text: 'Please check this file',
-        files: [file],
-      });
-      console.log('File shared successfully!');
-    } else {
-      console.warn('File sharing is not supported on this browser/device');
-    }
-  } catch (err) {
-    console.error('Error sharing file:', err);
-  }
+	  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+		await navigator.share({
+		  title: "QR Code",
+		  text: "Please check this QR code",
+		  files: [file],
+		});
+	  } else {
+		alert("File sharing is not supported on this browser/device");
+	  }
 }
 	
   </script>
