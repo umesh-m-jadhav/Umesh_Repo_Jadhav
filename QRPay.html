@@ -394,13 +394,13 @@
       <!--  <p><B>Having trouble with the above option? Scan below QR code to pay.</B></p> -->
 	  <p><B>Step1 - Download below QR</B></p>
 		<a id="QRCodeClickId" href="#"> 
-           <img id="qrImage" onclick="downloadQR()" src="Kotak QR Code.png" alt="QR Code" > </img>
+           <img id="qrImage" onclick="downloadQR()" src="Kotak-QR-Code.png" alt="QR Code" > </img>
 		</a>
 		<div class="qr-buttons">
           <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
           <!-- <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button> -->
-		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share1</button>
-		  shareQRFile
+		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share3</button>
+		  
         </div>
       </div>
 	  <hr>
@@ -409,7 +409,7 @@
 	
 	 <a id="PayButtonIdLink" href="#">  </a>
           <button type="button" class="download-btn" onclick="redirectingToUPIApp()" > Open PhonePay</button>
-		  <button type="button" class="share-btn" onclick="redirectingToUPIApp_GPAY()" > Open GPay1</button>
+		  <button type="button" class="share-btn" onclick="redirectingToUPIApp_GPAY()" > Open GPay</button>
 		  
 	 
       </div>
@@ -563,7 +563,8 @@
 	async function shareQRFile() {
   try {
     // Fetch the file as a Blob
-    const response = await fetch(qr.src);
+	const qr = document.getElementById("qrImage");
+    const response = await fetch("https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav/blob/main/Kotak-QR-Code.png");
     const blob = await response.blob();
 
     // Convert Blob into File
