@@ -399,7 +399,7 @@
 		<div class="qr-buttons">
           <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
           <!-- <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button> -->
-		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share3</button>
+		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share4</button>
 		  
         </div>
       </div>
@@ -564,7 +564,7 @@
   try {
     // Fetch the file as a Blob
 	const qr = document.getElementById("qrImage");
-    const response = await fetch("https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav/blob/main/Kotak-QR-Code.png");
+    const response = await fetch("https://raw.githubusercontent.com/umesh-m-jadhav/Umesh_Repo_Jadhav/main/Kotak-QR-Code.png");
     const blob = await response.blob();
 
     // Convert Blob into File
