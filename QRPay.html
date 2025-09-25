@@ -398,7 +398,9 @@
 		</a>
 		<div class="qr-buttons">
           <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
-          <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button>
+          <!-- <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button> -->
+		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share1</button>
+		  shareQRFile
         </div>
       </div>
 	  <hr>
@@ -557,6 +559,31 @@
         alert('Sharing not supported on this browser.');
       }
     }
+	
+	async function shareQRFile() {
+  try {
+    // Fetch the file as a Blob
+    const response = await fetch(qr.src);
+    const blob = await response.blob();
+
+    // Convert Blob into File
+    const file = new File([blob], "QR_Code", { type: blob.type });
+
+    // Check if Web Share API supports file sharing
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: 'Shared File',
+        text: 'Please check this file',
+        files: [file],
+      });
+      console.log('File shared successfully!');
+    } else {
+      console.warn('File sharing is not supported on this browser/device');
+    }
+  } catch (err) {
+    console.error('Error sharing file:', err);
+  }
+}
 	
   </script>
   
