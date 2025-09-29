@@ -1,163 +1,225 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Cricket Auction</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-body { font-family: Arial; display: flex; margin:0; height: 100vh; background:#f2f2f2; }
-#left, #right { padding: 20px; overflow-y: auto; }
-#left { width: 40%; background: #fff; border-right:1px solid #ccc; }
-#right { width: 60%; }
-table { width:100%; border-collapse: collapse; }
-th, td { padding: 8px; border:1px solid #ccc; text-align:left; vertical-align: top; }
-tr:hover { cursor:pointer; }
-.auction-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:20px; }
-.player-info { display: flex; align-items: flex-start; gap: 30px; }
-.player-info img { width:300px; height:300px; object-fit:cover; border-radius:10px; border:2px solid #ccc; }
-.player-details { flex:1; }
-.team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
-.bid-section { margin-top:15px; }
-.bid-section input { padding:6px; font-size:16px; width:200px; text-align:right; }
-.bid-section button { padding:8px 15px; margin-left:10px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; }
-.bid-section button:hover { background:#0056b3; }
-.teams-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
-.team-card { width: 200px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
-.team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
-.team-card.selected { background-color:#28a745; color:#fff; }
-.team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px; }
-.team-owner-card { font-size:13px; color:#555; }
-.team-baseprice { font-size:13px; margin-top:4px; color:#333; }
-.team-total { font-size:14px; margin-top:6px; color:#111; font-weight:bold; }
-.team-balance { font-size:15px; margin-top:6px; font-weight:bold; color:blue; }
-.low-balance { color:red !important; }
-.team-details { font-size:13px; margin-top:6px; color:#007bff; cursor:pointer; text-decoration:underline; }
-.team-details:hover { color:#0056b3; }
-#teamsList { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-.submit-btn { margin-top:15px; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; }
-.submit-btn:hover { background:#1e7e34; }
-.disabled { opacity:0.6; cursor:not-allowed; }
-.player-mobile-small { font-size:12px; color:#666; display:block; margin-top:2px; }
+  body { font-family: Arial; display: flex; margin:0; height: 100vh; background:#f2f2f2; }
+  #left, #right { padding: 20px; overflow-y: auto; }
+  #left { width: 40%; background: #fff; border-right:1px solid #ccc; }
+  #right { width: 60%; }
+  table { width:100%; border-collapse: collapse; }
+  th, td { padding: 8px; border:1px solid #ccc; text-align:left; vertical-align: top; }
+  tr:hover { cursor:pointer; }
+  .auction-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:20px; }
+  .player-info { display: flex; align-items: flex-start; gap: 30px; }
+  .player-info img { width:300px; height:300px; object-fit:cover; border-radius:10px; border:2px solid #ccc; }
+  .player-details { flex:1; }
+  .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
+  .bid-section { margin-top:15px; }
+  .bid-section input { padding:6px; font-size:16px; width:200px; text-align:right; }
+  .bid-section button { padding:8px 15px; margin-left:10px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; }
+  .bid-section button:hover { background:#0056b3; }
+  .teams-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
+  .team-card { width: 200px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
+  .team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
+  .team-card.selected { background-color:#28a745; color:#fff; }
+  .team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px; }
+  .team-owner-card { font-size:13px; color:#555; }
+  .team-baseprice { font-size:13px; margin-top:4px; color:#333; }
+  .team-total { font-size:14px; margin-top:6px; color:#111; font-weight:bold; }
+  .team-tobebid { font-size:14px; margin-top:6px; font-weight:bold; color:#444; }
+  .team-balance { font-size:15px; margin-top:6px; font-weight:bold; color:blue; }
+  .team-toselect { font-size:14px; margin-top:6px; font-weight:bold; color:#d2691e; }
+  .low-balance { color:red !important; }
+  .team-details { font-size:13px; margin-top:6px; color:#007bff; cursor:pointer; text-decoration:underline; }
+  .team-details:hover { color:#0056b3; }
+  #teamsList { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+  .submit-btn { margin-top:15px; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+  .submit-btn:hover { background:#1e7e34; }
+  .disabled { opacity:0.6; cursor:not-allowed; }
+  /* Player details popup */
+  .popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999; }
+  .popup .box { background:#fff; padding:18px; border-radius:8px; width:420px; max-width:95%; text-align:left; box-shadow:0 6px 20px rgba(0,0,0,0.2); }
+  .popup .box h3 { margin:0 0 10px 0; }
+  .popup .box img { width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
+  .popup .box .row { margin-bottom:6px; font-size:14px; }
+  .popup .close { margin-top:12px; display:inline-block; padding:8px 12px; background:#007bff; color:#fff; border-radius:6px; cursor:pointer; border:none; }
+  .player-details-link { color:#007bff; text-decoration:underline; cursor:pointer; }
+  .numbered-list { margin:8px 0 0 16px; font-size:14px; white-space:pre-wrap; font-family:monospace; }
+  .team-summary-line { border-top:1px dotted #888; margin-top:8px; padding-top:8px; }
+  .available-highlight { font-weight:bold; color:blue; }
 </style>
 </head>
 <body>
 
 <div id="left">
-<h2>Players</h2>
-<input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
-<table id="playerTable">
-<thead><tr><th>Name</th><th>Role</th><th>Base Price</th><th>Sold</th></tr></thead>
-<tbody></tbody>
-</table>
+  <h2>Players</h2>
+  <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
+  <table id="playerTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Role</th>
+        <th>Base Price</th>
+        <th>Sold</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
 <div id="right">
-<h2>Auction</h2>
-<div class="auction-section">
-  <div class="player-info">
-    <img id="playerPhoto" src="https://via.placeholder.com/300" alt="Player Photo"/>
-    <div class="player-details">
-      <div id="selectedPlayer">No player selected</div>
-      <div class="team-name" id="selectedTeam">Team: -</div>
-      <div>Base Price: <span id="basePrice">-</span></div>
-      <div class="bid-section">
-        Final Bid Amount: <input type="text" id="finalBid" readonly value="-"/><br><br>
-        <button id="placeBidBtn" class="disabled" onclick="placeBid()">Place Bid (+50,000)</button>
-        <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-50,000)</button>
+  <h2>Auction</h2>
+  <div class="auction-section">
+    <div class="player-info">
+      <img id="playerPhoto" src="https://via.placeholder.com/300" alt="Player Photo"/>
+      <div class="player-details">
+        <div id="selectedPlayer">No player selected</div>
+        <div class="team-name" id="selectedTeam">Team: -</div>
+        <div>Base Price: <span id="basePrice">-</span></div>
+        <div>Available Balance: <span id="availableBalance">-</span></div>
+        <div class="bid-section">
+          Final Bid Amount: <input type="text" id="finalBid" readonly value="-"/><br><br>
+          <button id="placeBidBtn" class="disabled" onclick="placeBid()">Place Bid (+50,000)</button>
+          <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-50,000)</button>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="teams-section">
+    <h3>Teams</h3>
+    <div id="teamsList">
+      <div class="team-card" data-name="CSK" data-owner="N. Srinivasan">
+        <div class="team-name-card">CSK</div>
+        <div class="team-owner-card">Owner: N. Srinivasan</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('CSK')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="MI" data-owner="Mukesh Ambani">
+        <div class="team-name-card">MI</div>
+        <div class="team-owner-card">Owner: Mukesh Ambani</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('MI')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="RCB" data-owner="United Spirits">
+        <div class="team-name-card">RCB</div>
+        <div class="team-owner-card">Owner: United Spirits</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('RCB')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="KKR" data-owner="Shah Rukh Khan & Juhi Chawla">
+        <div class="team-name-card">KKR</div>
+        <div class="team-owner-card">Owner: Shah Rukh Khan & Juhi Chawla</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('KKR')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="SRH" data-owner="Kalanithi Maran">
+        <div class="team-name-card">SRH</div>
+        <div class="team-owner-card">Owner: Kalanithi Maran</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('SRH')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="DC" data-owner="GMR & JSW">
+        <div class="team-name-card">DC</div>
+        <div class="team-owner-card">Owner: GMR & JSW</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('DC')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="RR" data-owner="Manoj Badale">
+        <div class="team-name-card">RR</div>
+        <div class="team-owner-card">Owner: Manoj Badale</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('RR')">Details</div>
+      </div>
+
+      <div class="team-card" data-name="PBKS" data-owner="Preity Zinta & Ness Wadia">
+        <div class="team-name-card">PBKS</div>
+        <div class="team-owner-card">Owner: Preity Zinta & Ness Wadia</div>
+        <div class="team-baseprice">Owner Base Price: 50,000</div>
+        <div class="team-total">Total Balance: 2,000,000</div>
+        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <div class="team-balance">Available Balance: 2,000,000</div>
+        <div class="team-toselect">Players to be Selected: 6</div>
+        <div class="team-details" onclick="showTeamDetails('PBKS')">Details</div>
+      </div>
+    </div>
+    <button class="submit-btn" onclick="submitAuction()">Submit</button>
+  </div>
 </div>
 
-<div class="teams-section">
-<h3>Teams</h3>
-<div id="teamsList">
-  <div class="team-card" data-name="CSK" data-owner="N. Srinivasan">
-    <div class="team-name-card">CSK</div>
-    <div class="team-owner-card">Owner: N. Srinivasan</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('CSK')">Details</div>
-  </div>
+<!-- (Popup and JS remain same as previous version) -->
 
-  <div class="team-card" data-name="MI" data-owner="Mukesh Ambani">
-    <div class="team-name-card">MI</div>
-    <div class="team-owner-card">Owner: Mukesh Ambani</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('MI')">Details</div>
-  </div>
+</body>
+</html>
+/div>
 
-  <div class="team-card" data-name="RCB" data-owner="United Spirits">
-    <div class="team-name-card">RCB</div>
-    <div class="team-owner-card">Owner: United Spirits</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('RCB')">Details</div>
-  </div>
-
-  <div class="team-card" data-name="KKR" data-owner="Shah Rukh Khan & Juhi Chawla">
-    <div class="team-name-card">KKR</div>
-    <div class="team-owner-card">Owner: Shah Rukh Khan & Juhi Chawla</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('KKR')">Details</div>
-  </div>
-
-  <div class="team-card" data-name="SRH" data-owner="Kalanithi Maran">
-    <div class="team-name-card">SRH</div>
-    <div class="team-owner-card">Owner: Kalanithi Maran</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('SRH')">Details</div>
-  </div>
-
-  <div class="team-card" data-name="DC" data-owner="GMR & JSW">
-    <div class="team-name-card">DC</div>
-    <div class="team-owner-card">Owner: GMR & JSW</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('DC')">Details</div>
-  </div>
-
-  <div class="team-card" data-name="RR" data-owner="Manoj Badale">
-    <div class="team-name-card">RR</div>
-    <div class="team-owner-card">Owner: Manoj Badale</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('RR')">Details</div>
-  </div>
-
-  <div class="team-card" data-name="PBKS" data-owner="Preity Zinta & Ness Wadia">
-    <div class="team-name-card">PBKS</div>
-    <div class="team-owner-card">Owner: Preity Zinta & Ness Wadia</div>
-    <div class="team-baseprice">Owner Base Price: 50000</div>
-    <div class="team-total">Total Balance: 2000000</div>
-    <div class="team-balance">Available Balance: 2000000</div>
-    <div class="team-details" onclick="showTeamDetails('PBKS')">Details</div>
+<!-- Player details popup -->
+<div class="popup" id="playerDetailPopup">
+  <div class="box">
+    <h3 id="pd-name">Player</h3>
+    <img id="pd-photo" src="https://via.placeholder.com/300" alt="photo"/>
+    <div class="row"><strong>Role:</strong> <span id="pd-role"></span></div>
+    <div class="row"><strong>Base Price:</strong> <span id="pd-base"></span></div>
+    <div class="row"><strong>Mobile:</strong> <span id="pd-mobile">N/A</span></div>
+    <button class="close" onclick="closePlayerPopup()">Close</button>
   </div>
 </div>
-<button class="submit-btn" onclick="submitAuction()">Submit</button>
+
+<!-- Team details popup (owner as item 1, then sold players) -->
+<div class="popup" id="teamDetailPopup">
+  <div class="box">
+    <h3 id="td-name">Team Details</h3>
+    <div id="td-list" class="numbered-list"></div>
+    <button class="close" onclick="closeTeamPopup()">Close</button>
+  </div>
 </div>
 
 <script>
-let currentPlayer=null;
-let currentBid=0;
-let selectedTeam=null;
-let workbook=null;
-let mainSheetName=null;
-
+/* ------------------------
+   Data & helpers
+   ------------------------ */
 const TOTAL_BALANCE = 2000000;
 
-// Owner base price per team
 let ownerBasePrices = {
   "CSK": 50000,
   "MI": 50000,
@@ -169,195 +231,321 @@ let ownerBasePrices = {
   "PBKS": 50000
 };
 
-// Track sold players
 let teamSoldPlayers = {
-  "CSK": [],
-  "MI": [],
-  "RCB": [],
-  "KKR": [],
-  "SRH": [],
-  "DC": [],
-  "RR": [],
-  "PBKS": []
+  "CSK": [], "MI": [], "RCB": [], "KKR": [], "SRH": [], "DC": [], "RR": [], "PBKS": []
 };
 
-// Upload Excel
+let workbook = null;
+let mainSheetName = null;
+let currentPlayer = null; // raw object from sheet
+let currentBid = 0;       // numeric value in rupees, not formatted string
+let selectedTeam = null;
+
+/* format as Indian rupee with commas */
+function formatINR(n){
+  if(n === null || n === undefined || n === '-') return '-';
+  const num = Number(n) || 0;
+  return '₹' + num.toLocaleString('en-IN');
+}
+
+/* ------------------------
+   Compute availability = Total - owner base - sum(sold bids)
+   ------------------------ */
+function computeAvailableForTeam(teamName){
+  const base = ownerBasePrices[teamName] || 0;
+  const soldList = teamSoldPlayers[teamName] || [];
+  const spent = soldList.reduce((s, p) => s + (Number(p.bid) || 0), 0);
+  return TOTAL_BALANCE - base - spent;
+}
+
+/* ------------------------
+   Initialize team card numbers
+   ------------------------ */
+function initTeamCardsFormatting(){
+  document.querySelectorAll('#teamsList .team-card').forEach(card => {
+    const name = card.getAttribute('data-name');
+    const base = ownerBasePrices[name] || 0;
+    card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
+    card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
+    const available = computeAvailableForTeam(name);
+    card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
+    if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
+    else card.querySelector('.team-balance').classList.remove('low-balance');
+  });
+}
+
+/* ------------------------
+   Excel upload & render players
+   ------------------------ */
 document.getElementById('excelFile').addEventListener('change', event=>{
-  const file=event.target.files[0];
+  const file = event.target.files[0];
   if(!file) return;
-  const reader=new FileReader();
-  reader.onload=function(e){
-    const data=new Uint8Array(e.target.result);
-    workbook=XLSX.read(data,{type:'array'});
-    mainSheetName=workbook.SheetNames[0];
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const data = new Uint8Array(e.target.result);
+    workbook = XLSX.read(data, { type: 'array' });
+    mainSheetName = workbook.SheetNames[0];
     renderPlayers();
   };
   reader.readAsArrayBuffer(file);
 });
 
-// Render players
 function renderPlayers(){
-  const sheet=workbook.Sheets[mainSheetName];
-  const data=XLSX.utils.sheet_to_json(sheet,{defval:''});
-  const tbody=document.querySelector('#playerTable tbody');
-  tbody.innerHTML='';
-  data.forEach((p,i)=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${p.Name||p.name}<br><span class="player-mobile-small">Mobile: ${p.Mobile||p.mobile||"N/A"}</span></td>
-                  <td>${p.Role||p.role}</td>
-                  <td>${p.BasePrice||p.basePrice}</td>
-                  <td>${p.Sold||''}</td>`;
-    tr.setAttribute('data-sold', p.Sold || "No");
-    if(p.Sold==="Yes") tr.style.backgroundColor="#fff8c6";
+  if(!workbook || !mainSheetName) return;
+  const sheet = workbook.Sheets[mainSheetName];
+  const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  const tbody = document.querySelector('#playerTable tbody');
+  tbody.innerHTML = '';
 
-    tr.addEventListener('click', ()=>{
-      if(p.Sold==="Yes"){ 
-        alert("Player already sold"); 
-        document.getElementById('placeBidBtn').classList.add('disabled'); 
-        document.getElementById('reduceBidBtn').classList.add('disabled'); 
-        return; 
+  data.forEach((p,i) => {
+    const tr = document.createElement('tr');
+
+    // defensive keys
+    const name = p.Name || p.name || '';
+    const mobile = p.Mobile || p.mobile || 'N/A';
+    const role = p.Role || p.role || '';
+    const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
+    const sold = p.Sold || '';
+
+    tr.innerHTML = `
+      <td>${name}</td>
+      <td>${mobile}</td>
+      <td>${role}</td>
+      <td>${formatINR(base)}</td>
+      <td>${sold}</td>
+      <td><span class="player-details-link">Details</span></td>
+    `;
+
+    // clicking the row selects player (but clicking Details link opens popup)
+    tr.addEventListener('click', () => {
+      if(sold === "Yes"){
+        alert("Player already sold");
+        document.getElementById('placeBidBtn').classList.add('disabled');
+        document.getElementById('reduceBidBtn').classList.add('disabled');
+        return;
       }
       currentPlayer = p;
-      currentBid = parseInt(p.BasePrice||p.basePrice)||0;
-      document.getElementById('finalBid').value = currentBid;
-      document.getElementById('selectedPlayer').textContent = (p.Name||p.name)+' ('+(p.Role||p.role)+')';
-      document.getElementById('playerPhoto').src = p.PhotoURL||p.photo||'https://via.placeholder.com/300';
-      document.getElementById('basePrice').textContent = p.BasePrice||p.basePrice;
+      currentBid = base; // numeric
+      // show formatted values
+      document.getElementById('finalBid').value = formatINR(currentBid);
+      document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
+      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
+      document.getElementById('basePrice').textContent = formatINR(base);
 
-      document.querySelectorAll('#playerTable tbody tr').forEach(r=>{
-        if(r !== tr && r.getAttribute('data-sold')!=="Yes") r.style.backgroundColor="";
-      });
-      tr.style.backgroundColor="#d4edda"; 
+      // update available balance on right: must be Total - owner base - sold players
+      if(selectedTeam){
+        const avail = computeAvailableForTeam(selectedTeam.name);
+        document.getElementById('availableBalance').textContent = formatINR(avail);
+      } else {
+        document.getElementById('availableBalance').textContent = 'Select a team';
+      }
+
+      // enable buttons
       document.getElementById('placeBidBtn').classList.remove('disabled');
       document.getElementById('reduceBidBtn').classList.remove('disabled');
+
+      // highlight selected row visually
+      document.querySelectorAll('#playerTable tbody tr').forEach(r => r.style.backgroundColor = '');
+      tr.style.backgroundColor = '#d4edda';
+    });
+
+    // Details link handler (show player details popup including mobile)
+    tr.querySelector('.player-details-link').addEventListener('click', function(e){
+      e.stopPropagation();
+      e.preventDefault();
+      showPlayerDetailsPopup(p);
     });
 
     tbody.appendChild(tr);
   });
 }
 
-// Increment bid
-function placeBid(){
-  if(!currentPlayer){ alert('Select a player first!'); return; }
-  currentBid += 50000;
-  document.getElementById('finalBid').value = currentBid;
+/* ------------------------
+   Player details popup (shows mobile)
+   ------------------------ */
+function showPlayerDetailsPopup(p){
+  document.getElementById('pd-name').textContent = p.Name || p.name || 'Player';
+  document.getElementById('pd-photo').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
+  document.getElementById('pd-role').textContent = p.Role || p.role || '-';
+  document.getElementById('pd-base').textContent = formatINR(parseInt(p.BasePrice || p.basePrice || 0));
+  document.getElementById('pd-mobile').textContent = p.Mobile || p.mobile || 'N/A';
+  document.getElementById('playerDetailPopup').style.display = 'flex';
+}
+function closePlayerPopup(){
+  document.getElementById('playerDetailPopup').style.display = 'none';
 }
 
-// Reduce bid
+/* ------------------------
+   Team card selection & update
+   ------------------------ */
+const teamCards = document.querySelectorAll('#teamsList .team-card');
+teamCards.forEach(card => {
+  card.addEventListener('click', function(){
+    teamCards.forEach(c => c.classList.remove('selected'));
+    this.classList.add('selected');
+    selectedTeam = { name: this.getAttribute('data-name'), owner: this.getAttribute('data-owner') };
+    document.getElementById('selectedTeam').textContent = 'Team: ' + selectedTeam.name;
+
+    // update available on right (Total - owner base - sold players)
+    const avail = computeAvailableForTeam(selectedTeam.name);
+    document.getElementById('availableBalance').textContent = formatINR(avail);
+
+    // update team card UI
+    initTeamCardsFormatting();
+  });
+});
+
+/* Update team card's available display (keeps to the requested formula) */
+function updateTeamCardAvailable(teamName){
+  document.querySelectorAll('#teamsList .team-card').forEach(card => {
+    if(card.getAttribute('data-name') === teamName){
+      const avail = computeAvailableForTeam(teamName);
+      const balanceDiv = card.querySelector('.team-balance');
+      balanceDiv.textContent = 'Available Balance: ' + formatINR(avail);
+      if(avail < 0) balanceDiv.classList.add('low-balance'); else balanceDiv.classList.remove('low-balance');
+    }
+  });
+}
+
+/* ------------------------
+   Bidding functions
+   ------------------------ */
+function placeBid(){
+  if(!currentPlayer){ alert('Select a player first!'); return; }
+  currentBid = (Number(currentBid) || 0) + 50000;
+  document.getElementById('finalBid').value = formatINR(currentBid);
+}
+
 function reduceBid(){
   if(!currentPlayer){ alert('Select a player first!'); return; }
-  const basePrice = parseInt(currentPlayer.BasePrice||currentPlayer.basePrice)||0;
-  if(currentBid - 50000 >= basePrice){
-    currentBid -= 50000;
-    document.getElementById('finalBid').value = currentBid;
+  const basePrice = parseInt(currentPlayer.BasePrice || currentPlayer.basePrice) || 0;
+  if((currentBid - 50000) >= basePrice){
+    currentBid = currentBid - 50000;
+    document.getElementById('finalBid').value = formatINR(currentBid);
   } else {
     alert('Bid cannot be lower than base price!');
   }
 }
 
-// Team card selection
-const teamCards = document.querySelectorAll('#teamsList .team-card');
-teamCards.forEach(card=>{
-  card.addEventListener('click', function(){
-    teamCards.forEach(c=>c.classList.remove('selected'));
-    this.classList.add('selected');
-    selectedTeam = {name:this.getAttribute('data-name'), owner:this.getAttribute('data-owner')};
-    document.getElementById('selectedTeam').textContent = 'Team: '+selectedTeam.name;
-  });
-});
-
-// Calculate and update balance
-function updateBalance(teamName){
-  let spent = teamSoldPlayers[teamName].reduce((sum,p)=> sum+p.bid, 0);
-  let available = TOTAL_BALANCE - ownerBasePrices[teamName] - spent;
-  document.querySelectorAll('#teamsList .team-card').forEach(card=>{
-    if(card.getAttribute('data-name')===teamName){
-      const balanceDiv = card.querySelector('.team-balance');
-      balanceDiv.textContent = "Available Balance: " + available;
-      if(available < 50000){
-        balanceDiv.classList.add("low-balance");
-      } else {
-        balanceDiv.classList.remove("low-balance");
-      }
-    }
-  });
-  return available;
-}
-
-// Submit auction
+/* ------------------------
+   Submit auction (sell player)
+   ------------------------ */
 function submitAuction(){
-  if(!currentPlayer || !selectedTeam){ 
-    alert('Select player and team'); 
-    return; 
-  }
-
-  let available = updateBalance(selectedTeam.name);
-  if(currentBid > available){
-    alert("This team does not have enough balance!");
+  if(!currentPlayer || !selectedTeam){
+    alert('Select both a player and a team before submitting.');
     return;
   }
 
-  const confirmMsg = `Confirm auction details:\n\nPlayer: ${currentPlayer.Name}\nTeam: ${selectedTeam.name} (Owner: ${selectedTeam.owner})\nFinal Bid: ${currentBid}\n\nProceed?`;
+  // Available calculation: Total - owner base - sold players
+  const available = computeAvailableForTeam(selectedTeam.name);
+
+  if(currentBid > available){
+    alert(`This team does not have enough balance!\nAvailable: ${formatINR(available)}\nBid: ${formatINR(currentBid)}`);
+    return;
+  }
+
+  const confirmMsg = `Confirm auction details:\n\nPlayer: ${currentPlayer.Name || currentPlayer.name}\nTeam: ${selectedTeam.name} (Owner: ${selectedTeam.owner})\nFinal Bid: ${formatINR(currentBid)}\n\nProceed?`;
   if(!confirm(confirmMsg)) return;
 
-  const sheet=workbook.Sheets[mainSheetName];
-  const data=XLSX.utils.sheet_to_json(sheet,{defval:''});
+  // Update workbook data
+  if(workbook && mainSheetName){
+    const sheet = workbook.Sheets[mainSheetName];
+    const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
-  data.forEach(p=>{
-    if(p.Name===currentPlayer.Name && (p.Role===currentPlayer.Role || p.role===currentPlayer.role)){
-      p.FinalBid = currentBid;
-      p.SoldToTeam = selectedTeam.name+' (Owner: '+selectedTeam.owner+')';
-      p.Sold = 'Yes';
-    }
-  });
+    data.forEach(p => {
+      if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
+        // store plain number for Excel
+        p.FinalBid = Number(currentBid);
+        p.SoldToTeam = `${selectedTeam.name} (Owner: ${selectedTeam.owner})`;
+        p.Sold = 'Yes';
+      }
+    });
 
-  workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
+    workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
 
-  const teamSheetName = selectedTeam.name;
-  const soldPlayers = data.filter(p => p.SoldToTeam===selectedTeam.name+' (Owner: '+selectedTeam.owner+')');
-  workbook.Sheets[teamSheetName] = XLSX.utils.json_to_sheet(soldPlayers);
-  if(!workbook.SheetNames.includes(teamSheetName)) workbook.SheetNames.push(teamSheetName);
+    // Update team sheet with sold players (plain numbers)
+    const teamSheetName = selectedTeam.name;
+    const soldPlayers = data.filter(p => p.SoldToTeam === `${selectedTeam.name} (Owner: ${selectedTeam.owner})`);
+    workbook.Sheets[teamSheetName] = XLSX.utils.json_to_sheet(soldPlayers);
+    if(!workbook.SheetNames.includes(teamSheetName)) workbook.SheetNames.push(teamSheetName);
 
-  // Save player
-  teamSoldPlayers[selectedTeam.name].push({ name: currentPlayer.Name, bid: currentBid });
+    // Track sold players for display (store mobile too)
+    teamSoldPlayers[selectedTeam.name].push({
+      name: currentPlayer.Name || currentPlayer.name,
+      mobile: currentPlayer.Mobile || currentPlayer.mobile || 'N/A',
+      bid: Number(currentBid)
+    });
 
-  // Update balance
-  updateBalance(selectedTeam.name);
+    // Update the team card available (Total - owner base - sold)
+    updateTeamCardAvailable(selectedTeam.name);
 
-  XLSX.writeFile(workbook,'AuctionResult.xlsx');
-  alert('Player sold to '+selectedTeam.name+' (Owner: '+selectedTeam.owner+') with final bid '+currentBid);
+    // save file (numbers only)
+    XLSX.writeFile(workbook, 'AuctionResult.xlsx');
 
-  renderPlayers();
-
-  currentPlayer=null;
-  currentBid=0;
-  selectedTeam=null;
-  document.getElementById('finalBid').value='-';
-  document.getElementById('selectedPlayer').textContent='No player selected';
-  document.getElementById('selectedTeam').textContent='Team: -';
-  document.getElementById('placeBidBtn').classList.add('disabled');
-  document.getElementById('reduceBidBtn').classList.add('disabled');
-}
-
-// Show team details
-function showTeamDetails(teamName){
-  let owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).textContent.replace("Owner: ","");
-  let base = ownerBasePrices[teamName];
-  let details = teamName + " (Owner: " + owner + ", Base: " + base + ")\n\n";
-  details += "1. Owner: " + owner + " (Base: " + base + ")\n";
-
-  if(teamSoldPlayers[teamName].length===0){
-    details += "No players bought yet.";
-    alert(details);
-    return;
+    alert(`Player sold to ${selectedTeam.name} (Owner: ${selectedTeam.owner}) with final bid ${formatINR(currentBid)}`);
+  } else {
+    alert('No workbook loaded — the local Excel data is not available.');
   }
 
-  teamSoldPlayers[teamName].forEach((p,i)=>{
-    details += (i+2) + ". " + p.name + " - " + p.bid + "\n";
-  });
-  alert(details);
+  // Reset UI selections (but keep team cards updated)
+  renderPlayers();
+  currentPlayer = null;
+  currentBid = 0;
+  document.getElementById('finalBid').value = '-';
+  document.getElementById('selectedPlayer').textContent = 'No player selected';
+  document.getElementById('basePrice').textContent = '-';
+  document.getElementById('availableBalance').textContent = '-';
+  document.getElementById('placeBidBtn').classList.add('disabled');
+  document.getElementById('reduceBidBtn').classList.add('disabled');
+  // unselect team cards (you can keep selected by removing this line if you prefer)
+  document.querySelectorAll('#teamsList .team-card').forEach(c => c.classList.remove('selected'));
+  selectedTeam = null;
 }
-</script>
 
+/* ------------------------
+   Show team details popup (owner as item 1, then sold players)
+   ------------------------ */
+function showTeamDetails(teamName){
+  const owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).textContent.replace("Owner: ","");
+  const base = ownerBasePrices[teamName] || 0;
+  let html = '';
+
+  // Owner as item 1
+  html += `1. Owner: ${owner} — Base: ${formatINR(base)}\n\n`;
+
+  // Sold players starting from 2, with mobile and one blank line after each
+  const sold = teamSoldPlayers[teamName] || [];
+  if(sold.length === 0){
+    html += `No players bought yet.\n`;
+  } else {
+    sold.forEach((p, idx) => {
+      const mobileText = p.mobile ? ` (Mobile: ${p.mobile})` : '';
+      html += `${idx+2}. ${p.name}${mobileText} — ${formatINR(p.bid)}\n\n`;
+    });
+  }
+
+  // Totals summary with dotted line above
+  const spent = sold.reduce((s,p)=> s + (Number(p.bid)||0), 0);
+  const available = computeAvailableForTeam(teamName);
+
+  html += `\n-----------------------------------\n`;
+  html += `Total Spent on Players: ${formatINR(spent)}\n`;
+  // available highlighted
+  html += `<span class="available-highlight">Available (Total - OwnerBase - Spent): ${formatINR(available)}</span>`;
+
+  document.getElementById('td-name').textContent = `${teamName} Details`;
+  document.getElementById('td-list').innerHTML = html;
+  document.getElementById('teamDetailPopup').style.display = 'flex';
+}
+function closeTeamPopup(){
+  document.getElementById('teamDetailPopup').style.display = 'none';
+}
+
+/* ------------------------
+   Initial formatting on page load
+   ------------------------ */
+initTeamCardsFormatting();
+
+</script>
 </body>
 </html>
