@@ -78,7 +78,32 @@
   table { width:100%; border-collapse: collapse; }
   th, td { padding: 8px; border:1px solid #ccc; text-align:left; vertical-align: top; }
   tr:hover { cursor:pointer; }
-  .auction-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:20px; }
+ 
+ .auction-section {
+    /* Existing Styles */
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+
+    /* New Styles for Smooth-Then-Fast Opening 
+    overflow: hidden; /* Crucial to hide content when height is 0 */
+    transition: height 1.0s ease-out, padding 1.0s ease-out; */
+            
+	/* Initial state: CLOSED 
+	height: 0;
+	padding-top: 0;
+	padding-bottom: 0; */
+}
+
+.auction-section.open {
+            /* Final state: OPEN */
+            height: 200px; /* A specific height is required for animation */
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+ 
   .player-info { display: flex; align-items: flex-start; gap: 30px; }
   .player-info img { width:300px; height:300px; object-fit:cover; border-radius:10px; border:2px solid #ccc; }
   .player-details { flex:1; }
@@ -294,8 +319,7 @@
   
    <!-- <h2>Players</h2> -->
        
-	   <button onclick="highlightRandomRow()" id="toggleButton">Start Spin</button>
-	   
+	  	   
   <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
     	
   <table id="playerTable">
@@ -455,7 +479,7 @@
 	
 	<div id="teamCardsWrapper">
       <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
-        <div class="Submit_team-name-card">&nbsp;</div>
+        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
         <div class="Submit_team-owner-card">&nbsp;</div>
         <button class="submit-btn" onclick="submitAuction()">Submit</button>
           <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
@@ -466,6 +490,20 @@
 	  <div class="Submit_team-details" >&nbsp;</div>
     </div>
 	
+	
+	<div id="teamCardsWrapper1">
+      <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
+        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
+        <div class="Submit_team-owner-card">&nbsp;</div>
+        <button onclick="highlightRandomRow()" id="toggleButton">Start Spin</button>
+          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
+        <div class="Submit_team-tobebid1">&nbsp;</div>
+        <div class="Submit_team-balance1">&nbsp;</div>
+        <div class="Submit_team-toselect1">&nbsp;</div>
+      </div>
+	  <div class="Submit_team-details" >&nbsp;</div>
+    </div>
+		 
   </div>
 </div>
 </div>
@@ -1160,9 +1198,10 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 
 	spinnerContainer.classList.remove('spinnerContainerClass');
 	
-	rightPlayerDiv.classList.add('visible');
-	rightPlayerDiv.classList.add('running');
+	rightPlayerDiv.style.display = 'block';
 	teamsListMainIdDiv.style.display = 'block';
+	
+	rightPlayerDiv.classList.toggle('open');
   }
   
 /* ------------------------
