@@ -51,6 +51,64 @@
   .numbered-list { margin:8px 0 0 16px; font-size:14px; white-space:pre-wrap; font-family:monospace; }
   .team-summary-line { border-top:1px dotted #888; margin-top:8px; padding-top:8px; }
   .available-highlight { font-weight:bold; color:blue; }
+  
+  #selectedPlayer {
+    /* Background and Padding */
+    background-color: #fffacd; /* Light yellow background */
+    border: 2px dashed #daa520; /* Dashed gold border for attention */
+    padding: 20px;
+    
+    /* Text Styling */
+    color: #8b4513; /* Brown text */
+    font-family: 'Verdana', sans-serif;
+    font-size: 1.2em;
+    font-style: italic;
+    text-align: center;
+     font-weight: bold; 
+	 
+    /* Shadow and Shape */
+    border-radius: 8px; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 10px; /* Add some space above the element */
+
+}
+
+ #selectedPlayerBasePrice {
+    /* Background and Padding */
+    background-color: #fffacd; /* Light yellow background */
+    border: 2px dashed #daa520; /* Dashed gold border for attention */
+    padding: 10px;
+    
+    /* Text Styling */
+    color: #8b4513; /* Brown text */
+    font-family: 'Verdana', sans-serif;
+    font-size: 1.2em;
+    font-style: italic;
+    text-align: center;
+     font-weight: bold; 
+	 
+    /* Shadow and Shape */
+    border-radius: 8px; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin-top: 10px; /* Add some space above the element */
+	}
+	
+	#finalBid {
+    width: 150px;
+    padding: 8px 12px;
+    margin: 5px 0;
+    height: 30px; 
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    text-align: center; 
+    outline: none; 
+}
+
 </style>
 </head>
 <body>
@@ -79,12 +137,14 @@
     <div class="player-info">
       <img id="playerPhoto" src="https://via.placeholder.com/300" alt="Player Photo"/>
       <div class="player-details">
-        <div id="selectedPlayer">No player selected</div>
-        <div class="team-name" id="selectedTeam">Team: -</div>
-        <div>Base Price: <span id="basePrice">-</span></div>
-        <div>Available Balance: <span id="availableBalance">-</span></div>
+        <div id="selectedPlayer">Please Select Player
+		
+		</div>
+        
+        <div id="selectedPlayerBasePrice">Base Price: <span id="basePrice">-</span></div>
+        
         <div class="bid-section">
-          Final Bid Amount: <input type="text" id="finalBid" readonly value="-"/><br><br>
+          Place Bid Amount: <input type="text" id="finalBid" readonly value="-"/><br><br>
           <button id="placeBidBtn" class="disabled" onclick="placeBid()">Place Bid (+10,0000)</button>
           <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-10,0000)</button>
         </div>
@@ -383,6 +443,7 @@ function renderPlayers(){
       
     `;
 
+
     // clicking the row selects player (but clicking Details link opens popup)
     tr.addEventListener('click', () => {
       if(sold === "Yes"){
@@ -391,6 +452,7 @@ function renderPlayers(){
         document.getElementById('reduceBidBtn').classList.add('disabled');
         return;
       }
+	
       currentPlayer = p;
       currentBid = base; // numeric
       // show formatted values
@@ -398,14 +460,6 @@ function renderPlayers(){
       document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
       document.getElementById('playerPhoto').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
       document.getElementById('basePrice').textContent = formatINR(base);
-
-      // update available balance on right: must be Total - owner base - sold players
-      if(selectedTeam){
-        const avail = computeAvailableForTeam(selectedTeam.name);
-        document.getElementById('availableBalance').textContent = formatINR(avail);
-      } else {
-        document.getElementById('availableBalance').textContent = 'Select a team';
-      }
 	 
       // enable buttons
       document.getElementById('placeBidBtn').classList.remove('disabled');
@@ -414,6 +468,8 @@ function renderPlayers(){
       // highlight selected row visually
       document.querySelectorAll('#playerTable tbody tr').forEach(r => r.style.backgroundColor = '');
       tr.style.backgroundColor = '#d4edda';
+	  
+	  clearAllTeamSelection();
     });
 
    tbody.appendChild(tr);
@@ -435,6 +491,13 @@ function closePlayerPopup(){
   document.getElementById('playerDetailPopup').style.display = 'none';
 }
 
+function clearAllTeamSelection(){
+ document.querySelectorAll('#teamsList .team-card').forEach(c => {
+	 c.classList.remove('selected');
+	});	
+}
+
+
 /* ------------------------
    Team card selection & update
    ------------------------ */
@@ -445,7 +508,7 @@ teamCards.forEach(card => {
 		
     selectedTeam = { name: this.getAttribute('data-name'), owner: this.getAttribute('data-owner') };
     
-	document.getElementById('selectedTeam').textContent = 'Team: ' + selectedTeam.name;
+	//document.getElementById('selectedTeam').textContent = 'Team: ' + selectedTeam.name;
 	
 	//Players to be selected must be greater than 0
 	if(updateTeamStyle(selectedTeam.name) == "Y"){
@@ -464,10 +527,11 @@ teamCards.forEach(card => {
 	
     // update available on right (Total - owner base - sold players)
     const avail = computeAvailableForTeam(selectedTeam.name);
-    document.getElementById('availableBalance').textContent = formatINR(avail);
+    //document.getElementById('availableBalance').textContent = formatINR(avail);
 	//alert("Team name -<" + document.getElementById('selectedTeam').textContent);
 	//updateTeamStyle(selectedTeam.name);
     // update team card UI
+	
     initTeamCardsFormatting();
   });
 });
@@ -506,6 +570,7 @@ function placeBid(){
   if(!currentPlayer){ alert('Select a player first!'); return; }
   currentBid = (Number(currentBid) || 0) + 50000;
   document.getElementById('finalBid').value = formatINR(currentBid);
+  clearAllTeamSelection();
 }
 
 function reduceBid(){
@@ -517,6 +582,7 @@ function reduceBid(){
   } else {
     alert('Bid cannot be lower than base price!');
   }
+  clearAllTeamSelection();
 }
 
 function updateTeamStyle_Submit(teamName) {
@@ -617,9 +683,9 @@ function submitAuction(){
   const numberOfUnSoldPlayer = getPlayersToBeSelected(selectedTeam.name);
   
   document.getElementById('finalBid').value = '-';
-  document.getElementById('selectedPlayer').textContent = 'No player selected';
+  document.getElementById('selectedPlayer').textContent = 'Please Select the Player';
   document.getElementById('basePrice').textContent = '-';
-  document.getElementById('availableBalance').textContent = '-';
+  //document.getElementById('availableBalance').textContent = '-';
   document.getElementById('placeBidBtn').classList.add('disabled');
   document.getElementById('reduceBidBtn').classList.add('disabled');
   // unselect team cards (you can keep selected by removing this line if you prefer)
