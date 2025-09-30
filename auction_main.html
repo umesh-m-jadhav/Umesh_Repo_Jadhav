@@ -648,6 +648,25 @@ function initTeamCardsFormatting(){
   });
 }
 
+function initTeamCardsFormattingOnTeamClick(){
+     
+  document.querySelectorAll('#teamsList .team-card').forEach(card => {
+    const name = card.getAttribute('data-name');
+    const base = ownerBasePrices[name] || 0;
+    card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
+    //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
+    const available = computeAvailableForTeam(name);
+	const numberOfUnSoldPlayer = getPlayersToBeSelected(name);
+    card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
+    if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
+    else card.querySelector('.team-balance').classList.remove('low-balance');
+	
+	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
+	card.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
+	
+  });
+}
+
 function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
   // 1. Input Validation: Check if both inputs are valid numbers.
   if (typeof availableBalance !== 'number' || typeof numberOfUnSoldPlayer !== 'number' || isNaN(availableBalance) || isNaN(numberOfUnSoldPlayer)) {
@@ -805,7 +824,7 @@ teamCards.forEach(card => {
 	//updateTeamStyle(selectedTeam.name);
     // update team card UI
 	
-    initTeamCardsFormatting();
+    initTeamCardsFormattingOnTeamClick();
   });
 });
 
@@ -1082,16 +1101,16 @@ function rgbToHex(rgb) {
 	 data.forEach((p,i) => {
 	 if(rowIndex == i){
 		//alert(i + " " + rowIndex)
-		
-		const currentPlayer = p;
+				
+		const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
+		 currentPlayer = p;
+         currentBid = base; 
+	  
 		const name = p.Name || p.name || '';
 		const mobile = p.Mobile || p.mobile || 'N/A';
 		const role = p.Role || p.role || '';
-		const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
+		
 		const sold = p.Sold || '';
-
-
-      const currentBid = base // numeric
 	  
       // show formatted values
       document.getElementById('finalBid').value = formatINR(currentBid);
