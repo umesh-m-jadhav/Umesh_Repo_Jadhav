@@ -5,11 +5,76 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Cricket Auction</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <style>
-  body { font-family: Arial; display: flex; margin:0; height: 100vh; background:#f2f2f2; }
+
+  /*body { font-family: Arial; display: flex; margin:0; height: 100vh; background:#f2f2f2; }
   #left, #right { padding: 20px; overflow-y: auto; }
-  #left { width: 40%; background: #fff; border-right:1px solid #ccc; }
-  #right { width: 60%; }
+  #left { width: 20%; background: #fff; border-right:1px solid #ccc; }
+  #right { width: 80%; } */
+ 
+  body { 
+    font-family: Arial; 
+    /* Use CSS Grid for the 2x2 layout */
+    display: grid; 
+    
+    /* 2 columns, 50% each for the top row (1fr = 50% since there are two) */
+     grid-template-columns: 40% 60%; 
+    
+    /* 2 rows, each taking 50% of the viewport height (50% 50%) */
+    grid-template-rows: 50% 50%; 
+    
+    margin: 0; 
+    height: 100vh; /* Critical: body must span the full viewport height */
+    background: #f2f2f2; 
+    /* Remove the old flex properties and height:100vh from #left and #right */
+  }
+
+  /* TOP-LEFT SECTION: Players */
+  #left { 
+    padding: 0 20px; /* 0px top/bottom, 20px left/right */
+    overflow-y: auto; /* Allows scrolling inside if content exceeds 50% height */
+    background: #fff; 
+    border-right: 1px solid #ccc; 
+    /* Explicitly place in Row 1, Column 1 */
+    grid-row: 1;
+    grid-column: 1;
+  }
+  
+  /* TOP-RIGHT SECTION: Auction */
+  #right { 
+    padding: 20px; 
+    overflow-y: auto; /* Allows scrolling inside if content exceeds 50% height */
+    /* Explicitly place in Row 1, Column 2 */
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  /* BOTTOM SECTION: Teams (100% Width) */
+  .teams-section-wrapper {
+   padding: 0 20px 20px 20px; /* 0px top, 20px right/left, 20px bottom */
+    /* Make this span both columns (1 and 2) in the second row */
+    grid-column: 1 / span 2; 
+    grid-row: 2;
+  }
+
+  /* Existing teams-section styling */
+  .teams-section { 
+    background:#fff; 
+    padding:20px; 
+    border-radius:8px; 
+    box-shadow:0 2px 6px rgba(0,0,0,0.1); 
+    height: calc(100% - 40px); /* Fill the remaining height of the wrapper (100% of row 2) minus the 20px top/bottom padding */
+    overflow-y: auto; /* Allows scrolling of team cards if they overflow */
+  }
+
+/* Add this new rule to your <style> block */
+#left h2, #right h2 {
+    margin-top: 0;
+    margin-bottom: 10px; /* Keep a small margin below the title for separation */
+}
+
+  
   table { width:100%; border-collapse: collapse; }
   th, td { padding: 8px; border:1px solid #ccc; text-align:left; vertical-align: top; }
   tr:hover { cursor:pointer; }
@@ -29,15 +94,15 @@
   .team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px; }
   .team-owner-card { font-size:13px; color:#555; }
   .team-baseprice { font-size:13px; margin-top:4px; color:#333; }
-  .team-total { font-size:14px; margin-top:6px; color:#111; font-weight:bold; }
-  .team-tobebid { font-size:14px; margin-top:6px; font-weight:bold; color:#444; }
-  .team-balance { font-size:15px; margin-top:6px; font-weight:bold; color:blue; }
-  .team-toselect { font-size:14px; margin-top:6px; font-weight:bold; color:#d2691e; }
+  .team-total { font-size:12px; margin-top:6px; color:#111; font-weight:bold; }
+  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:#444; }
+  .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
+  .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:#d2691e; }
   .low-balance { color:red !important; }
   .team-details { font-size:13px; margin-top:6px; color:#007bff; cursor:pointer; text-decoration:underline; }
   .team-details:hover { color:#0056b3; }
   #teamsList { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-  .submit-btn { margin-top:15px; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; }
+  .submit-btn { font-size:40px;margin-top:15px; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; }
   .submit-btn:hover { background:#1e7e34; }
   .disabled { opacity:0.6; cursor:not-allowed; }
   /* Player details popup */
@@ -109,18 +174,135 @@
     outline: none; 
 }
 
+ /* Define the running bounce animation */
+  @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+  
+ /* INCREASED SIZE: Width and Height are now 250px */
+        #circularSpinner {
+           /* Initial state: Hidden and takes up no space */
+            display: none; 
+            
+            width: 250px; 
+            height: 250px; 
+            border: 15px solid #C0C0C0; 
+            border-top-color: #FF0000; 
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px; /* Only active when visible */
+            position: relative;
+            background-color: #2c2c2c; 
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+
+            /* Animation initial state: paused */
+            animation: spin 0.8s linear infinite;
+            animation-play-state: paused;
+        }
+
+        /* Create a central indicator/logo area */
+        /* Increased size to 150px to fill the bigger circle */
+        #circularSpinner::before {
+            /* Displaying the full name over multiple lines */
+            content: "RPL\A(R21 Premium League)"; 
+            white-space: pre-wrap; /* This makes the line break (\A) work */
+            text-align: center;
+            
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #FF4500; /* Orange-Red center */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em; /* Adjusted font size */
+            line-height: 1.2;
+            color: white;
+            z-index: 1;
+            font-weight: bold;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* 2. Class toggled by JavaScript to run the animation */
+        .running {
+            animation-play-state: running !important;
+        }
+
+.spinnerContainerClass {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+        }
+		
+		 /* Class added by JavaScript to make it visible */
+        .visible {
+            display: flex !important; /* Overrides display: none; */
+        }
+		
+		 #toggleButton {
+            /* Ensure width and height are equal for a perfect circle */
+            width: 120px;
+            height: 120px;
+            
+            /* Make it circular */
+            border-radius: 50%; 
+
+            /* Center text vertically and horizontally */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            font-size: 1.2em; /* Slightly larger text */
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #008000; /* Darker Green for Start */
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Stronger shadow for 3D effect */
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        #toggleButton.stop-btn {
+             background-color: #CC0000; /* Darker Red for Stop */
+        }
+        
+        #toggleButton:hover {
+            opacity: 0.9;
+        }
+		
 </style>
 </head>
 <body>
 
+
+  
 <div id="left">
-  <h2>Players</h2>
+  
+   <!-- <h2>Players</h2> -->
+       
+	   <button onclick="highlightRandomRow()" id="toggleButton">Start Spin</button>
+	   
   <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
+    	
   <table id="playerTable">
     <thead>
       <tr>
         <th>Name</th>
-        <th>Mobile</th>
+        <!--<th>Mobile</th> -->
         <th>Role</th>
         <th>Base Price</th>
         <th>Sold</th>
@@ -131,9 +313,17 @@
   </table>
 </div>
 
+
 <div id="right">
-  <h2>Auction</h2>
-  <div class="auction-section">
+  
+  <div id="spinnerContainer" class="spinnerContainerClass">
+        <div id="circularSpinner">
+            <span class="center-text"></span> 
+        </div>
+ </div>		
+		
+  
+  <div id="rightPlayer" class="auction-section" style=" display: none; ">
     <div class="player-info">
       <img id="playerPhoto" src="https://via.placeholder.com/300" alt="Player Photo"/>
       <div class="player-details">
@@ -145,106 +335,139 @@
         
         <div class="bid-section">
           Place Bid Amount: <input type="text" id="finalBid" readonly value="-"/><br><br>
-          <button id="placeBidBtn" class="disabled" onclick="placeBid()">Place Bid (+10,0000)</button>
+          <button id="placeBidBtn" class="disabled" onclick="placeBid()">Increase Bid (+10,0000)</button>
           <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-10,0000)</button>
         </div>
       </div>
     </div>
   </div>
+</div>
 
+<div class="teams-section-wrapper" id="teamsListMainId">
   <div class="teams-section">
-    <h3>Teams</h3>
+   <!--  <h3>Teams</h3> -->
     <div id="teamsList">
+	
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="CSK" data-owner="N. Srinivasan">
-        <div class="team-name-card">CSK</div>
+        <div class="team-name-card" >CSK</div>
         <div class="team-owner-card">Owner: N. Srinivasan</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+       <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('CSK')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
-
+	  <div class="team-details" onclick="showTeamDetails('CSK')">CSK Details</div>
+	</div>
+	 
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="MI" data-owner="Mukesh Ambani">
         <div class="team-name-card">MI</div>
         <div class="team-owner-card">Owner: Mukesh Ambani</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+        <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('MI')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
-
+	   <div class="team-details" onclick="showTeamDetails('MI')">Details</div>
+	</div>
+	
+	
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="RCB" data-owner="United Spirits">
         <div class="team-name-card">RCB</div>
         <div class="team-owner-card">Owner: United Spirits</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+       <!--  <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('RCB')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
-
-      <div class="team-card" data-name="KKR" data-owner="Shah Rukh Khan & Juhi Chawla">
+	  <div class="team-details" onclick="showTeamDetails('RCB')">Details</div>
+	</div>
+	
+	<div id="teamCardsWrapper">
+      <div class="team-card" data-name="KKR" data-owner="Shah Rukh Khan">
         <div class="team-name-card">KKR</div>
-        <div class="team-owner-card">Owner: Shah Rukh Khan & Juhi Chawla</div>
+        <div class="team-owner-card">Owner: Shah Rukh Khan</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('KKR')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
-
+	  <div class="team-details" onclick="showTeamDetails('KKR')">Details</div>
+	</div>
+	
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="SRH" data-owner="Kalanithi Maran">
         <div class="team-name-card">SRH</div>
         <div class="team-owner-card">Owner: Kalanithi Maran</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('SRH')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
+	  <div class="team-details" onclick="showTeamDetails('SRH')">Details</div>
+	</div>
 
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="DC" data-owner="GMR & JSW">
         <div class="team-name-card">DC</div>
         <div class="team-owner-card">Owner: GMR & JSW</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('DC')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
+	  <div class="team-details" onclick="showTeamDetails('DC')">Details</div>
+	</div>
 
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="RR" data-owner="Manoj Badale">
         <div class="team-name-card">RR</div>
         <div class="team-owner-card">Owner: Manoj Badale</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('RR')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
+	   <div class="team-details" onclick="showTeamDetails('RR')">Details</div>
+	 </div>
 
+	<div id="teamCardsWrapper">
       <div class="team-card" data-name="PBKS" data-owner="Preity Zinta & Ness Wadia">
         <div class="team-name-card">PBKS</div>
         <div class="team-owner-card">Owner: Preity Zinta & Ness Wadia</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <div class="team-total">Total Balance: 2,000,000</div>
-        <div class="team-tobebid">To be Bid Balance: 2,000,000</div>
+          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
+        <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Players to be Selected: 6</div>
-        <div class="team-details" onclick="showTeamDetails('PBKS')">Details</div>
+        <div class="team-toselect">Remainining Players: 6</div>
       </div>
+	  <div class="team-details" onclick="showTeamDetails('PBKS')">Details</div>
     </div>
-    <button class="submit-btn" onclick="submitAuction()">Submit</button>
+	
+	<div id="teamCardsWrapper">
+      <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
+        <div class="Submit_team-name-card">&nbsp;</div>
+        <div class="Submit_team-owner-card">&nbsp;</div>
+        <button class="submit-btn" onclick="submitAuction()">Submit</button>
+          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
+        <div class="Submit_team-tobebid">&nbsp;</div>
+        <div class="Submit_team-balance">&nbsp;</div>
+        <div class="Submit_team-toselect">&nbsp;</div>
+      </div>
+	  <div class="Submit_team-details" >&nbsp;</div>
+    </div>
+	
   </div>
+</div>
 </div>
 
 <!-- (Popup and JS remain same as previous version) -->
@@ -368,12 +591,13 @@ function initTeamCardsFormatting(){
  //numberOfUnSoldPlayer = 6;
  //um
  // const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName);
- 
+  circularSpinner.classList.add('visible'); // Makes the spinner visible (display: flex)
+    
   document.querySelectorAll('#teamsList .team-card').forEach(card => {
     const name = card.getAttribute('data-name');
     const base = ownerBasePrices[name] || 0;
     card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
-    card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
+    //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
     const available = computeAvailableForTeam(name);
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name);
     card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
@@ -381,7 +605,7 @@ function initTeamCardsFormatting(){
     else card.querySelector('.team-balance').classList.remove('low-balance');
 	
 	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').textContent = 'To be Bid Balance: ' + formatINR(toBeBidBalance);
+	card.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
 	
   });
 }
@@ -436,16 +660,27 @@ function renderPlayers(){
 
     tr.innerHTML = `
       <td>${name}</td>
+      <td>${role}</td>
+      <td>${formatINR(base)}</td>
+      <td>${sold}</td>
+      
+    `;
+/**
+ tr.innerHTML = `
+      <td>${name} \n ${mobile}</td>
       <td>${mobile}</td>
       <td>${role}</td>
       <td>${formatINR(base)}</td>
       <td>${sold}</td>
       
     `;
-
+**/
 
     // clicking the row selects player (but clicking Details link opens popup)
     tr.addEventListener('click', () => {
+	if(true) {
+		return; //Stopped click event of row
+	}
       if(sold === "Yes"){
         alert("Player already sold");
         document.getElementById('placeBidBtn').classList.add('disabled');
@@ -669,6 +904,7 @@ function submitAuction(){
 
     // save file (numbers only)
     XLSX.writeFile(workbook, 'AuctionResult.xlsx');
+	//XLSX.write(workbook, 'AuctionResult.xlsx');
 
     //alert(`Player sold to ${selectedTeam.name} (Owner: ${selectedTeam.owner}) with final bid ${formatINR(currentBid)}`);
   } else {
@@ -703,7 +939,7 @@ function setBidBalanceAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBid
     document.querySelectorAll('#teamsList .team-card').forEach(c => {
    
 	if(c.getAttribute('data-name') === teamName){
-	  c.querySelector('.team-tobebid').textContent = 'To be Bid Balance: ' + formatINR(toBeBidBalance);
+	  c.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
 		}
 	});	
 }
@@ -732,6 +968,8 @@ function showTeamDetails(teamName){
   let html = '';
 
   // Owner as item 1
+  html += `<span class="available-highlight">Total Balance:  ₹20,00,000</span>`;
+  html +="\n\n";
   html += `1. Owner: ${owner} — Base: ${formatINR(base)}\n\n`;
 
   // Sold players starting from 2, with mobile and one blank line after each
@@ -762,6 +1000,171 @@ function closeTeamPopup(){
   document.getElementById('teamDetailPopup').style.display = 'none';
 }
 
+function rgbToHex(rgb) {
+    if (!rgb || !rgb.startsWith('rgb')) {
+        return null; // Return null if not a valid RGB string
+    }
+
+    // Function to convert a single decimal number (0-255) to a two-digit hex string
+    const componentToHex = (c) => {
+        const hex = c.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    };
+
+    // Extract the numbers using a regular expression
+    // Matches the 3 numbers inside the parentheses (e.g., "254, 249, 195")
+    const match = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+
+    if (match) {
+        // match[1], match[2], match[3] are the R, G, B values as strings
+        const r = parseInt(match[1], 10);
+        const g = parseInt(match[2], 10);
+        const b = parseInt(match[3], 10);
+
+        // Convert and concatenate to form the hex code
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    }
+    
+    return null;
+  }
+  
+   function processLikeRowClick(selectedRow) {
+   const soldValue = selectedRow.cells[3].textContent;
+  
+	if(soldValue === "Yes"){
+        alert("Player already sold");
+        document.getElementById('placeBidBtn').classList.add('disabled');
+        document.getElementById('reduceBidBtn').classList.add('disabled');
+        return;
+      }
+	  
+	 const sheet = workbook.Sheets[mainSheetName];
+	 const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+	const rowIndex = selectedRow.sectionRowIndex; 
+	 data.forEach((p,i) => {
+	 if(rowIndex == i){
+		//alert(i + " " + rowIndex)
+		
+		const currentPlayer = p;
+		const name = p.Name || p.name || '';
+		const mobile = p.Mobile || p.mobile || 'N/A';
+		const role = p.Role || p.role || '';
+		const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
+		const sold = p.Sold || '';
+
+
+      const currentBid = base // numeric
+	  
+      // show formatted values
+      document.getElementById('finalBid').value = formatINR(currentBid);
+      document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
+      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
+      document.getElementById('basePrice').textContent = formatINR(base);
+	 
+      // enable buttons
+      document.getElementById('placeBidBtn').classList.remove('disabled');
+      document.getElementById('reduceBidBtn').classList.remove('disabled');
+	 
+	 }
+	 });
+
+	  
+  }
+   
+let currentHighlightedRow = null;
+function highlightRandomRow() {
+    const tbody = document.querySelector('#playerTable tbody');
+	const rows = tbody.getElementsByTagName('tr');
+    
+    if (rows.length === 0) {
+     alert("Please upload players details.");
+      return;
+    }
+	
+	startSpinner();
+    
+    // 1. Remove highlight from the previously selected row
+    if (currentHighlightedRow) {
+      const backgroundColorOfLastRow = rgbToHex(currentHighlightedRow.style.backgroundColor);
+	  if(backgroundColorOfLastRow == '#d4edda'){
+		currentHighlightedRow.style.backgroundColor = 'white';
+	  }
+    }
+
+    // 2. Generate a random index
+    // Math.random() generates a number between 0 (inclusive) and 1 (exclusive)
+    // rows.length is the total number of rows
+    const randomIndex = Math.floor(Math.random() * rows.length);
+    
+    // 3. Select the new random row
+    const selectedRow = rows[randomIndex];
+    
+    // 4. Highlight the selected row
+    //selectedRow.classList.add('highlight');
+	selectedRow.style.backgroundColor = '#d4edda';
+    currentHighlightedRow = selectedRow;
+	
+	processLikeRowClick(selectedRow);
+
+    // 5. Display the selected player's name
+    //const playerName = selectedRow.cells[1].textContent;
+    //messageElement.textContent = `Randomly selected: ${playerName}!`;
+    
+    // Optional: Scroll to the selected row if the table is long
+    //selectedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+const spinButton = document.getElementById('toggleButton');
+const spinnerContainer = document.getElementById('spinnerContainer');
+const rightPlayerDiv = document.getElementById('rightPlayer');
+
+ const circularSpinner = document.getElementById('circularSpinner');
+ const toggleButton = document.getElementById('toggleButton');
+ let isSpinning = false; // Initial state is stopped (false)
+ 
+ const teamsListMainIdDiv = document.getElementById('teamsListMainId');
+
+ function startSpinner() {
+    circularSpinner.classList.add('visible'); // Makes the spinner visible (display: flex)
+	circularSpinner.classList.add('running');
+	circularSpinner.classList.add('spinnerContainerClass');
+	
+	teamsListMainIdDiv.style.display = 'none';
+	
+	//circularSpinner.style.display = 'none';
+	//circularSpinner.classList.add('hidden');
+	//teamsListMainIdDiv.classList.remove('running');
+	//teamsListMainIdDiv.classList.remove('visible'); 
+		
+	toggleButton.textContent = 'Stop Spin';
+	toggleButton.classList.add('stop-btn');
+	isSpinning = true;
+
+    // 3. Stop the spinning after a random duration (e.g., 2 to 5 seconds)
+    const spinDuration = Math.random() * 3000 + 2000; // 2000ms to 5000ms
+    setTimeout(() => {
+      stopSpinner();
+    }, spinDuration);
+  }
+
+  /**
+   * Stops the spinning effect, hides the spinner, and finalizes the selection.
+   */
+  function stopSpinner() {
+    // 1. Hide the running emoji spinner and show the table
+    circularSpinner.classList.remove('running');
+	circularSpinner.classList.remove('visible'); // Hides the spinner
+	toggleButton.textContent = 'Start Spin';
+	toggleButton.classList.remove('stop-btn');
+	isSpinning = false;
+
+	spinnerContainer.classList.remove('spinnerContainerClass');
+	
+	rightPlayerDiv.classList.add('visible');
+	rightPlayerDiv.classList.add('running');
+	teamsListMainIdDiv.style.display = 'block';
+  }
+  
 /* ------------------------
    Initial formatting on page load
    ------------------------ */
