@@ -22,7 +22,7 @@
      grid-template-columns: 40% 60%; 
     
     /* 2 rows, each taking 50% of the viewport height (50% 50%) */
-    grid-template-rows: 50% 50%; 
+    grid-template-rows: 40% 60%; 
     
     margin: 0; 
     height: 100vh; /* Critical: body must span the full viewport height */
@@ -39,6 +39,9 @@
     /* Explicitly place in Row 1, Column 1 */
     grid-row: 1;
     grid-column: 1;
+	place-items: center;
+	justify-content: center;
+	
   }
   
   /* TOP-RIGHT SECTION: Auction */
@@ -48,6 +51,7 @@
     /* Explicitly place in Row 1, Column 2 */
     grid-row: 1;
     grid-column: 2;
+	background: #fff; 
   }
 
   /* BOTTOM SECTION: Teams (100% Width) */
@@ -74,18 +78,90 @@
     margin-bottom: 10px; /* Keep a small margin below the title for separation */
 }
 
-  
+  /**
   table { width:100%; border-collapse: collapse; }
   th, td { padding: 8px; border:1px solid #ccc; text-align:left; vertical-align: top; }
-  tr:hover { cursor:pointer; }
+  tr:hover { cursor:pointer; } **/
+  
+    /* 1. Table Styling */
+        table {
+            width: 100%;
+            
+            border-collapse: collapse;
+            background-color: #ffffff; /* Pure white table background */
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+        }
+
+        /* 2. Table Header (th) Styling */
+        thead th {
+            /* Subtle blue gradient */
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
+            color: #ffffff;
+            padding: 10px 15px;
+            text-align: center; /* Center header text */
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #c2c2c2;
+        }
+
+        /* 3. Table Data (td) and Cell Styling */
+        td {
+            padding: 12px 20px;
+            text-align: center; /* Center cell text for uniform data display */
+            color: #333;
+            border-bottom: 1px solid #e9ecef; /* Very light horizontal divider */
+			 font-size: 0.9em; /* Slightly smaller font */
+
+        }
+        
+        /* Left-align specific columns for readability (e.g., text/names) */
+        td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        /* 4. Table Row (tr) Styling: Alternating Row Color (Zebra Stripping) */
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa; /* Very subtle alternating gray */
+        }
+        
+        /* 5. Table Row (tr) Hover Effect */
+        tbody tr {
+            transition: background-color 0.15s ease-in-out;
+        }
+        
+        tbody tr:hover {
+            background-color: #e2f0ff; /* Light blue highlight on hover */
+            cursor: pointer;
+        }
+
+		.status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+
+		.status-green {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
  
  .auction-section {
     /* Existing Styles */
     background: #fff;
-    padding: 20px;
+    padding: 0px;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
+    margin-bottom: 0px;
 
     /* New Styles for Smooth-Then-Fast Opening 
     overflow: hidden; /* Crucial to hide content when height is 0 */
@@ -100,8 +176,8 @@
 .auction-section.open {
             /* Final state: OPEN */
             height: 200px; /* A specific height is required for animation */
-            padding-top: 20px;
-            padding-bottom: 20px;
+            padding-top: 0px;
+            padding-bottom: 0px;
         }
  
   .player-info { display: flex; align-items: flex-start; gap: 30px; }
@@ -267,10 +343,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px;
+            padding: 0px;
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+            /* box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3); */
         }
 		
 		 /* Class added by JavaScript to make it visible */
@@ -280,8 +356,8 @@
 		
 		 #toggleButton {
             /* Ensure width and height are equal for a perfect circle */
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
             
             /* Make it circular */
             border-radius: 50%; 
@@ -294,7 +370,7 @@
             font-size: 1.2em; /* Slightly larger text */
             font-weight: bold;
             cursor: pointer;
-            background-color: #008000; /* Darker Green for Start */
+            background-color: #FF4500; /* Darker Green for Start */
             color: white;
             border: none;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Stronger shadow for 3D effect */
@@ -317,9 +393,18 @@
   
 <div id="left">
   
+  <div class="Submit_team-owner-card" id="toggleLinksDiv">
+        <a href="#" onclick="showContent('playerListDiv', 'startSpinId'); return false;">Show Player List</a> 
+        &nbsp;|&nbsp; 
+        <a href="#" onclick="showContent('startSpinId', 'playerListDiv'); return false;">Show Spinner</a>
+    </div>
+
    <!-- <h2>Players</h2> -->
-       
-	  	   
+      <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;  padding: 30px;">
+        <button onclick="highlightRandomRow()" id="toggleButton">Start Spin<Br>RPL<BR> R21 Premium League</button>
+	</div> 		
+	  	 
+<div style=" display: none;padding: 20px;" id = "playerListDiv">		 
   <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
     	
   <table id="playerTable">
@@ -335,6 +420,8 @@
     </thead>
     <tbody></tbody>
   </table>
+  </div> 		
+  
 </div>
 
 
@@ -481,7 +568,7 @@
       <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
         <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
         <div class="Submit_team-owner-card">&nbsp;</div>
-        <button class="submit-btn" onclick="submitAuction()">Submit</button>
+        <button class="submit-btn" onclick="submitAuction()">Place Bid</button>
           <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
         <div class="Submit_team-tobebid">&nbsp;</div>
         <div class="Submit_team-balance">&nbsp;</div>
@@ -491,19 +578,6 @@
     </div>
 	
 	
-	<div id="teamCardsWrapper1">
-      <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
-        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
-        <button onclick="highlightRandomRow()" id="toggleButton">Start Spin</button>
-          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
-        <div class="Submit_team-tobebid1">&nbsp;</div>
-        <div class="Submit_team-balance1">&nbsp;</div>
-        <div class="Submit_team-toselect1">&nbsp;</div>
-      </div>
-	  <div class="Submit_team-details" >&nbsp;</div>
-    </div>
-		 
   </div>
 </div>
 </div>
@@ -938,6 +1012,7 @@ function submitAuction(){
         p.FinalBid = Number(currentBid);
         p.SoldToTeam = `${selectedTeam.name} (Owner: ${selectedTeam.owner})`;
         p.Sold = 'Yes';
+		//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
       }
     });
 
@@ -1135,7 +1210,7 @@ function highlightRandomRow() {
     
     if (rows.length === 0) {
      alert("Please upload players details.");
-      return;
+     return;
     }
 	
 	startSpinner();
@@ -1148,13 +1223,24 @@ function highlightRandomRow() {
 	  }
     }
 
-    // 2. Generate a random index
-    // Math.random() generates a number between 0 (inclusive) and 1 (exclusive)
-    // rows.length is the total number of rows
-    const randomIndex = Math.floor(Math.random() * rows.length);
-    
-    // 3. Select the new random row
-    const selectedRow = rows[randomIndex];
+	var selectedRow = null;
+	for(i=0;i<9;i++){
+		// 2. Generate a random index
+		// Math.random() generates a number between 0 (inclusive) and 1 (exclusive)
+		// rows.length is the total number of rows
+		const randomIndex = Math.floor(Math.random() * rows.length);
+		
+		// 3. Select the new random row
+		selectedRow = rows[randomIndex];
+		
+	    const soldValue = selectedRow.cells[3].textContent;
+  
+		if(soldValue === "Yes"){
+			alert("Found already sold player " + randomIndex);
+			continue;
+		}
+		break;
+	}
     
     // 4. Highlight the selected row
     //selectedRow.classList.add('highlight');
@@ -1185,6 +1271,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
     circularSpinner.classList.add('visible'); // Makes the spinner visible (display: flex)
 	circularSpinner.classList.add('running');
 	circularSpinner.classList.add('spinnerContainerClass');
+	spinnerContainer.classList.add('spinnerContainerClass');
 	
 	teamsListMainIdDiv.style.display = 'none';
 	
@@ -1223,6 +1310,23 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	rightPlayerDiv.classList.toggle('open');
   }
   
+  function showContent(showId, hideId) {
+        // Get the elements
+        const showDiv = document.getElementById(showId);
+        const hideDiv = document.getElementById(hideId);
+
+        // Show the requested div
+        if (showDiv) {
+            showDiv.style.display = 'block';
+        }
+
+        // Hide the other div
+        if (hideDiv) {
+            hideDiv.style.display = 'none';
+        }
+    }
+
+
 /* ------------------------
    Initial formatting on page load
    ------------------------ */
