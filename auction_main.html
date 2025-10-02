@@ -60,6 +60,9 @@
     /* Make this span both columns (1 and 2) in the second row */
     grid-column: 1 / span 2; 
     grid-row: 2;
+	 /* MIN MODE FONT SIZING */
+     font-size: 16px; 
+
   }
 
   /* Existing teams-section styling */
@@ -196,7 +199,7 @@
   .team-owner-card { font-size:13px; color:#555; }
   .team-baseprice { font-size:13px; margin-top:4px; color:#333; }
   .team-total { font-size:12px; margin-top:6px; color:#111; font-weight:bold; }
-  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:#444; }
+  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
   .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
   .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:#d2691e; }
   .low-balance { color:red !important; }
@@ -385,6 +388,76 @@
             opacity: 0.9;
         }
 		
+		/* Icon container position */
+        .max-min-icon {
+            
+            top: 0px; /* Distance from top edge */
+            right: 5px; /* Distance from right edge */
+            cursor: pointer;
+            font-size: 20px;
+            color: #007bff;
+            padding: 0px;
+            line-height: 0; /* Helps vertically center the icon */
+            background: white;
+            border-radius: 3px;
+            z-index: 10; /* Ensure it's above content */
+        }
+        
+        .max-min-icon:hover {
+            color: #0056b3;
+        }
+
+        /* Maximized state */
+        .teams-section-wrapper.maximized {
+            width: 90vw; 
+            height: 90vh; 
+            position: fixed; 
+            top: 5vh;
+            left: 5vw;
+            z-index: 1000; 
+            background-color: white; 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            border: 3px solid #007bff;
+			
+			/* NEW: INCREASE FONT SIZE IN MAXIMIZED MODE */
+			font-size: 20px; /* Larger font size for the maximized view */
+        }
+
+		/* --- Nested Section & Wrapper Styles --- */
+        
+        #teamCardsWrapper {
+            display: flex;
+            flex-direction: column; /* Stack cards vertically in min mode */
+            gap: 8px;
+            height: auto;
+        }
+
+        /* MAX MODE: Change layout for the card wrapper */
+        .teams-section-wrapper.maximized #teamCardsWrapper {
+            height: 100%; 
+            flex-direction: row; /* Layout cards horizontally */
+            flex-wrap: wrap; /* Allow cards to wrap */
+            gap: 2%; /* Gap between cards (2 cards per row) */
+            padding-top: 0px;
+            overflow-y: auto; 
+        }
+
+                       
+        /* Max Mode Style for all numbered cards - FONT & SIZE INCREASE HERE */
+        /* Targets any element whose class STARTS WITH "team-card" */
+        .teams-section-wrapper.maximized [class^="team-card"] {
+            /* SIZE INCREASE */
+            width: 100%; /* Almost half the width (2 cards per row) */
+            min-height: 150px; 
+                                           
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+		
+		.teams-section-wrapper.maximized [class^="team-name-card"] {
+			font-size:25px;
+		}
+	
 </style>
 </head>
 <body>
@@ -397,6 +470,9 @@
         <a href="#" onclick="showContent('playerListDiv', 'startSpinId'); return false;">Show Player List</a> 
         &nbsp;|&nbsp; 
         <a href="#" onclick="showContent('startSpinId', 'playerListDiv'); return false;">Show Spinner</a>
+		&nbsp;|&nbsp; 
+		<a href="#" onclick="UnsoldtoSold(); return false;">Unsold to Sold</a>
+		
     </div>
 
    <!-- <h2>Players</h2> -->
@@ -436,15 +512,13 @@
   
   <div id="rightPlayer" class="auction-section" style=" display: none; ">
     <div class="player-info">
-      <img id="playerPhoto" src="https://via.placeholder.com/300" alt="Player Photo"/>
+      <img id="playerPhoto" src="#" alt="Player Photo"/>
       <div class="player-details">
-        <div id="selectedPlayer">Please Select Player
-		
-		</div>
+        <div id="selectedPlayer">Please Select Player</div>
         
         <div id="selectedPlayerBasePrice">Base Price: <span id="basePrice">-</span></div>
         
-        <div class="bid-section">
+        <div class="bid-section" >
           Place Bid Amount: <input type="text" id="finalBid" readonly value="-"/><br><br>
           <button id="placeBidBtn" class="disabled" onclick="placeBid()">Increase Bid (+10,0000)</button>
           <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-10,0000)</button>
@@ -455,6 +529,14 @@
 </div>
 
 <div class="teams-section-wrapper" id="teamsListMainId">
+<span 
+            class="max-min-icon" 
+            id="maxMinIcon" 
+            onclick="toggleMaximize('teamsListMainId')"
+            title="Maximize/Minimize"
+        >
+            &#9724; </span>
+
   <div class="teams-section">
    <!--  <h3>Teams</h3> -->
     <div id="teamsList">
@@ -564,7 +646,7 @@
 	  <div class="team-details" onclick="showTeamDetails('PBKS')">Details</div>
     </div>
 	
-	<div id="teamCardsWrapper">
+	<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
       <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
         <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
         <div class="Submit_team-owner-card">&nbsp;</div>
@@ -577,6 +659,19 @@
 	  <div class="Submit_team-details" >&nbsp;</div>
     </div>
 	
+	
+	<div id="teamCardsWrapper_MarkUnsold" style=" display: block; ">
+      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Preity Zinta & Ness Wadia">
+        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
+        <div class="Submit_team-owner-card">&nbsp;</div>
+        <button class="submit-btn" onclick="markUnsold()">Mark Unsold</button>
+          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
+        <div class="Submit_team-tobebid">&nbsp;</div>
+        <div class="Submit_team-balance">&nbsp;</div>
+        <div class="Submit_team-toselect">&nbsp;</div>
+      </div>
+	  <div class="Submit_team-details" >&nbsp;</div>
+    </div>
 	
   </div>
 </div>
@@ -824,7 +919,7 @@ function renderPlayers(){
       // show formatted values
       document.getElementById('finalBid').value = formatINR(currentBid);
       document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
-      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
+      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo;
       document.getElementById('basePrice').textContent = formatINR(base);
 	 
       // enable buttons
@@ -972,12 +1067,77 @@ if(c.getAttribute('data-name') === teamName){
 	 }
 }
 
+
+function UnsoldtoSold(){
+	const tbody = document.querySelector('#playerTable tbody');
+	const rows = tbody.getElementsByTagName('tr');
+    
+    if (rows.length === 0) {
+     alert("Please upload players.");
+     return;
+    }
+	
+	var confirmMsg = "You are putting all unsold players to sold Category. Please confirm."
+	if(!confirm(confirmMsg)){
+		return;
+	}
+	
+	var isAllSoldOut = "Y";
+	for (let i = 0; i < rows.length; i++) {
+		const row = rows[i];
+		const soldValueOfEachRow = row.cells[3].textContent;
+		//alert(soldValueOfEachRow);
+		if(soldValueOfEachRow=="Unsold"){
+			row.cells[3].textContent = "";
+		}
+	}
+}
+
+function markUnsold(){
+
+	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
+	if("Please Select Player"==selectedPlayerValue){
+		alert("Player is not selected for Bid.");
+		returm;
+	}
+	
+	var confirmMsg = "Are you sure to mark this player as unsold?"
+	if(confirm(confirmMsg)){
+	
+	if(workbook && mainSheetName){
+    const sheet = workbook.Sheets[mainSheetName];
+    const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+
+    data.forEach(p => {
+      if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
+        p.Sold = 'Unsold';
+		//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
+      }
+    });
+	
+	workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
+	renderPlayers();
+	}
+		
+	  document.getElementById('finalBid').value = '-';
+	  document.getElementById('selectedPlayer').textContent = 'Please Select Player';
+	  document.getElementById('basePrice').textContent = '-';
+	  //document.getElementById('availableBalance').textContent = '-';
+	  document.getElementById('placeBidBtn').classList.add('disabled');
+	  document.getElementById('reduceBidBtn').classList.add('disabled');
+	  document.getElementById('playerPhoto').src = '';
+	  
+	} else {
+		return;
+	}
+}
+
 /* ------------------------
    Submit auction (sell player)
    ------------------------ */
 function submitAuction(){
   if(!currentPlayer || !selectedTeam){
-    alert('Select both a player and a team before submitting.');
+    alert('Please select team before placing a bid.');
     return;
   }
 
@@ -1051,11 +1211,12 @@ function submitAuction(){
   const numberOfUnSoldPlayer = getPlayersToBeSelected(selectedTeam.name);
   
   document.getElementById('finalBid').value = '-';
-  document.getElementById('selectedPlayer').textContent = 'Please Select the Player';
+  document.getElementById('selectedPlayer').textContent = 'Please Select Player';
   document.getElementById('basePrice').textContent = '-';
   //document.getElementById('availableBalance').textContent = '-';
   document.getElementById('placeBidBtn').classList.add('disabled');
   document.getElementById('reduceBidBtn').classList.add('disabled');
+  document.getElementById('playerPhoto').src = '';
   // unselect team cards (you can keep selected by removing this line if you prefer)
   document.querySelectorAll('#teamsList .team-card').forEach(c => c.classList.remove('selected'));
   updateTeamStyle_Submit(selectedTeam.name);
@@ -1209,9 +1370,36 @@ function highlightRandomRow() {
 	const rows = tbody.getElementsByTagName('tr');
     
     if (rows.length === 0) {
-     alert("Please upload players details.");
+     alert("Please upload players.");
      return;
     }
+	
+	var isAllSoldOut = "Y";
+	for (let i = 0; i < rows.length; i++) {
+		const row = rows[i];
+		const soldValueOfEachRow = row.cells[3].textContent;
+		//alert(soldValueOfEachRow);
+		if(soldValueOfEachRow === "Yes" || soldValueOfEachRow === "Unsold"){
+			isAllSoldOut = "Y";
+		} else {
+			isAllSoldOut = "N";
+			break;
+		}
+	}
+	
+	//alert("isAllSoldOut - " + isAllSoldOut);
+	if(isAllSoldOut=="Y") {
+		alert("All the current uploaded players are sold out. Please upload new players.");
+		return;
+	}
+	
+	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
+	if("Please Select Player"!=selectedPlayerValue){
+	const messageC = "Your current player is not sold out. Do you really wanted to Spin again? Pleae check if it is not a by mistake Spin.";
+		if(!confirm(messageC)){
+			return;
+		}
+	}
 	
 	startSpinner();
     
@@ -1235,8 +1423,8 @@ function highlightRandomRow() {
 		
 	    const soldValue = selectedRow.cells[3].textContent;
   
-		if(soldValue === "Yes"){
-			alert("Found already sold player " + randomIndex);
+		if(soldValue === "Yes" || soldValue === "Unsold"){
+			//alert("Found already sold player " + randomIndex);
 			continue;
 		}
 		break;
@@ -1248,13 +1436,8 @@ function highlightRandomRow() {
     currentHighlightedRow = selectedRow;
 	
 	processLikeRowClick(selectedRow);
-
-    // 5. Display the selected player's name
-    //const playerName = selectedRow.cells[1].textContent;
-    //messageElement.textContent = `Randomly selected: ${playerName}!`;
-    
-    // Optional: Scroll to the selected row if the table is long
-    //selectedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	
+    clearAllTeamSelection();
   }
 
 const spinButton = document.getElementById('toggleButton');
@@ -1298,7 +1481,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
     // 1. Hide the running emoji spinner and show the table
     circularSpinner.classList.remove('running');
 	circularSpinner.classList.remove('visible'); // Hides the spinner
-	toggleButton.textContent = 'Start Spin';
+	toggleButton.innerHTML = 'Start Spin<Br>RPL<BR> R21 Premium League';
 	toggleButton.classList.remove('stop-btn');
 	isSpinning = false;
 
@@ -1327,6 +1510,41 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
     }
 
 
+// =========================================================
+        // 1. MAXIMIZE/MINIMIZE JAVASCRIPT
+        // =========================================================
+        function toggleMaximize(divId) {
+            const div = document.getElementById(divId);
+            const icon = document.getElementById('maxMinIcon');
+
+            if (!div || !icon) {
+                console.error(`Element with ID ${divId} or icon not found.`);
+                return;
+            }
+
+            // Toggle the 'maximized' class on the div
+            div.classList.toggle('maximized');
+
+            // Update the icon character based on the current state
+            if (div.classList.contains('maximized')) {
+                // Change to a different icon when maximized (e.g., minimize/contract icon)
+                icon.innerHTML = '&#9746;'; // Unicode for a ballot box with X (☒)
+                icon.title = 'Minimize';
+				
+				document.getElementById('teamCardsWrapper_PlaceBid').style.display = 'none';
+				document.getElementById('teamCardsWrapper_MarkUnsold').style.display = 'none';
+				  
+            } else {
+                // Revert to the default icon when minimized/default
+                icon.innerHTML = '&#9724;'; // Unicode for a small square (☐)
+                icon.title = 'Maximize';
+				
+				document.getElementById('teamCardsWrapper_PlaceBid').style.display = 'block';
+				document.getElementById('teamCardsWrapper_MarkUnsold').style.display = 'block';
+            }
+        }
+
+        
 /* ------------------------
    Initial formatting on page load
    ------------------------ */
