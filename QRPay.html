@@ -8,12 +8,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
-
-  /*body { font-family: Arial; display: flex; margin:0; height: 100vh; background:#f2f2f2; }
-  #left, #right { padding: 20px; overflow-y: auto; }
-  #left { width: 20%; background: #fff; border-right:1px solid #ccc; }
-  #right { width: 80%; } */
- 
   body { 
     font-family: Arial; 
     /* Use CSS Grid for the 2x2 layout */
@@ -26,6 +20,8 @@
      grid-template-rows: 50% 50%; 
     
     margin: 0; 
+	 background-image: url('BG1.png');
+	 height: 100%;
     //height: 100vh; /* Critical: body must span the full viewport height */
     //background: #f2f2f2; 
     /* Remove the old flex properties and height:100vh from #left and #right */
@@ -82,17 +78,19 @@
     grid-row: 2;
 	 /* MIN MODE FONT SIZING */
      font-size: 16px; 
-
+	background-image: url('BG1.png');
   }
 
   /* Existing teams-section styling */
   .teams-section { 
-    background:#fff; 
+   //background:#fff; 
     padding:20px; 
     border-radius:8px; 
     box-shadow:0 2px 6px rgba(0,0,0,0.1); 
     height: calc(100% - 40px); /* Fill the remaining height of the wrapper (100% of row 2) minus the 20px top/bottom padding */
     overflow-y: auto; /* Allows scrolling of team cards if they overflow */
+	background-image: url('BG2.png');
+	 border: 3px solid #800020; 
   }
 
 /* Add this new rule to your block */
@@ -235,7 +233,7 @@
   
   }
   .bid-section button:hover { background:#0056b3; }
-  .teams-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
+  
   .team-card { width: 200px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
   .team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
   .team-card.selected { background-color:#28a745; color:#fff; }
@@ -1999,7 +1997,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
         if (hideDiv) {
             hideDiv.style.display = 'none';
         }
-		
+		const teamsListMainIdVar = document.getElementById('teamsListMainId');
+		teamsListMainIdVar.style.display = 'none';
+		 
 		collapseMenu();
     }
 
