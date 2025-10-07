@@ -192,7 +192,30 @@
   .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
   .bid-section { margin-top:15px; }
   .bid-section input { padding:6px; font-size:16px; width:200px; text-align:right; }
-  .bid-section button { padding:8px 15px; margin-left:10px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; }
+  .bid-section button { 
+	 /* Base Button Style */
+            background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
+            color: #ecf0f1; /* Off-white text */
+            border: 2px solid #e74c3c; /* Red border to signify the 'Unsold' status */
+            padding: 12px 5px;
+            border-radius: 8px; /* Slightly rounded corners */
+            cursor: pointer;
+            font-family: 'Arial', sans-serif; 
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            
+            /* Flexbox for alignment */
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            
+            /* Optional: Small inner shadow for depth */
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+ 
+  
+  }
   .bid-section button:hover { background:#0056b3; }
   .teams-section { background:#fff; padding:20px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top:20px; }
   .team-card { width: 200px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
@@ -727,6 +750,77 @@
             font-weight: 700;
         }
 		
+		.symbol {
+  /* Style for the symbols */
+  font-size: 20px; /* Make the symbols large */
+  font-weight: bold;
+  cursor: pointer; /* Indicates they might be clickable (e.g., in a counter) */
+  user-select: none; /* Prevents text selection on click */
+}
+
+.plus {
+  color: green;
+}
+
+.minus {
+  color: red;
+}
+
+.bid-label {
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            color: var(--text-color);
+            display: block;
+            margin-bottom: 15px; 
+            text-align: left;
+            border-left: 4px solid var(--primary-color); 
+            padding-left: 10px;
+        }
+
+        .bid-input {
+            /* STYLING CHANGES FOR THE BORDER */
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.2rem; 
+            color: var(--primary-color);
+            
+            /* ADDED FULL BORDER */
+            border: 2px solid var(--border-color); 
+            
+            border-radius: 8px; /* Slightly more rounded corners for the input */
+            box-sizing: border-box;
+            background-color: #f7f7f7;
+            transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            text-align: right; 
+        }
+
+        .bid-input:focus {
+            /* Focus state now changes the entire border color */
+            border-color: var(--primary-color); /* Highlight border on focus */
+            background-color: #ffffff; 
+            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1); /* Subtle inner glow on focus */
+            outline: none; 
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .currency-symbol {
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.2rem;
+            pointer-events: none; 
+        }
+        
+        .input-group .bid-input {
+            padding-left: 40px; 
+            text-align: right;
+        }
+		
 </style>
 </head>
 <body>
@@ -809,12 +903,12 @@
 		</div>
 		
 		<div class="modern-note">
-			<div class="modern-icon" aria-hidden="true">  </div>
+			<div class="modern-icon" aria-hidden="true" Style = "font-size: 21px;">₹</div>
  			  <div id="selectedPlayerBasePrice">Base Price <span id="basePrice">-</span></div>
 		</div>
 		
 		<div class="modern-note-PlayerUnavailibilty">
-			<div class="modern-icon" aria-hidden="true">💡</div>
+			<div class="modern-icon" aria-hidden="true" Style = "font-size: 21px;">💡</div>
         
 			<div class="note-content">
 				<div id="PlayerUnavailibiltyID">-</div>
@@ -824,9 +918,20 @@
        
         
         <div class="bid-section" >
-          Place Bid Amount: <input type="text" id="finalBid" readonly value="-"/>
-          <button id="placeBidBtn" class="disabled" onclick="placeBid()">Increase Bid (+10,0000)</button>
-          <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-10,0000)</button>
+          <label for="bidInput" class="bid-label">Enter Bid Amount:</label>
+		  <input type="text" id="finalBid" readonly value="-"/>
+		  
+		  	<button id="placeBidBtn" class="" onclick="placeBid()">
+         <span class="symbol plus">+</span> Increase Bid (+100000)
+    </button>
+	
+	
+		<button id="reduceBidBtn" class="" onclick="reduceBid()">
+       <span class="symbol minus">-</span> Reduce Bid (-100000)
+    </button>
+	
+       <!--   <button id="placeBidBtn" class="disabled" onclick="placeBid()">Increase Bid (+10,0000)</button>
+          <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-10,0000)</button> -->
         </div>
       </div>
     </div>
