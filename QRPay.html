@@ -20,14 +20,14 @@
     display: grid1; 
     
     /* 2 columns, 50% each for the top row (1fr = 50% since there are two) */
-     grid-template-columns: 40% 60%;
+     grid-template-columns: 50% 50%;
     
     /* 2 rows, each taking 50% of the viewport height (50% 50%) */
-     grid-template-rows: 60% 40%; 
+     grid-template-rows: 50% 50%; 
     
     margin: 0; 
-    height: 100vh; /* Critical: body must span the full viewport height */
-    background: #f2f2f2; 
+    //height: 100vh; /* Critical: body must span the full viewport height */
+    //background: #f2f2f2; 
     /* Remove the old flex properties and height:100vh from #left and #right */
   }
 
@@ -35,7 +35,7 @@
   #left { 
     padding: 0 20px; /* 0px top/bottom, 20px left/right */
     overflow-y: auto; /* Allows scrolling inside if content exceeds 50% height */
-    background: #fff; 
+    //background: #fff; 
     border-right: 1px solid #ccc; 
     /* Explicitly place in Row 1, Column 1 */
     grid-row: 1;
@@ -43,18 +43,35 @@
 	place-items: center;
 	justify-content: center;
 	//Width: 100%;
+	//padding-bottom : 150px;
+	
+	background-image: url('BG1.png');
+	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
+  //background-size: contain; 
+  
+  /* Make sure the image starts from the top */
+  //background-position: top; 
 	
   }
   
   /* TOP-RIGHT SECTION: Auction */
   #right { 
     padding: 20px; 
+	padding-bottom : 80px;
     overflow-y: auto; /* Allows scrolling inside if content exceeds 50% height */
     /* Explicitly place in Row 1, Column 2 */
     grid-row: 1;
     grid-column: 2;
-	background: #fff; 
+	//background: #fff; 
 	//Width: 100%;
+	
+		background-image: url('BG1.png');
+	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
+  //background-size: contain; 
+  
+  /* Make sure the image starts from the top */
+  //background-position: top; 
+  
   }
 
   /* BOTTOM SECTION: Teams (100% Width) */
@@ -163,7 +180,7 @@
  
  .auction-section {
     /* Existing Styles */
-    background: #fff;
+    //background: #fff;
     padding: 0px;
     border-radius: 8px;
     /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
@@ -187,7 +204,8 @@
         }
  
   .player-info { display: flex; align-items: flex-start; gap: 30px; }
-  .player-info img { width:300px; height:300px; object-fit:cover; border-radius:10px; border:2px solid #ccc; }
+  .player-info img 
+  { width:270px; height:270px; object-fit:cover; border-radius:10px; border:2px solid #ccc; }
   .player-details { flex:1; }
   .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
   .bid-section { margin-top:15px; }
@@ -359,6 +377,14 @@
             padding: 0px;
             background-color: white;
             border-radius: 15px;
+			
+				background-image: url('BG1.png');
+	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
+  //background-size: contain; 
+  
+  /* Make sure the image starts from the top */
+  //background-position: top; 
+  
             /* box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3); */
         }
 		
@@ -656,7 +682,7 @@
             max-width: 680px;
             
             /* 2. Background and Shape */
-            background-color: #ffffff; /* White card background */
+            //background-color: #ffffff; /* White card background */
             border-radius: 12px;       /* Heavily rounded corners for modern look */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft, noticeable shadow */
             
@@ -668,8 +694,8 @@
             /* Creates a border using a gradient, then clips the inner content */
             background-origin: border-box;
             background-clip: padding-box, border-box;
-            background-image: linear-gradient(to right, #ffffff, #ffffff), 
-                              linear-gradient(90deg, #1e90ff, #3498db); /* Blue Gradient */
+            //background-image: linear-gradient(to right, #ffffff, #ffffff), 
+            linear-gradient(90deg, #1e90ff, #3498db); /* Blue Gradient */
 
             /* 4. Layout (Flexbox for icon and text) */
             display: flex;
@@ -686,7 +712,7 @@
             //max-width: 680px;
             
             /* 2. Background and Shape */
-            background-color: #ffffff; /* White card background */
+            //background-color: #ffffff; /* White card background */
             //border-radius: 12px;       /* Heavily rounded corners for modern look */
             //box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft, noticeable shadow */
             
@@ -699,7 +725,7 @@
             //background-origin: border-box;
             //background-clip: padding-box, border-box;
             //background-image: linear-gradient(to right, #ffffff, #ffffff), 
-                              linear-gradient(90deg, #1e90ff, #3498db); /* Blue Gradient */
+             linear-gradient(90deg, #1e90ff, #3498db); /* Blue Gradient */
 
             /* 4. Layout (Flexbox for icon and text) */
             display: flex;
@@ -883,7 +909,7 @@
 </div>
 
 
-<div id="right" style=" display: block; ">
+<div id="right" style=" display: none; ">
   
   <div id="spinnerContainer" class="spinnerContainerClass">
         <div id="circularSpinner">
@@ -918,7 +944,7 @@
        
         
         <div class="bid-section" >
-          <label for="bidInput" class="bid-label">Enter Bid Amount:</label>
+         <!-- <label for="bidInput" class="bid-label">Enter Bid Amount:</label> -->
 		  <input type="text" id="finalBid" readonly value="-"/>
 		  
 		  	<button id="placeBidBtn" class="" onclick="placeBid()">
@@ -1857,10 +1883,12 @@ const startSpinIdVar = document.getElementById('startSpinId');
 const teamsListMainIdVar = document.getElementById('teamsListMainId');
 const rightPlayerIDVar = document.getElementById('rightPlayer');
 const spinnerContainerIDVar = document.getElementById('spinnerContainer');
+const rightMainIdDiv = document.getElementById('right');
 
 startSpinIdVar.style.display = 'none';
 teamsListMainIdVar.style.display = 'none';
 rightPlayerIDVar.style.display = 'none';
+rightMainIdDiv.style.display = 'block';
 
 spinnerContainerIDVar.classList.add('visible')
 spinnerContainerIDVar.classList.add('spinnerContainerClass');
