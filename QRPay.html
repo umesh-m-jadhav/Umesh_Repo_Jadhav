@@ -832,7 +832,7 @@
   <nav class="left-menu" id="rplNavMenu">
             <div class="menu-header" onclick="toggleMenu(event)">
                 <i class="fas fa-bars"></i> 
-                <span class="menu-name-tooltip">RPL Menu</span>
+              
             </div>
 
             <div class="menu-options" id="rplMenuOptions">
@@ -883,7 +883,7 @@
 </div>
 
 
-<div id="right">
+<div id="right" style=" display: block; ">
   
   <div id="spinnerContainer" class="spinnerContainerClass">
         <div id="circularSpinner">
@@ -892,7 +892,7 @@
  </div>		
 		
   
-  <div id="rightPlayer" class="auction-section" style=" display: block; ">
+  <div id="rightPlayer" class="auction-section" style=" display: none; ">
     <div class="player-info">
       <img id="playerPhoto" src="#" alt="Player Photo"/>
       <div class="player-details">
@@ -1660,7 +1660,22 @@ function submitAuction(){
   const toBeBidBalance = calculateToBeBidBalance(availableBalanceAfterSubmit, numberOfUnSoldPlayer);
   setBidBalanceAfterSubmit(selectedTeam.name,availableBalanceAfterSubmit,toBeBidBalance);
   selectedTeam = null;
-  
+
+const startSpinIdVar = document.getElementById('startSpinId');
+const teamsListMainIdVar = document.getElementById('teamsListMainId');
+
+//After successful Submit Visible Spin clock for spinning to go to next player
+startSpinIdVar.style.display = 'block';
+
+teamsListMainIdVar.style.display = 'block';
+
+//After successful submit, hide rotatating circul
+const spinnerContainerIDVar = document.getElementById('spinnerContainer');
+spinnerContainerIDVar.classList.remove('visible')
+spinnerContainerIDVar.classList.remove('spinnerContainerClass');
+
+const rightrightPlayerIDVar = document.getElementById('rightPlayer');
+rightrightPlayerIDVar.style.display = 'none';
 }
 
 function setBidBalanceAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBidBalance) {
@@ -1840,12 +1855,17 @@ function highlightRandomRow() {
 const playerListDivVar = document.getElementById('playerListDiv');
 const startSpinIdVar = document.getElementById('startSpinId');
 const teamsListMainIdVar = document.getElementById('teamsListMainId');
-const rightIDVar = document.getElementById('right');
+const rightPlayerIDVar = document.getElementById('rightPlayer');
+const spinnerContainerIDVar = document.getElementById('spinnerContainer');
 
 startSpinIdVar.style.display = 'none';
 teamsListMainIdVar.style.display = 'none';
+rightPlayerIDVar.style.display = 'none';
 
-	startSpinner();
+spinnerContainerIDVar.classList.add('visible')
+spinnerContainerIDVar.classList.add('spinnerContainerClass');
+
+startSpinner();
     
     // 1. Remove highlight from the previously selected row
     if (currentHighlightedRow) {
