@@ -390,17 +390,18 @@
 		
 		/* Icon container position */
         .max-min-icon {
-            
             top: 0px; /* Distance from top edge */
             right: 5px; /* Distance from right edge */
             cursor: pointer;
             font-size: 20px;
             color: #007bff;
             padding: 0px;
+			margin: 0;
             line-height: 0; /* Helps vertically center the icon */
             background: white;
             border-radius: 3px;
             z-index: 10; /* Ensure it's above content */
+			vertical-align: top;
         }
         
         .max-min-icon:hover {
@@ -537,9 +538,9 @@
         >
             &#9724; </span>
 
-  <div class="teams-section">
+  <div class="teams-section" style="margin-top: 0px;">
    <!--  <h3>Teams</h3> -->
-    <div id="teamsList">
+    <div id="teamsList" style="margin-top: 0px;">
 	
 	<div id="teamCardsWrapper">
       <div class="team-card" data-name="CSK" data-owner="N. Srinivasan">
