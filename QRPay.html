@@ -245,8 +245,13 @@
   .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
   .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:#d2691e; }
   .low-balance { color:red !important; }
-  .team-details { font-size:13px; margin-top:6px; color:#007bff; cursor:pointer; text-decoration:underline; }
+  .team-details { font-size:13px; 
+  margin-top:0px; 
+  color:#007bff; cursor:pointer; 
+  text-decoration:underline;
+  background: #fff;  }
   .team-details:hover { color:#0056b3; }
+  
   #teamsList { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
   .submit-btn { font-size:40px;margin-top:15px; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; }
   .submit-btn:hover { background:#1e7e34; }
@@ -887,7 +892,7 @@
 	</div> 		
 	  	 
 <div style=" display: none;padding: 20px;" id = "playerListDiv">		 
-  <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
+<input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
     	
   <table id="playerTable">
     <thead>
@@ -903,6 +908,20 @@
     <tbody></tbody>
   </table>
   </div> 		
+  
+  <div style=" display: block;padding: 20px;" id = "AuctionConfigID">
+  
+  <label for="excel-file" class="block text-lg font-semibold text-blue-700 mb-2">
+               Please upload Configuration File:
+  </label>
+ </BR>			
+  <input 
+	type="file" 
+	id="excel-file" 
+	accept=".xlsx, .xls" 
+	class="block w-full text-sm text-gray-500 cursor-pointer"
+  >
+  </div> 
   
 </div>
 
@@ -972,15 +991,16 @@
             &#9724; </span>
 
   <div class="teams-section" style="margin-top: 0px;">
-   <!--  <h3>Teams</h3> -->
+   
     <div id="teamsList" style="margin-top: 0px;">
 	
+	<!--
 	<div id="teamCardsWrapper">
       <div class="team-card" data-name="CSK" data-owner="N. Srinivasan">
         <div class="team-name-card" >CSK</div>
         <div class="team-owner-card">Owner: N. Srinivasan</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-       <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+       
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -993,7 +1013,7 @@
         <div class="team-name-card">MI</div>
         <div class="team-owner-card">Owner: Mukesh Ambani</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-        <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+       
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1007,7 +1027,7 @@
         <div class="team-name-card">RCB</div>
         <div class="team-owner-card">Owner: United Spirits</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-       <!--  <div class="team-total">Total Balance: 2,000,000</div>  -->
+      
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1020,7 +1040,7 @@
         <div class="team-name-card">KKR</div>
         <div class="team-owner-card">Owner: Shah Rukh Khan</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1033,7 +1053,7 @@
         <div class="team-name-card">SRH</div>
         <div class="team-owner-card">Owner: Kalanithi Maran</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+         
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1046,7 +1066,7 @@
         <div class="team-name-card">DC</div>
         <div class="team-owner-card">Owner: GMR & JSW</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+        
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1059,7 +1079,7 @@
         <div class="team-name-card">RR</div>
         <div class="team-owner-card">Owner: Manoj Badale</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-         <!-- <div class="team-total">Total Balance: 2,000,000</div>  -->
+       
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1072,7 +1092,7 @@
         <div class="team-name-card">PBKS</div>
         <div class="team-owner-card">Owner: Preity Zinta & Ness Wadia</div>
         <div class="team-baseprice">Owner Base Price: 50,000</div>
-          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
+        
         <div class="team-tobebid">Bid Balance: 2,000,000</div>
         <div class="team-balance">Available Balance: 2,000,000</div>
         <div class="team-toselect">Remainining Players: 6</div>
@@ -1081,40 +1101,27 @@
     </div>
 	
 	<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
-      <div class="Submit_team-card" data-name="Submit Button" data-owner="Preity Zinta & Ness Wadia">
         <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
         <div class="Submit_team-owner-card">&nbsp;</div>
-       <button class="place-bid-btn" onclick="submitAuction()">
+        <button class="place-bid-btn" onclick="submitAuction()">
         <i class="fas fa-hammer"></i> 
         Place Bid
     </button>
-          <!-- <div class="team-total">Total Balance: 2,000,000</div> -->
-        <div class="Submit_team-tobebid">&nbsp;</div>
-        <div class="Submit_team-balance">&nbsp;</div>
-        <div class="Submit_team-toselect">&nbsp;</div>
-      </div>
-	  <div class="Submit_team-details" >&nbsp;</div>
     </div>
 	
 	
 	<div id="teamCardsWrapper_MarkUnsold" style=" display: block; ">
-      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Preity Zinta & Ness Wadia">
+      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Btn2">
         <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
         <div class="Submit_team-owner-card">&nbsp;</div>
-		
 		<button class="player-unsold-btn" onclick="markUnsold()">
         <span class="icon">🏷️</span>
         Unsold Player
     </button>
-	
-        <div class="Submit_team-tobebid">&nbsp;</div>
-        <div class="Submit_team-balance">&nbsp;</div>
-        <div class="Submit_team-toselect">&nbsp;</div>
-      </div>
-	  <div class="Submit_team-details" >&nbsp;</div>
-    </div>
-	
-  </div>
+	</div> 
+	-->
+  </div> 
+</div>
 </div>
 </div>
 
@@ -1138,7 +1145,8 @@
    Data & helpers
    ------------------------ */
 const TOTAL_BALANCE = 2000000;
-
+const TOTAL_PLAYERS = 6;
+ 
 let ownerBasePrices = {
   "CSK": 50000,
   "MI": 50000,
@@ -1209,8 +1217,7 @@ function computeAvailableForTeam(teamName){
 }
 
 // Function to get remaining players to be selected for a team
-function getPlayersToBeSelected(teamName) {
-   const TOTAL_PLAYERS = 6;
+function getPlayersToBeSelected(teamName, TOTAL_PLAYERS) {
    const soldList = teamSoldPlayers[teamName] || [];
    const soldListSize = soldList.length;
    const remaining = TOTAL_PLAYERS - soldListSize;
@@ -1221,7 +1228,7 @@ function getPlayersToBeSelected(teamName) {
 
 function validateIfTeamHasBalanceToBid(teamName){
 	 const available = computeAvailableForTeam(teamName);
-	 const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName);
+	 const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName, TOTAL_PLAYERS);
 	 const toBeBidBalanceAvailable = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
 	 const toBeBidBalanceAvailableformatINR = formatINR(toBeBidBalanceAvailable);
 	 const finalBid = document.getElementById('finalBid').value
@@ -1239,6 +1246,13 @@ function validateIfTeamHasBalanceToBid(teamName){
    Initialize team card numbers
    ------------------------ */
 function initTeamCardsFormatting(){
+
+	const fileInput = document.getElementById('excel-file');
+            
+	if (fileInput) {
+		fileInput.addEventListener('change', handleFileSelect, false);
+	}
+			
  //numberOfUnSoldPlayer = 6;
  //um
  // const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName);
@@ -1250,7 +1264,7 @@ function initTeamCardsFormatting(){
     card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
     //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
     const available = computeAvailableForTeam(name);
-	const numberOfUnSoldPlayer = getPlayersToBeSelected(name);
+	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
     card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
     else card.querySelector('.team-balance').classList.remove('low-balance');
@@ -1269,7 +1283,7 @@ function initTeamCardsFormattingOnTeamClick(){
     card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
     //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
     const available = computeAvailableForTeam(name);
-	const numberOfUnSoldPlayer = getPlayersToBeSelected(name);
+	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
     card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
     else card.querySelector('.team-balance').classList.remove('low-balance');
@@ -1446,7 +1460,7 @@ teamCards.forEach(card => {
 });
 
 function updateTeamStyle(teamName) {
-    const remaining = getPlayersToBeSelected(teamName);
+    const remaining = getPlayersToBeSelected(teamName,TOTAL_PLAYERS);
 	 if(remaining ==0) {
         alert("You have selected all the players. Your Auction over.");	
 		return "N";
@@ -1726,16 +1740,28 @@ function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
   return toBeBidBalance;
 }
 
+
+function getTeamParticularDetails(teamName, attributeNm){
+  var valueofdivVal = "";
+  document.querySelectorAll('#teamsList .team-card').forEach(card => {
+    if(card.getAttribute('data-name') === teamName){
+ 	  const attributeDiv = card.querySelector(attributeNm);
+      valueofdivVal = attributeDiv.getAttribute('valueofdiv');
+    }
+  });
+  return valueofdivVal;
+}
+
 /* ------------------------
    Show team details popup (owner as item 1, then sold players)
    ------------------------ */
 function showTeamDetails(teamName){
   const owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).textContent.replace("Owner: ","");
-  const base = ownerBasePrices[teamName] || 0;
+  const base = getTeamParticularDetails(teamName,'.team-baseprice');
   let html = '';
 
   // Owner as item 1
-  html += `<span class="available-highlight">Total Balance:  ₹20,00,000</span>`;
+  html += `<span class="available-highlight">Total Allocated Balance:  ₹20,00,000</span>`;
   html +="\n\n";
   html += `1. Owner: ${owner} — Base: ${formatINR(base)}\n\n`;
 
@@ -2090,6 +2116,203 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
         window.onload = updateContentMargin;
         window.onresize = updateContentMargin;
         
+		 // The required sheet name
+        const SHEET_NAME = 'Owner_List';
+        // The required file name for validation
+        const REQUIRED_FILENAME = 'Auction_Configuration.xlsx';
+		
+		
+		 /**
+         * Converts Excel column names to standard keys.
+         */
+        function normalizeHeader(header) {
+            const key = header.trim().toLowerCase().replace(/\s/g, '');
+            if (key.includes('ownername')) return 'OwnerName';
+            if (key.includes('teamname')) return 'TeamName';
+            if (key.includes('baseprice')) return 'BasePrice';
+            return header; 
+        }
+
+        /**
+         * Main function to handle file selection and process the Excel file.
+         * This function is called when the file input changes.
+         * @param {Event} evt The file selection event.
+         */
+        function handleFileSelect(evt) {
+            const output = document.getElementById('data-output');
+            const error = document.getElementById('error-output');
+            const status = document.getElementById('file-status');
+            const files = evt.target.files;
+
+            if (files.length === 0) {
+                status.textContent = 'No file selected.';
+                output.innerHTML = '<p class="text-gray-500 italic">Data will appear here after successful load.</p>';
+                return;
+            }
+            
+            const file = files[0];
+
+            // 1. File Name Validation Check
+            if (file.name !== REQUIRED_FILENAME) {
+                const invalidFileMsg ='Invalid file selected. Please upload configuration file.';
+                alert(invalidFileMsg);
+                return;
+            }
+            
+            const reader = new FileReader();
+
+            // Setup the onload handler to process the data once the file is read
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+
+                    // 3. Read the workbook using SheetJS
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // 4. Check if the required sheet exists
+                    if (!workbook.SheetNames.includes(SHEET_NAME)) {
+                        status.textContent = 'Processing failed.';
+                        throw new Error(`Sheet "${SHEET_NAME}" not found in the workbook. Found sheets: ${workbook.SheetNames.join(', ')}`);
+                    }
+    
+                    const worksheet = workbook.Sheets[SHEET_NAME];
+                    
+                    // 5. Convert the sheet data to a JSON array (array of arrays)
+                    const jsonOptions = { header: 1 };
+                    const sheetData = XLSX.utils.sheet_to_json(worksheet, jsonOptions);
+    
+                    if (sheetData.length <= 1) { // 1 row is just the header
+                        output.innerHTML = '<p class="text-gray-500 italic">The selected sheet is empty or contains only headers.</p>';
+                        status.textContent = 'Successfully processed file (0 records).';
+                        return;
+                    }
+                    
+                    // The first row is the header row
+                    const headers = sheetData[0];
+                    const dataRows = sheetData.slice(1);
+                    
+                    // 6. Map the data rows to objects using normalized keys
+                    const result = dataRows.map(row => {
+                        const rowObject = {};
+                        headers.forEach((header, index) => {
+                            const key = normalizeHeader(header);
+                            if (['OwnerName', 'TeamName', 'BasePrice'].includes(key)) {
+                                // Clean up the value
+                                let value = row[index];
+                                if (key === 'BasePrice') {
+                                    // Attempt to parse number, handling strings with currency/commas
+                                    if (typeof value === 'string') {
+                                        value = parseFloat(value.replace(/[^0-9.-]+/g,""));
+                                    }
+                                    value = isNaN(value) ? 0 : value; // Default to 0 if invalid
+                                } else {
+                                    // Ensure OwnerName/TeamName are treated as strings
+                                    value = String(value || '');
+                                }
+                                rowObject[key] = value;
+                            }
+                        });
+                        return rowObject;
+                    });
+                    
+					//alert(result);
+                    // 7. Display the structured data as cards
+                    displayData(result);
+                   alert("Configuration applied successfully.");
+
+                } catch (err) {
+                   alert('Error in loading configuration file ' + err);
+                }
+            };
+
+            // Setup the onerror handler
+            reader.onerror = (e) => {
+                status.textContent = 'File read failed.';
+                error.innerHTML = `<div class="p-4 bg-red-100 rounded-lg border border-red-300">
+                    <p class="text-red-700 font-bold mb-2">File Read Error:</p>
+                    <p class="text-sm text-red-600">An error occurred while reading the file: ${e.target.error.name}</p>
+                </div>`;
+            };
+
+            // Start reading the file as an ArrayBuffer
+            reader.readAsArrayBuffer(file);
+        }
+
+        /**
+         * Displays the processed JSON data in the requested HTML card structure.
+         */
+        function displayData(data) {
+            const output = document.getElementById('teamsList');
+            
+            if (data.length === 0) {
+                output.innerHTML = '<p class="text-gray-500 italic">No valid data rows found after parsing.</p>';
+                return;
+            }
+
+            // Start of the main card wrapper, styled as a responsive grid
+            let html = ``;
+           
+			const totalAllocatedAvailableBalance = 2000000;
+			
+			const initialPlayerCount = 7;
+            data.forEach((row) => {
+                const teamName = row.TeamName || 'N/A Team';
+                const ownerName = row.OwnerName || 'N/A Owner';
+                // Format BasePrice for display
+                const basePriceDisplay = row.BasePrice;
+                
+                // Escape single quotes for safe embedding in the onclick attribute
+                const safeTeamName = teamName.replace(/'/g, "\\'");
+                const availableBalance = totalAllocatedAvailableBalance-basePriceDisplay;
+				
+				const numberOfUnSoldPlayer = initialPlayerCount-1;
+				const toBeBidBalanceAvailable = calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer);
+	 
+                // The requested structure for a single item, styled with Tailwind
+                html += `
+						<div id="teamCardsWrapper">
+                        <div class="team-card" data-name="${teamName}" data-owner="${ownerName}">
+                            <div class="team-name-card" valueofdiv="${teamName}">${teamName}</div>
+                            <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName}</div>
+                            <div class="team-baseprice" valueofdiv="${basePriceDisplay}" >Owner Base Price: ${formatINR(basePriceDisplay)}</div>
+							<div class="team-balance" valueofdiv="${availableBalance}" >Available Balance: ${formatINR(availableBalance)}</div>
+							<div class="team-tobebid" valueofdiv="${toBeBidBalanceAvailable}" >Bid Balance: ${formatINR(toBeBidBalanceAvailable)}</div>
+							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >Remainining Players: ${numberOfUnSoldPlayer}</div>
+                        </div>
+                        <div class="team-details" onclick="showTeamDetails('${safeTeamName}')" > Details </div>
+						</div>
+                `;
+            });
+		
+html += `		
+			<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
+        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
+        <div class="Submit_team-owner-card">&nbsp;</div>
+        <button class="place-bid-btn" onclick="submitAuction()">
+        <i class="fas fa-hammer"></i> 
+        Place Bid
+    </button>
+    </div>
+	
+	
+	<div id="teamCardsWrapper_MarkUnsold" style=" display: block; ">
+      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Btn2">
+        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
+        <div class="Submit_team-owner-card">&nbsp;</div>
+		<button class="player-unsold-btn" onclick="markUnsold()">
+        <span class="icon">🏷️</span>
+        Unsold Player
+    </button>
+	</div> 
+	`;
+            html += `</div>`; // Close teamCardsWrapper
+           
+            //alert(html);
+			//console.error(html); // Already exists
+           
+            output.innerHTML = html;
+        }
+		
 /* ------------------------
    Initial formatting on page load
    ------------------------ */
