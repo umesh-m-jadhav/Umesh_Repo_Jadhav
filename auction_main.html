@@ -886,6 +886,173 @@ display: flex;
             font-size: 1.2em;
         }
 		
+		.confirmation-box {
+            position: fixed;
+			z-index: 1050;
+			top: 50%;
+            left: 50%;
+			transform: translate(-50%, -50%);
+			
+			background-color: #ffffff;
+            border-radius: 8px; /* Slightly softer corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Clean, standard shadow */
+            
+            width: auto; 
+            min-width: 280px; 
+            overflow: hidden;
+            box-sizing: border-box;
+            border: 1px solid #e0e0e0; /* Subtle light border */
+            
+            /* Removed the extra padding-left used for the spiral design */
+            padding-left: 0; 
+        }
+        
+        /* Vibrant Side Accent Bar (Design 5 feature) */
+        .confirmation-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px; /* Thickness of the bar */
+            height: 100%;
+            background-color: #ff9800; /* Vibrant Orange accent color */
+            border-radius: 8px 0 0 8px;
+            z-index: 1; /* Ensures it sits above any content border if needed */
+        }
+        
+        /* Remove the spiral-specific ::after element */
+        .confirmation-box::after {
+            content: none; 
+        }
+
+        /* Header (Centered) */
+        .header {
+            background-color: #00796b; 
+            color: white;
+            padding: 10px 20px; 
+            font-size: 1.2em;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* Data Display Area */
+        .data-container {
+            padding: 15px 25px; 
+        }
+
+        .data-item {
+            //display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .data-label {
+            color: #616161;
+            font-size: 0.9em;
+            font-weight: 500;
+            //text-transform: uppercase;
+            flex-basis: 50%; 
+            text-align: left; 
+            padding-right: 10px;
+        }
+
+        .data-value {
+            color: #212121;
+            font-weight: 700;
+            font-size: 1em;
+            flex-basis: 50%;
+            text-align: right; 
+            word-break: break-word; 
+        }
+
+        /* Separator Style */
+        .data-separator {
+            text-align: center;
+            margin: 5px 0 0;
+        }
+        
+        .separator-line {
+            border: none;
+            border-top: 1px dashed #cccccc;
+            margin: 3px 0;
+        }
+
+        .separator-text {
+            display: inline-block;
+            background: #fff;
+            padding: 0 8px;
+            color: #888;
+            font-weight: 600;
+            font-size: 0.85em;
+            transform: translateY(-11px);
+        }
+        
+        /* Sold Price item */
+        .data-item.total {
+            padding-top: 15px;
+            border-top: 1px dashed #e0e0e0;
+            margin-top: 10px;
+        }
+        
+        .data-item.total .data-label {
+            color: #00796b;
+            font-weight: 700;
+            font-size: 1em;
+        }
+
+        .data-item.total .data-value {
+            color: #00796b;
+            font-size: 1.3em;
+            letter-spacing: 0.2px;
+        }
+
+        /* Action Area and Buttons */
+        .action-area {
+            padding: 5px 20px 20px;
+            text-align: left; 
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: all 0.2s;
+            flex-grow: 1;
+            white-space: nowrap; 
+        }
+
+        .btn-confirm {
+            background-color: #28a745; 
+            color: white;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-confirm:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background-color: #f44336; 
+            color: white;
+            box-shadow: 0 2px 4px rgba(244, 67, 54, 0.4);
+        }
+
+        .btn-cancel:hover {
+            background-color: #d32f2f;
+            transform: translateY(-1px);
+        }
+		
 </style>
 </head>
 <body>
@@ -898,7 +1065,7 @@ display: flex;
 <input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
   
 <div id="left">
-  
+
   <nav class="left-menu" id="rplNavMenu">
             <div class="menu-header" onclick="toggleMenu(event)">
                 <i class="fas fa-bars"></i> 
@@ -935,7 +1102,7 @@ display: flex;
         </nav>
 
    <!-- <h2>Players</h2> -->
-      <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;  padding: 30px;">
+      <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;">
         <button onclick="highlightRandomRow()" id="toggleButton">
 		<span id="toggleButtonMsg1"></span>
 		<BR>
@@ -944,7 +1111,23 @@ display: flex;
 		<span id="toggleButtonMsg1_4" style="font-size: 18px;font-style: italic;">Unsold Player:<span id="toggleButtonMsg4"></span></span>
 		</button>
 	</div> 		
-	  	 
+	  	
+  <div class="confirmation-box" id="confirmation-box-id" style=" display: none;">
+    <div class="header" id="dialogHeader">
+        Please Confirm
+    </div>
+
+    <div class="data-container" id="dataContainer">
+        </div>
+    
+    <div class="action-area">
+        <div class="button-group">
+            <button class="btn btn-confirm" id="confirmBtn">Yes, Confirm</button>
+            <button class="btn btn-cancel" id="cancelBtn">No, Cancel</button>
+        </div>
+    </div>
+</div>
+		
 <div style=" display: none;padding: 20px;" id = "playerListDiv">		 
 <input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
     	
@@ -994,7 +1177,6 @@ display: flex;
             <span class="center-text"></span> 
         </div>
  </div>		
-		
   
   <div id="rightPlayer" class="auction-section" style=" display: none; ">
     <div class="player-info">
@@ -1049,7 +1231,7 @@ display: flex;
         >
             &#9724; </span>
 
-  <div class="teams-section" style="margin-top: 0px;">
+  <div class="teams-section" id="teams-section-id" style="margin-top: 0px;">
    
     <div id="teamsList" style="margin-top: 0px;">
 	<!-- Data will set to teamsList from function displayData() -->
@@ -1596,14 +1778,71 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
 	var totalRemainingPlayers = getTotalRemainingPlayers();
 	document.getElementById('toggleButtonMsg3').innerHTML = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value) - totalRemainingPlayers;
 	document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
+	
+	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+	confirmationBoxDiv.style.display = 'none';
 		
 }
-/* ------------------------
-   Submit auction (sell player)
-   ------------------------ */
-function submitAuction(){
 
- if(!selectedTeam){
+function handleConfirm() {
+		submitAuction();
+        //alert("✅ CONFIRMED: The transaction has been processed!");
+    }
+
+function handleCancel() {
+        const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+		confirmationBoxDiv.style.display = 'none';
+		changeBGImageToOriginalMode()
+		//alert("❌ CANCELED: The transaction has been stopped.");
+}
+
+    document.addEventListener('DOMContentLoaded', () => {
+       
+        const confirmBtn = document.getElementById('confirmBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+    });
+	
+	function changeBGImageToDarkMode(){
+		const teamSectionDiv = document.getElementById('teams-section-id');
+		teamSectionDiv.style.backgroundImage = "url('BG3.png')";
+	
+		const rightDiv = document.getElementById('right');
+		rightDiv.style.backgroundImage = "url('BG3.png')";
+		
+		const finalBidDiv = document.getElementById('finalBid');
+		finalBidDiv.style.background = "grey";
+		
+		document.querySelectorAll('#teamsList .team-card').forEach(card => {
+		   if(card.getAttribute('data-name') != selectedTeam.name){
+				card.style.backgroundImage = "url('BG3.png')";
+		   }
+      });
+	}
+	
+	function changeBGImageToOriginalMode(){
+		const teamSectionDiv = document.getElementById('teams-section-id');
+		teamSectionDiv.style.backgroundImage = "url('BG2.png')";
+	
+		const rightDiv = document.getElementById('right');
+		rightDiv.style.backgroundImage = "url('BG1.png')";
+		
+		const finalBidDiv = document.getElementById('finalBid');
+		finalBidDiv.style.background = "#f0f0f0";
+		
+		 document.querySelectorAll('#teamsList .team-card').forEach(card => {
+		   if(card.getAttribute('data-name') != selectedTeam.name){
+				card.style.backgroundImage = "";
+				card.style.background = "#f0f0f0";
+		   }
+      });
+	}
+	
+function confirmationMessageOnSubmit(){
+	
+	 if(!selectedTeam){
     alert('Please select Team before placing a bid.');
     return;
   }
@@ -1612,9 +1851,7 @@ function submitAuction(){
     alert('Please select Player before placing a bid.');
     return;
   }
-  
  
-
  if (updateTeamStyle_Submit(selectedTeam.name) =="N") {
     alert("You have selected all the players. Your Auction is over.");
 	return;
@@ -1623,6 +1860,55 @@ function submitAuction(){
 	if(validateIfTeamHasBalanceToBid(selectedTeam.name) == "N"){
 		return;
 	}
+	
+	changeBGImageToDarkMode();
+	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+	confirmationBoxDiv.style.display = 'block';
+	
+	const ownerName = getTeamParticularDetails(selectedTeam.name,'.team-owner-card');
+	const namePlayer = currentPlayer.Name;
+	const finalSoldPrice =document.getElementById('finalBid').value;
+	const transactionData = [
+        { label: "Player", value: namePlayer },
+        { separator: "SOLD TO" },
+        { label: "Team", value: selectedTeam.name },
+        { label: "Owner", value: ownerName },
+        { label: "Final Sold Price", value: finalSoldPrice, isTotal: true }
+    ];
+	
+	const container = document.getElementById('dataContainer');
+        container.innerHTML = ''; 
+
+        transactionData.forEach((item) => {
+            if (item.separator) {
+                container.innerHTML += `
+                    <div class="data-separator">
+                        <hr class="separator-line">
+                        <span class="separator-text">${item.separator.toUpperCase()}</span>
+                    </div>
+                `;
+            } else {
+                const isTotalClass = item.isTotal ? ' total' : '';
+
+                container.innerHTML += `
+                    <div class="data-item${isTotalClass}">
+                        <span class="data-label">${item.label} : <span class="data-value">${item.value}</span> </span>
+                    </div>
+                `;
+            }
+        });
+
+        const separatorDiv = container.querySelector('.data-separator');
+        if (separatorDiv && separatorDiv.nextElementSibling) {
+            separatorDiv.nextElementSibling.style.paddingTop = '8px';
+        }
+}
+/* ------------------------
+   Submit auction (sell player)
+   ------------------------ */
+function submitAuction(){
+	//onfirmationMessageOnSubmit();
+
 
   // Available calculation: Total - owner base - sold players
   const available = computeAvailableBalanceForTeam(selectedTeam.name);
@@ -1631,9 +1917,7 @@ function submitAuction(){
     alert(`This team does not have enough balance!\nAvailable: ${formatINR(available)}\nBid: ${formatINR(currentBid)}`);
     return;
   }
- 
- 
- 
+  
   // Update workbook data
   if(workbook && mainSheetName){
     const sheet = workbook.Sheets[mainSheetName];
@@ -2010,6 +2294,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		const rightMainIdDiv = document.getElementById('right');
 		rightMainIdDiv.style.display = 'none';
 		
+		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+		confirmationBoxDiv.style.display = 'none';
+		
 		highlightUnsoldPlayerByBG();
 		collapseMenu();
     }
@@ -2029,6 +2316,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		AuctionConfigIDDiv.style.display = 'block';
 		const rightMainIdDiv = document.getElementById('right');
 		rightMainIdDiv.style.display = 'none';
+		
+		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+		confirmationBoxDiv.style.display = 'none';
 		
 		collapseMenu();
     }
@@ -2332,7 +2622,7 @@ html += `
 			<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
         <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
         <div class="Submit_team-owner-card">&nbsp;</div>
-        <button class="place-bid-btn" onclick="submitAuction()">
+        <button class="place-bid-btn" onclick="confirmationMessageOnSubmit();">
         <i class="fas fa-hammer"></i> 
         Place Bid
     </button>
