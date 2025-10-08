@@ -1944,8 +1944,7 @@ function markUnsold(){
 	}
 	  const startSpinIdVar = document.getElementById('startSpinId');
 	  startSpinIdVar.style.display = 'block';
-	  
-	  afterSubmitOrMarkUnsold(selectedPlayerValue);
+	  afterSubmitOrMarkUnsold(selectedTeam.name);
 	  
 	} else {
 		return;
@@ -1971,13 +1970,8 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
   const toBeBidBalance = calculateToBeBidBalance(availableBalanceAfterSubmit, numberOfUnSoldPlayer);
   setBidBalanceAfterSubmit(selectedTeamName,availableBalanceAfterSubmit,toBeBidBalance);
   selectedTeam = null;
-
 	
 	const teamsListMainIdVar = document.getElementById('teamsListMainId');
-
-	//After successful Submit Visible Spin clock for spinning to go to next player
-	
-
 	teamsListMainIdVar.style.display = 'block';
 
 	//After successful submit, hide rotatating circul
@@ -1994,12 +1988,13 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 	confirmationBoxDiv.style.display = 'none';
-	changeBGImageToOriginalMode();
+	//changeBGImageToOriginalMode();
 }
 
 function handleConfirm() {
+		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+		confirmationBoxDiv.style.display = 'none';
 		submitAuction();
-        //alert("✅ CONFIRMED: The transaction has been processed!");
     }
 
 function handleCancel() {
@@ -2046,7 +2041,7 @@ function handleCancel() {
 		finalBidDiv.style.background = "#f0f0f0";
 		
 		 document.querySelectorAll('#teamsList .team-card').forEach(card => {
-		   if(card.getAttribute('data-name') != selectedTeam.name){
+		   if(selectedTeam ==null || card.getAttribute('data-name') != selectedTeam.name){
 				card.style.background = "#f0f0f0";
 		   }
       });
@@ -2189,8 +2184,8 @@ function submitAuction(){
   const photoURL = document.getElementById('playerPhoto').src;
   const soldOutPlayerPhotoIdDiv = document.getElementById('SoldOutPlayerPhotoId');
   soldOutPlayerPhotoIdDiv.src = photoURL;
-    
-  afterSubmitOrMarkUnsold(selectedTeam.name);
+   
+  
 }
 
 function setBidBalanceAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBidBalance) {
@@ -2916,7 +2911,9 @@ teamCards.forEach(card => {
 		function closePopup() {
   			const startSpinIdDiv = document.getElementById('startSpinId');
 			startSpinIdDiv.style.display = 'block';
-  
+			changeBGImageToOriginalMode();
+			afterSubmitOrMarkUnsold(selectedPlayerValue);
+			
 			const popup = document.getElementById('successPopup');
             
             popup.style.opacity = '0';
