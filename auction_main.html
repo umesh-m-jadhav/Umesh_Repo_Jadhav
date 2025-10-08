@@ -433,7 +433,34 @@ display: flex;
 	    }
 
         #toggleButton.stop-btn {
-             background-color: #CC0000; /* Darker Red for Stop */
+             border: 15px solid #C0C0C0; 
+			border-top-color: #FF0000; 
+			border-radius: 50%;
+			justify-content: center;
+			align-items: center;
+			
+			position: relative;
+			background-color: #2c2c2c; // black
+			text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
+			box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+			
+           
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background-color: #FF4500; /* Orange-Red center */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em; /* Adjusted font size */
+            line-height: 1.2;
+            color: white;
+            z-index: 1;
+            font-weight: bold;
+            padding: 10px;
+            box-sizing: border-box;
+			line-height: 1.5;
         }
         
         #toggleButton:hover {
@@ -909,7 +936,13 @@ display: flex;
 
    <!-- <h2>Players</h2> -->
       <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;  padding: 30px;">
-        <button onclick="highlightRandomRow()" id="toggleButton"></button>
+        <button onclick="highlightRandomRow()" id="toggleButton">
+		<span id="toggleButtonMsg1"></span>
+		<BR>
+		<span id="toggleButtonMsg1_2" style="font-size: 14px;font-style: italic;padding-top: 20;">Total Player:<span id="toggleButtonMsg2"></span></span>
+		<span id="toggleButtonMsg1_3" style="font-size: 16px;font-style: italic;">Sold Player:<span id="toggleButtonMsg3"></span></span>
+		<span id="toggleButtonMsg1_4" style="font-size: 18px;font-style: italic;">Unsold Player:<span id="toggleButtonMsg4"></span></span>
+		</button>
 	</div> 		
 	  	 
 <div style=" display: none;padding: 20px;" id = "playerListDiv">		 
@@ -1367,6 +1400,15 @@ function updateTeamStyle(teamName) {
 	 }
 }
 
+function getTotalRemainingPlayers() {
+var totalRemainingPlayers = 0;
+document.querySelectorAll('#teamsList .team-card').forEach(card => {
+       const playersToBeSelected = getPlayersToBeSelected(card.getAttribute('data-name'));
+	   totalRemainingPlayers = totalRemainingPlayers + playersToBeSelected;
+   });
+  return totalRemainingPlayers;
+}
+
 /* Update team card's available display (keeps to the requested formula) */
 function updateTeamCardAvailable(teamName){
   document.querySelectorAll('#teamsList .team-card').forEach(card => {
@@ -1535,21 +1577,26 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
   setBidBalanceAfterSubmit(selectedTeamName,availableBalanceAfterSubmit,toBeBidBalance);
   selectedTeam = null;
 
-const startSpinIdVar = document.getElementById('startSpinId');
-const teamsListMainIdVar = document.getElementById('teamsListMainId');
+	const startSpinIdVar = document.getElementById('startSpinId');
+	const teamsListMainIdVar = document.getElementById('teamsListMainId');
 
-//After successful Submit Visible Spin clock for spinning to go to next player
-startSpinIdVar.style.display = 'block';
+	//After successful Submit Visible Spin clock for spinning to go to next player
+	startSpinIdVar.style.display = 'block';
 
-teamsListMainIdVar.style.display = 'block';
+	teamsListMainIdVar.style.display = 'block';
 
-//After successful submit, hide rotatating circul
-const spinnerContainerIDVar = document.getElementById('spinnerContainer');
-spinnerContainerIDVar.classList.remove('visible')
-spinnerContainerIDVar.classList.remove('spinnerContainerClass');
+	//After successful submit, hide rotatating circul
+	const spinnerContainerIDVar = document.getElementById('spinnerContainer');
+	spinnerContainerIDVar.classList.remove('visible')
+	spinnerContainerIDVar.classList.remove('spinnerContainerClass');
 
-const rightrightPlayerIDVar = document.getElementById('rightPlayer');
-rightrightPlayerIDVar.style.display = 'none';
+	const rightrightPlayerIDVar = document.getElementById('rightPlayer');
+	rightrightPlayerIDVar.style.display = 'none';
+	
+	var totalRemainingPlayers = getTotalRemainingPlayers();
+	document.getElementById('toggleButtonMsg3').innerHTML = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value) - totalRemainingPlayers;
+	document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
+		
 }
 /* ------------------------
    Submit auction (sell player)
@@ -1892,9 +1939,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	spinnerContainer.classList.add('spinnerContainerClass');
 	
 	teamsListMainIdDiv.style.display = 'none';
-			
-	toggleButton.textContent = 'Stop Spin';
-	toggleButton.classList.add('stop-btn');
+	
+	//toggleButton.classList.add('stop-btn');
 	isSpinning = true;
 
     // 3. Stop the spinning after a random duration (e.g., 2 to 5 seconds)
@@ -1911,8 +1957,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
     // 1. Hide the running emoji spinner and show the table
     circularSpinner.classList.remove('running');
 	circularSpinner.classList.remove('visible'); // Hides the spinner
-	toggleButton.innerHTML = 'Start Spin<Br>RPL<BR> R21 Premium League';
-	toggleButton.classList.remove('stop-btn');
+		
+	//toggleButton.innerHTML = 'Start Spin<Br>RPL<BR> R21 Premium League';
+	//toggleButton.classList.remove('stop-btn');
 	isSpinning = false;
 
 	spinnerContainer.classList.remove('spinnerContainerClass');
@@ -2309,8 +2356,12 @@ html += `
 	const congratsMessageDiv = document.getElementById('congrats-message');
 	congratsMessageDiv.textContent=CONGRATE_MEG_ON_CONFIGURATION_UPLOAD;
 	congratsMessageDiv.style.display = 'block';
+		
+	document.getElementById('toggleButtonMsg1').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
 	
-	document.getElementById('toggleButton').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
+	document.getElementById('toggleButtonMsg2').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
+	document.getElementById('toggleButtonMsg3').innerHTML = "0" 
+	document.getElementById('toggleButtonMsg4').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
 		
 			const teamCards = document.querySelectorAll('#teamsList .team-card');
 teamCards.forEach(card => {
