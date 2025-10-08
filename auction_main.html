@@ -8,18 +8,19 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <style>
+ 
   body { 
     font-family: Arial; 
     /* Use CSS Grid for the 2x2 layout */
     display: grid1; 
     
     /* 2 columns, 50% each for the top row (1fr = 50% since there are two) */
-     grid-template-columns: 50% 50%;
+     //grid-template-columns: 50% 50%;
     
     /* 2 rows, each taking 50% of the viewport height (50% 50%) */
-     grid-template-rows: 50% 50%; 
+     //grid-template-rows: 50% 50%; 
     
-    margin: 0; 
+     //margin: 0; 
 	 background-image: url('BG1.png');
 	 height: 100%;
     //height: 100vh; /* Critical: body must span the full viewport height */
@@ -72,13 +73,19 @@
 
   /* BOTTOM SECTION: Teams (100% Width) */
   .teams-section-wrapper {
-   padding: 0 20px 20px 20px; /* 0px top, 20px right/left, 20px bottom */
-    /* Make this span both columns (1 and 2) in the second row */
-    grid-column: 1 / span 2; 
-    grid-row: 2;
-	 /* MIN MODE FONT SIZING */
-     font-size: 16px; 
-	background-image: url('BG1.png');
+	width: 100vw; 
+	/* KEY CHANGE: Div occupies 50% of the viewport height (50vh + 50vh = 100vh total) */
+	height: 50vh; 
+	
+	/* Center the text vertically and horizontally inside the div */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	text-align: center;
+	color: white;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   /* Existing teams-section styling */
@@ -194,25 +201,18 @@
 	padding-bottom: 0; */
 }
 
-.auction-section.open {
-            /* Final state: OPEN */
-            height: 200px; /* A specific height is required for animation */
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
- 
   .player-info { display: flex; align-items: flex-start; gap: 30px; }
   .player-info img 
-  { width:270px; height:270px; 
+  { width:270px; height:100%; 
   margin-top: px; 
             display: block; 
             border-radius: 50%; 
             object-fit: cover; 
             border: 5px solid #1abc9c; 
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-  .player-details { flex:1; }
+  .player-details { flex:1;  padding-top: 40px;}
   .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
-  .bid-section { margin-top:15px;}
+  .bid-section { margin-top:15px;text-align: left;}
   .bid-section input { padding:6px; font-size:16px; width:200px; text-align:right; }
   .bid-section button { 
 	 /* Base Button Style */
@@ -240,12 +240,16 @@
   }
   .bid-section button:hover { background:#0056b3; }
   
-  .team-card { width: 200px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
+  .team-card { font-size:20px;width: 250px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
   .team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
   .team-card.selected { background-color:#28a745; color:#fff; }
-  .team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px; }
-  .team-owner-card { font-size:13px; color:#555; }
-  .team-baseprice { font-size:13px; margin-top:4px; color:#333; }
+  .team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px;
+	color: #8b4513; /* Brown text */
+    font-family: 'Verdana', sans-serif;
+    font-size: 1.0em;
+	}
+  .team-owner-card { font-size:13px; color:#555; font-weight:bold;}
+  .team-baseprice { font-size:13px; margin-top:4px; color:#333;font-weight:bold; }
   .team-total { font-size:12px; margin-top:6px; color:#111; font-weight:bold; }
   .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
   .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
@@ -405,72 +409,6 @@ display: flex;
 		 /* Class added by JavaScript to make it visible */
         .visible {
             display: flex !important; /* Overrides display: none; */
-        }
-		
-		 #toggleButton {
-			border: 15px solid #C0C0C0; 
-			border-top-color: #FF0000; 
-			border-radius: 50%;
-			justify-content: center;
-			align-items: center;
-			
-			position: relative;
-			background-color: #2c2c2c; // black
-			text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
-			box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
-			
-           
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background-color: #FF4500; /* Orange-Red center */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1em; /* Adjusted font size */
-            line-height: 1.2;
-            color: white;
-            z-index: 1;
-            font-weight: bold;
-            padding: 10px;
-            box-sizing: border-box;
-			line-height: 1.5;
-	    }
-
-        #toggleButton.stop-btn {
-             border: 15px solid #C0C0C0; 
-			border-top-color: #FF0000; 
-			border-radius: 50%;
-			justify-content: center;
-			align-items: center;
-			
-			position: relative;
-			background-color: #2c2c2c; // black
-			text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
-			box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
-			
-           
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background-color: #FF4500; /* Orange-Red center */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1em; /* Adjusted font size */
-            line-height: 1.2;
-            color: white;
-            z-index: 1;
-            font-weight: bold;
-            padding: 10px;
-            box-sizing: border-box;
-			line-height: 1.5;
-        }
-        
-        #toggleButton:hover {
-            opacity: 0.9;
         }
 		
 		/* Icon container position */
@@ -717,7 +655,6 @@ display: flex;
 		/* --- The Core Note Style --- */
         .modern-note {
             /* 1. Container & Sizing */
-            padding: 10px;
             margin: 10px;
             width: 90%;
             max-width: 680px;
@@ -729,7 +666,7 @@ display: flex;
             
             /* 3. The Stylish Border (Key Feature) */
             /* Add padding around the whole note for the border to sit in */
-            padding: 5px;            /* Inner border property - using background for a pseudo-border effect */
+            padding: 15px;            /* Inner border property - using background for a pseudo-border effect */
             //border: 1px solid transparent; 
             
             /* 4. Layout (Flexbox for icon and text) */
@@ -749,6 +686,9 @@ display: flex;
 			color: #dc3545; /* A standard, professional red color */
             font-weight: bold; /* Make the highlighted text stand out more */
             font-style: italic;
+			padding-top: 10px;
+			padding-bottom: 0px;
+			text-align: left;
         }
 
 
@@ -1064,14 +1004,29 @@ display: flex;
             background-color: rgba(255, 255, 255, 0.95); 
             border-radius: 20px; 
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); 
-            padding: 40px 50px; 
+            padding: 20px 20px; 
             text-align: center;
             max-width: 650px; 
-            position: relative; 
-            z-index: 10; 
+            //position: relative; 
+            //z-index: 10; 
+			
+			position: fixed;
+			z-index: 1050;
+			top: 10%;
+            left: 40%;
+			transform: translate(-50%, -50%);
             
-            display: flex;
-            flex-direction: column; 
+			width: auto; 
+            min-width: 280px; 
+            overflow: hidden;
+
+
+			text-align: center;
+			align-items: center; 
+			justify-content: center;
+			
+            //display: flex;
+            //flex-direction: column; 
             align-items: center; 
             justify-content: center;
             
@@ -1134,7 +1089,7 @@ display: flex;
 
         .emojis {
             font-size: 4.5em; 
-            margin-bottom: 20px; 
+            margin-bottom: 0px; 
             line-height: 1; 
         }
         
@@ -1152,8 +1107,8 @@ display: flex;
         .messageSoldOut-image {
             width: 200px; 
             height: 200px; 
-            margin-top: 15px; 
-            display: block; 
+            //margin-top: 15px; 
+            //display: block; 
             border-radius: 50%; 
             object-fit: cover; 
             border: 5px solid #1abc9c; 
@@ -1187,6 +1142,94 @@ display: flex;
         @keyframes clap-left-right { 0% { transform: translateY(-50%) translateX(0px); } 50% { transform: translateY(-50%) translateX(15px); } 100% { transform: translateY(-50%) translateX(0px); } }
         @keyframes pulse-clap { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
 		
+		 .responsive-div {
+            /* KEY CHANGE: Div occupies 50% of the viewport width */
+            width: 100vw; 
+            /* KEY CHANGE: Div occupies 50% of the viewport height (50vh + 50vh = 100vh total) */
+            height: 50vh; 
+            
+            /* Center the text vertically and horizontally inside the div */
+            //display: flex;
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+		
+		.split-ball {
+            //position: relative; 
+            overflow: hidden; 
+            margin-top: 10px;
+			margin-bottom: 10px;
+			
+            /* --- Consolidated Variables (formerly in :root) --- */
+            --ball-size: 350px;
+            --tennis-green-light: #dfff00;
+            --tennis-green-dark: #a0cc00;
+            --cricket-red-light: #cc0000;
+            --cricket-red-dark: #800000;
+            --split-glow-strength: 5px; 
+            --white-glow: #ffffff;         
+            --outer-ring-thickness: 8px;
+            --outer-ring-color: #ffffff;  
+            --outer-ring-glow: 15px; 
+            --text-color: #ffffff; 
+            
+            /* --- Main Ball Properties --- */
+            width: var(--ball-size);
+            height: var(--ball-size);
+            border-radius: 50%;
+            
+            /* 1. Steady, Split Background with 3D Shading */
+            background-image: 
+                radial-gradient(circle at 30% 30%, var(--tennis-green-light), var(--tennis-green-dark)),
+                radial-gradient(circle at 70% 30%, var(--cricket-red-light), var(--cricket-red-dark));
+            
+            background-size: 50% 100%, 50% 100%;
+            background-position: left top, right top;
+            background-repeat: no-repeat;
+            
+            /* 2. Central Split Line & Outer Ring (White) */
+            box-shadow: 
+                /* Central Split Glow (Inner shadows) */
+                -2px 0 var(--split-glow-strength) rgba(255, 255, 255, 0.4) inset, 
+                2px 0 var(--split-glow-strength) rgba(255, 255, 255, 0.4) inset,
+                
+                /* Outer Ring (Solid white frame) */
+                0 0 0 var(--outer-ring-thickness) var(--outer-ring-color), 
+                
+                /* Outer Ring Glow (White glow behind the solid ring) */
+                0 0 var(--outer-ring-glow) rgba(255, 255, 255, 0.6), 
+                
+                /* General Ball Shadow (for depth) */
+                0 10px 20px rgba(0, 0, 0, 0.7); 
+            
+            /* Ensure the ball remains steady */
+            transform: none !important;
+            animation: none !important;
+        }
+		
+		/* Styles for the text (kept separate as it targets a child element) */
+        .ball-text {
+            //position: absolute; 
+            //top: 20%;          
+            //left: 70%;         
+            //transform: translate(-50%, -50%);
+			padding-top: 70px;
+            
+            font-family: 'Arial Black', Gadget, sans-serif; 
+            font-size: 1.5em; 
+            font-weight: 900; 
+            color: var(--text-color); /* Still references the variable inherited from .split-ball */
+            text-align: center;
+            line-height: 1; 
+            
+            user-select: none; 
+        }
+		
 </style>
 </head>
 <body>
@@ -1197,7 +1240,8 @@ display: flex;
 <input type="hidden" id="INCREMENTAL_DECREMENTAL_BID_AMOUNT" value="">
 <input type="hidden" id="TOURNAMENT_NAME" value="">
 <input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
-  
+ 
+ <div id="top-div-id" class="responsive-div">
 <div id="left">
 
   <nav class="left-menu" id="rplNavMenu">
@@ -1234,26 +1278,34 @@ display: flex;
 				
             </div>
         </nav>
-
-   <!-- <h2>Players</h2> -->
-      <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;">
-        <button onclick="highlightRandomRow()" id="toggleButton">
-		<span id="toggleButtonMsg1"></span>
-		<BR>
-		<span id="toggleButtonMsg1_2" style="font-size: 14px;font-style: italic;padding-top: 20;">Total Player:<span id="toggleButtonMsg2"></span></span>
-		<span id="toggleButtonMsg1_3" style="font-size: 16px;font-style: italic;">Sold Player:<span id="toggleButtonMsg3"></span></span>
-		<span id="toggleButtonMsg1_4" style="font-size: 18px;font-style: italic;">Unsold Player:<span id="toggleButtonMsg4"></span></span>
-		</button>
-	</div> 		
+		
+		 <div class="split-ball" onclick="highlightRandomRow()" id = "startSpinId" style=" display: block;">
+		 <Div id="toggleButton1" class="ball-text">
+				<span id="toggleButtonMsg1"> </span>
+				<BR><BR>
+				<span id="toggleButtonMsg1_2" style="font-size: 14px;font-style: italic;padding-top: 20;">
+				Total Team: <span  id="toggleButtonMsg5">8</span>
+				</span>
+				<BR>
+				<span id="toggleButtonMsg1_2" style="font-size: 14px;font-style: italic;padding-top: 20;">
+				Total Player: <span  id="toggleButtonMsg2"> </span>
+				</span>
+				<BR><BR>
+				<span id="toggleButtonMsg1_3"  style="font-size: 16px;font-style: italic;">Sold Player: <span  id="toggleButtonMsg3"> </span>
+				</span>
+				<BR>
+				<span id="toggleButtonMsg1_4"  style="font-size: 18px;font-style: italic;width:200px;">Unsold Player: <span  id="toggleButtonMsg4"> </span>
+				</span>
+		 </Div>
+		 
+		</div>
 
 <div class="success-container" id="successPopup" style=" display: none;">
         
         <button class="close-btn-top" onclick="closePopup()">&#x2715;</button> 
 
-        <div class="clapping-hands-group top"><span class="clap-individual">👏</span><span class="clap-individual">👏</span><span class="clap-individual">👏</span></div>
-        <div class="clapping-hands-group bottom"><span class="clap-individual">👏</span><span class="clap-individual">👏</span><span class="clap-individual">👏</span></div>
-        <div class="clapping-hands-group left"><span class="clap-individual">👏</span><span class="clap-individual">👏</span><span class="clap-individual">👏</span></div>
-        <div class="clapping-hands-group right"><span class="clap-individual">👏</span><span class="clap-individual">👏</span><span class="clap-individual">👏</span></div>
+        <div class="clapping-hands-group left"><span class="clap-individual">👏</span></div>
+        <div class="clapping-hands-group right"><span class="clap-individual">👏</span></div>
 
         <div class="central-content">
             <div class="emojis">
@@ -1261,12 +1313,12 @@ display: flex;
             </div>
             
             <div class="messageSoldOut">
-                Sold out! 
+                Sold out! <BR> To <BR> <Span id="SoldOutTeamNameID"> </span>
             </div>
             
-            <img src="Photo.jpg" alt="Successful Sale Icon" class="messageSoldOut-image">
+            <img id="SoldOutPlayerPhotoId" src="#" class="messageSoldOut-image">
         </div>
-        
+        		
         <button class="close-btn-bottom" onclick="closePopup()">
             Click here to close
         </button>
@@ -1330,7 +1382,6 @@ display: flex;
  
 </div>
 
-
 <div id="right" style=" display: none; ">
   
   <div id="spinnerContainer" class="spinnerContainerClass">
@@ -1343,8 +1394,7 @@ display: flex;
     <div class="player-info">
       <img id="playerPhoto" src="#" alt="Player Photo"/>
       <div class="player-details">
-      	
-		<div class="modern-note">
+ 		<div class="modern-note">
 			<div class="user-icon" aria-hidden="true">👤🏏</div>
  			 <div id="selectedPlayer">Please Select Player</div>
 		</div>
@@ -1382,8 +1432,11 @@ display: flex;
     </div>
   </div>
 </div>
+</div>
 
-<div class="teams-section-wrapper" id="teamsListMainId">
+
+<!-- <div class="responsive-div" id="teamsListMainId"> -->
+ <div class="teams-section-wrapper" id="teamsListMainId">
 <span 
             class="max-min-icon" 
             id="maxMinIcon" 
@@ -1394,20 +1447,17 @@ display: flex;
 
   <div class="teams-section" id="teams-section-id" style="margin-top: 0px;">
    
-    <div id="teamsList" style="margin-top: 0px;">
+    <div id="teamsList" style="">
 	<!-- Data will set to teamsList from function displayData() -->
   </div> 
 </div>
 </div>
 </div>
 
-<!-- (Popup and JS remain same as previous version) -->
-
 </body>
 </html>
 </div>
 
-<!-- Team details popup (owner as item 1, then sold players) -->
 <div class="popup" id="teamDetailPopup">
   <div class="box">
     <h3 id="td-name">Team Details</h3>
@@ -1944,7 +1994,7 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 	confirmationBoxDiv.style.display = 'none';
-		
+	changeBGImageToOriginalMode();
 }
 
 function handleConfirm() {
@@ -1955,7 +2005,7 @@ function handleConfirm() {
 function handleCancel() {
         const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
-		changeBGImageToOriginalMode()
+		changeBGImageToOriginalMode();
 		//alert("❌ CANCELED: The transaction has been stopped.");
 }
 
@@ -1980,7 +2030,7 @@ function handleCancel() {
 		
 		document.querySelectorAll('#teamsList .team-card').forEach(card => {
 		   if(card.getAttribute('data-name') != selectedTeam.name){
-				card.style.backgroundImage = "url('BG3.png')";
+				card.style.background = "grey";
 		   }
       });
 	}
@@ -1997,7 +2047,6 @@ function handleCancel() {
 		
 		 document.querySelectorAll('#teamsList .team-card').forEach(card => {
 		   if(card.getAttribute('data-name') != selectedTeam.name){
-				card.style.backgroundImage = "";
 				card.style.background = "#f0f0f0";
 		   }
       });
@@ -2132,8 +2181,15 @@ function submitAuction(){
   confirmationBoxDiv.style.display = 'block';
   
   const startSpinIdDiv = document.getElementById('startSpinId');
-  startSpinIdDiv.style.display = 'none';
+  startSpinIdDiv.style.display = selectedTeam.name;
   
+  const soldOutTeamNameIDDiv = document.getElementById('SoldOutTeamNameID');
+  soldOutTeamNameIDDiv.textContent = selectedTeam.name;
+    
+  const photoURL = document.getElementById('playerPhoto').src;
+  const soldOutPlayerPhotoIdDiv = document.getElementById('SoldOutPlayerPhotoId');
+  soldOutPlayerPhotoIdDiv.src = photoURL;
+    
   afterSubmitOrMarkUnsold(selectedTeam.name);
 }
 
@@ -2375,12 +2431,11 @@ startSpinner();
     clearAllTeamSelection();
   }
 
-const spinButton = document.getElementById('toggleButton');
 const spinnerContainer = document.getElementById('spinnerContainer');
 const rightPlayerDiv = document.getElementById('rightPlayer');
 
  const circularSpinner = document.getElementById('circularSpinner');
- const toggleButton = document.getElementById('toggleButton');
+ 
  let isSpinning = false; // Initial state is stopped (false)
  
  const teamsListMainIdDiv = document.getElementById('teamsListMainId');
@@ -2392,8 +2447,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	spinnerContainer.classList.add('spinnerContainerClass');
 	
 	teamsListMainIdDiv.style.display = 'none';
-	
-	//toggleButton.classList.add('stop-btn');
+		
 	isSpinning = true;
 
     // 3. Stop the spinning after a random duration (e.g., 2 to 5 seconds)
@@ -2411,8 +2465,6 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
     circularSpinner.classList.remove('running');
 	circularSpinner.classList.remove('visible'); // Hides the spinner
 		
-	//toggleButton.innerHTML = 'Start Spin<Br>RPL<BR> R21 Premium League';
-	//toggleButton.classList.remove('stop-btn');
 	isSpinning = false;
 
 	spinnerContainer.classList.remove('spinnerContainerClass');
@@ -2790,23 +2842,22 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 html += `		
 			<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
         <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
+		
+        <div class="Submit_team-owner-card">
         <button class="place-bid-btn" onclick="confirmationMessageOnSubmit();">
         <i class="fas fa-hammer"></i> 
         Place Bid
-    </button>
-    </div>
-	
-	
-	<div id="teamCardsWrapper_MarkUnsold" style=" display: block; ">
-      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Btn2">
-        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
+		</button>
+		</div>
+		 <div class="Submit_team-owner-card">&nbsp;</div>
 		<button class="player-unsold-btn" onclick="markUnsold()">
         <span class="icon">🏷️</span>
         Unsold Player
     </button>
 	</div> 
+	
+    </div>
+		
 	`;
             html += `</div>`; // Close teamCardsWrapper
          
@@ -2824,14 +2875,26 @@ html += `
 		
 			const teamCards = document.querySelectorAll('#teamsList .team-card');
 teamCards.forEach(card => {
+	
   card.addEventListener('click', function(){
     teamCards.forEach(c => c.classList.remove('selected'));
 		
     selectedTeam = { name: this.getAttribute('data-name'), owner: this.getAttribute('data-owner') };
-    
+	
+    document.querySelectorAll('#teamsList .team-card').forEach(card => {
+		  if(card.getAttribute('data-name') == selectedTeam.name){
+			card.style.background = "#28a745";
+    }else {
+			card.style.background = "#f0f0f0";
+	}
+      });
+	 
+	  
 	//Players to be selected must be greater than 0
 	if(updateTeamStyle(selectedTeam.name) == "Y"){
 		this.classList.add('selected');
+		//this.style.backgroundColor = '#28a745';
+		//this.style.color = '#fff';
 	} else{
 		this.classList.remove('selected');
 		this.style.backgroundColor = '#FFCCCB';
@@ -2843,10 +2906,7 @@ teamCards.forEach(card => {
 	} else{
 		this.classList.remove('selected');
 	}
-	
-    // update available on right (Total - owner base - sold players)
-    //const avail = computeAvailableBalanceForTeam(selectedTeam.name);
-    	
+	 	
     initTeamCardsFormattingOnTeamClick();
   });
 });
