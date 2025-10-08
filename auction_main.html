@@ -866,8 +866,9 @@ display: flex;
 <input type="hidden" id="AUCTION_ALLOCATED_BALANCE" value="">
 <input type="hidden" id="NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER" value="">
 <input type="hidden" id="PLAYER_BASE_PRICE" value="">
- <input type="hidden" id="INCREMENTAL_DECREMENTAL_BID_AMOUNT" value="">
-
+<input type="hidden" id="INCREMENTAL_DECREMENTAL_BID_AMOUNT" value="">
+<input type="hidden" id="TOURNAMENT_NAME" value="">
+<input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
   
 <div id="left">
   
@@ -908,7 +909,7 @@ display: flex;
 
    <!-- <h2>Players</h2> -->
       <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;  padding: 30px;">
-        <button onclick="highlightRandomRow()" id="toggleButton">Spin for<Br>RPL<BR> R21 Premium League</button>
+        <button onclick="highlightRandomRow()" id="toggleButton"></button>
 	</div> 		
 	  	 
 <div style=" display: none;padding: 20px;" id = "playerListDiv">		 
@@ -1437,20 +1438,47 @@ function UnsoldtoSold(){
      return;
     }
 	
+	const playerListDivIdVar = document.getElementById('playerListDiv');
+	playerListDivIdVar.style.display = 'block';
+	
+	const rightDivIdVar = document.getElementById('right');
+	rightDivIdVar.style.display = 'none';
+	
+	const teamsListMainIdDivIdVar = document.getElementById('teamsListMainId');
+	teamsListMainIdDivIdVar.style.display = 'none';
+	
+	const startSpinIdDivIdVar = document.getElementById('startSpinId');
+	startSpinIdDivIdVar.style.display = 'none';
+	
 	var confirmMsg = "You are putting all unsold players to sold Category. Please confirm."
 	if(!confirm(confirmMsg)){
 		return;
 	}
 	
-	var isAllSoldOut = "Y";
+/**	
 	for (let i = 0; i < rows.length; i++) {
 		const row = rows[i];
 		const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
 		//alert(soldValueOfEachRow);
 		if(soldValueOfEachRow=="Unsold"){
-			row.cells[SOLD_INDEX].textContent = "";
+			row.style.backgroundColor = '#FFCCCB'
 		}
+	} 
+	**/
+	
+	if(workbook && mainSheetName){
+		const sheet = workbook.Sheets[mainSheetName];
+		const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+
+		data.forEach(p => {
+		  if(p.Sold === 'Unsold'){
+			p.Sold = '';
+		  }
+		});
+		workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
+		renderPlayers();
 	}
+	
 	 collapseMenu();
 }
 
@@ -1556,6 +1584,8 @@ function submitAuction(){
     alert(`This team does not have enough balance!\nAvailable: ${formatINR(available)}\nBid: ${formatINR(currentBid)}`);
     return;
   }
+ 
+ 
  
   // Update workbook data
   if(workbook && mainSheetName){
@@ -1893,6 +1923,19 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	rightPlayerDiv.classList.toggle('open');
   }
   
+  function highlightUnsoldPlayerByBG() {
+	const tbody = document.querySelector('#playerTable tbody');
+	const rows = tbody.getElementsByTagName('tr');
+	  for (let i = 0; i < rows.length; i++) {
+			const row = rows[i];
+			const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
+			//alert(soldValueOfEachRow);
+			if(soldValueOfEachRow=="Unsold"){
+				row.style.backgroundColor = '#FFCCCB';
+			}
+		}
+  }
+  
   function showContent(showId, hideId) {
         // Get the elements
         const showDiv = document.getElementById(showId);
@@ -1919,6 +1962,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		AuctionConfigIDDiv.style.display = 'none';
 		const rightMainIdDiv = document.getElementById('right');
 		rightMainIdDiv.style.display = 'none';
+		
+		highlightUnsoldPlayerByBG();
 		collapseMenu();
     }
 	
@@ -2265,6 +2310,8 @@ html += `
 	congratsMessageDiv.textContent=CONGRATE_MEG_ON_CONFIGURATION_UPLOAD;
 	congratsMessageDiv.style.display = 'block';
 	
+	document.getElementById('toggleButton').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
+		
 			const teamCards = document.querySelectorAll('#teamsList .team-card');
 teamCards.forEach(card => {
   card.addEventListener('click', function(){
