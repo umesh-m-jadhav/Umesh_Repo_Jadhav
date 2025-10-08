@@ -1,2323 +1,582 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cricket Auction</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Screen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74b9ff, #a29bfe);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 99vh;
+      margin: 0;
+    }
 
-<style>
-  body { 
-    font-family: Arial; 
-    /* Use CSS Grid for the 2x2 layout */
-    display: grid1; 
-    
-    /* 2 columns, 50% each for the top row (1fr = 50% since there are two) */
-     grid-template-columns: 50% 50%;
-    
-    /* 2 rows, each taking 50% of the viewport height (50% 50%) */
-     grid-template-rows: 50% 50%; 
-    
-    margin: 0; 
-	 background-image: url('BG1.png');
-	 height: 100%;
-    //height: 100vh; /* Critical: body must span the full viewport height */
-    //background: #f2f2f2; 
-    /* Remove the old flex properties and height:100vh from #left and #right */
-  }
-
-  /* TOP-LEFT SECTION: Players */
-  #left { 
-    padding: 0 20px; /* 0px top/bottom, 20px left/right */
-    overflow-y: auto; /* Allows scrolling inside if content exceeds 50% height */
-    //background: #fff; 
-    border-right: 1px solid #ccc; 
-    /* Explicitly place in Row 1, Column 1 */
-    grid-row: 1;
-    grid-column: 1;
-	place-items: center;
-	justify-content: center;
-	//Width: 100%;
-	//padding-bottom : 150px;
+    .payment-container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      width: 380px;
+      text-align: center;
+    }
 	
-	background-image: url('BG1.png');
-	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
-  //background-size: contain; 
-  
-  /* Make sure the image starts from the top */
-  //background-position: top; 
-	
-  }
-  
-  /* TOP-RIGHT SECTION: Auction */
-  #right { 
-    padding: 20px; 
-	padding-bottom : 80px;
-    overflow-y: auto; /* Allows scrolling inside if content exceeds 50% height */
-    /* Explicitly place in Row 1, Column 2 */
-    grid-row: 1;
-    grid-column: 2;
-	//background: #fff; 
-	//Width: 100%;
-	
-		background-image: url('BG1.png');
-	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
-  //background-size: contain; 
-  
-  /* Make sure the image starts from the top */
-  //background-position: top; 
-  
-  }
-
-  /* BOTTOM SECTION: Teams (100% Width) */
-  .teams-section-wrapper {
-   padding: 0 20px 20px 20px; /* 0px top, 20px right/left, 20px bottom */
-    /* Make this span both columns (1 and 2) in the second row */
-    grid-column: 1 / span 2; 
-    grid-row: 2;
-	 /* MIN MODE FONT SIZING */
-     font-size: 16px; 
-	background-image: url('BG1.png');
-  }
-
-  /* Existing teams-section styling */
-  .teams-section { 
-   //background:#fff; 
-    padding:20px; 
-    border-radius:8px; 
-    box-shadow:0 2px 6px rgba(0,0,0,0.1); 
-    height: calc(100% - 40px); /* Fill the remaining height of the wrapper (100% of row 2) minus the 20px top/bottom padding */
-    overflow-y: auto; /* Allows scrolling of team cards if they overflow */
-	background-image: url('BG2.png');
-	 border: 3px solid #800020; 
-  }
-
-/* Add this new rule to your block */
-#left h2, #right h2 {
-    margin-top: 0;
-    margin-bottom: 10px; /* Keep a small margin below the title for separation */
-}
-
-  /**
-  table { width:100%; border-collapse: collapse; }
-  th, td { padding: 8px; border:1px solid #ccc; text-align:left; vertical-align: top; }
-  tr:hover { cursor:pointer; } **/
-  
-    /* 1. Table Styling */
-        table {
-            width: 100%;
-            
-            border-collapse: collapse;
-            background-color: #ffffff; /* Pure white table background */
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
-        }
-
-        /* 2. Table Header (th) Styling */
-        thead th {
-            /* Subtle blue gradient */
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); 
-            color: #ffffff;
-            padding: 10px 15px;
-            text-align: center; /* Center header text */
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85em;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid #c2c2c2;
-        }
-
-        /* 3. Table Data (td) and Cell Styling */
-        td {
-            padding: 12px 20px;
-            text-align: center; /* Center cell text for uniform data display */
-            color: #333;
-            border-bottom: 1px solid #e9ecef; /* Very light horizontal divider */
-			 font-size: 0.9em; /* Slightly smaller font */
-
-        }
-        
-        /* Left-align specific columns for readability (e.g., text/names) */
-        td:first-child {
-            text-align: left;
-            font-weight: 500;
-        }
-
-        /* 4. Table Row (tr) Styling: Alternating Row Color (Zebra Stripping) */
-        tbody tr:nth-child(even) {
-            background-color: #f8f9fa; /* Very subtle alternating gray */
-        }
-        
-        /* 5. Table Row (tr) Hover Effect */
-        tbody tr {
-            transition: background-color 0.15s ease-in-out;
-        }
-        
-        tbody tr:hover {
-            background-color: #e2f0ff; /* Light blue highlight on hover */
-            cursor: pointer;
-        }
-
-		.status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-
-		.status-green {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
- 
- .auction-section {
-    /* Existing Styles */
-    //background: #fff;
-    padding: 0px;
-    border-radius: 8px;
-    /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); */
-    margin-bottom: 0px;
-
-    /* New Styles for Smooth-Then-Fast Opening 
-    overflow: hidden; /* Crucial to hide content when height is 0 */
-    transition: height 1.0s ease-out, padding 1.0s ease-out; */
-            
-	/* Initial state: CLOSED 
-	height: 0;
-	padding-top: 0;
-	padding-bottom: 0; */
-}
-
-.auction-section.open {
-            /* Final state: OPEN */
-            height: 200px; /* A specific height is required for animation */
-            padding-top: 0px;
-            padding-bottom: 0px;
-        }
- 
-  .player-info { display: flex; align-items: flex-start; gap: 30px; }
-  .player-info img 
-  { width:270px; height:270px; object-fit:cover; border-radius:10px; border:2px solid #ccc; }
-  .player-details { flex:1; }
-  .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
-  .bid-section { margin-top:15px; }
-  .bid-section input { padding:6px; font-size:16px; width:200px; text-align:right; }
-  .bid-section button { 
-	 /* Base Button Style */
-            background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
-            color: #ecf0f1; /* Off-white text */
-            border: 2px solid #e74c3c; /* Red border to signify the 'Unsold' status */
-            padding: 12px 5px;
-            border-radius: 8px; /* Slightly rounded corners */
-            cursor: pointer;
-            font-family: 'Arial', sans-serif; 
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            transition: all 0.2s ease;
-            
-            /* Flexbox for alignment */
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            
-            /* Optional: Small inner shadow for depth */
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
- 
-  
-  }
-  .bid-section button:hover { background:#0056b3; }
-  
-  .team-card { width: 200px; padding: 15px; background:#f0f0f0; border-radius:8px; text-align:center; cursor:pointer; transition:0.3s; box-shadow:0 2px 5px rgba(0,0,0,0.1); margin:5px; }
-  .team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
-  .team-card.selected { background-color:#28a745; color:#fff; }
-  .team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px; }
-  .team-owner-card { font-size:13px; color:#555; }
-  .team-baseprice { font-size:13px; margin-top:4px; color:#333; }
-  .team-total { font-size:12px; margin-top:6px; color:#111; font-weight:bold; }
-  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
-  .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
-  .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:#d2691e; }
-  .low-balance { color:red !important; }
-  .team-details { font-size:13px; 
-  margin-top:0px; 
-  color:#007bff; cursor:pointer; 
-  text-decoration:underline;
-  background: #fff;  }
-  .team-details:hover { color:#0056b3; }
-  
-  #teamsList { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-  .submit-btn { font-size:40px;margin-top:15px; padding:10px 20px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer; }
-  .submit-btn:hover { background:#1e7e34; }
-  .disabled { opacity:0.6; cursor:not-allowed; }
-  /* Player details popup */
-  .popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999; }
-  .popup .box { background:#fff; padding:18px; border-radius:8px; width:420px; max-width:95%; text-align:left; box-shadow:0 6px 20px rgba(0,0,0,0.2); }
-  .popup .box h3 { margin:0 0 10px 0; }
-  .popup .box img { width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
-  .popup .box .row { margin-bottom:6px; font-size:14px; }
-  .popup .close { margin-top:12px; display:inline-block; padding:8px 12px; background:#007bff; color:#fff; border-radius:6px; cursor:pointer; border:none; }
-  .player-details-link { color:#007bff; text-decoration:underline; cursor:pointer; }
-  .numbered-list { margin:8px 0 0 16px; font-size:14px; white-space:pre-wrap; font-family:monospace; }
-  .team-summary-line { border-top:1px dotted #888; margin-top:8px; padding-top:8px; }
-  .available-highlight { font-weight:bold; color:blue; }
-  
-  #selectedPlayer {
-    /* Text Styling */
-    color: #8b4513; /* Brown text */
-    font-family: 'Verdana', sans-serif;
-    font-size: 1.2em;
-    font-style: italic;
-    text-align: center;
-     font-weight: bold; 
-  
-}
-
- #selectedPlayerBasePrice {
-    /* Background and Padding */
-    
-    /* Text Styling */
-    color: #8b4513; /* Brown text */
-    font-family: 'Verdana', sans-serif;
-    font-size: 1.2em;
-    font-style: italic;
-    text-align: center;
-     font-weight: bold; 
-	 
- 	}
-	
-	#finalBid {
-    width: 150px;
-    padding: 8px 12px;
-    margin: 5px 0;
-    height: 30px; 
-    font-size: 1.2em;
+	.back-btn {
+    position: absolute;       /* Position it over the popup */
+    top: 15px;
+    left: 15px;             /* Distance from right */
+    width: 30px;              /* Circular width */
+    height: 30px;             /* Circular height */
+    background-color: #f44336; /* Red background */
+    color: white;             /* White X */
+    border: none;             /* No border */
+    border-radius: 50%;       /* Circle shape */
+    font-size: 20px;          /* X size */
     font-weight: bold;
-    color: #333;
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    text-align: center; 
-    outline: none; 
-}
-
- /* Define the running bounce animation */
-  @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-  
- /* INCREASED SIZE: Width and Height are now 250px */
-        #circularSpinner {
-           /* Initial state: Hidden and takes up no space */
-            display: none; 
-            
-            width: 350px; 
-            height: 350px; 
-            border: 15px solid #C0C0C0; 
-            border-top-color: #FF0000; 
-            border-radius: 50%;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 40px; /* Only active when visible */
-            position: relative;
-            background-color: #2c2c2c; // black
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
-			line-height: 1.5;
-            /* Animation initial state: paused */
-            animation: spin 0.8s linear infinite;
-            animation-play-state: paused;
-        }
-
-        /* Create a central indicator/logo area */
-        /* Increased size to 150px to fill the bigger circle */
-        #circularSpinner::before {
-            /* Displaying the full name over multiple lines */
-            content: "RPL\A(R21 Premium League)"; 
-            white-space: pre-wrap; /* This makes the line break (\A) work */
-            text-align: center;
-            
-            position: absolute;
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background-color: #FF4500; /* Orange-Red center */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1em; /* Adjusted font size */
-            line-height: 1.2;
-            color: white;
-            z-index: 1;
-            font-weight: bold;
-            padding: 10px;
-            box-sizing: border-box;
-			line-height: 1.5;
-        }
-
-        /* 2. Class toggled by JavaScript to run the animation */
-        .running {
-            animation-play-state: running !important;
-        }
-
-.spinnerContainerClass {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0px;
-            background-color: white;
-            border-radius: 15px;
-			
-				background-image: url('BG1.png');
-	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
-  //background-size: contain; 
-  
-  /* Make sure the image starts from the top */
-  //background-position: top; 
-  
-            /* box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3); */
-        }
-		
-		 /* Class added by JavaScript to make it visible */
-        .visible {
-            display: flex !important; /* Overrides display: none; */
-        }
-		
-		 #toggleButton {
-			border: 15px solid #C0C0C0; 
-			border-top-color: #FF0000; 
-			border-radius: 50%;
-			justify-content: center;
-			align-items: center;
-			
-			position: relative;
-			background-color: #2c2c2c; // black
-			text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
-			box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
-			
-           
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background-color: #FF4500; /* Orange-Red center */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.1em; /* Adjusted font size */
-            line-height: 1.2;
-            color: white;
-            z-index: 1;
-            font-weight: bold;
-            padding: 10px;
-            box-sizing: border-box;
-			line-height: 1.5;
-	    }
-
-        #toggleButton.stop-btn {
-             background-color: #CC0000; /* Darker Red for Stop */
-        }
-        
-        #toggleButton:hover {
-            opacity: 0.9;
-        }
-		
-		/* Icon container position */
-        .max-min-icon {
-            top: 0px; /* Distance from top edge */
-            right: 5px; /* Distance from right edge */
-            cursor: pointer;
-            font-size: 20px;
-            color: #007bff;
-            padding: 0px;
-			margin: 0;
-            line-height: 0; /* Helps vertically center the icon */
-            background: white;
-            border-radius: 3px;
-            z-index: 10; /* Ensure it's above content */
-			
-        }
-        
-        .max-min-icon:hover {
-            color: #0056b3;
-        }
-
-        /* Maximized state */
-        .teams-section-wrapper.maximized {
-            width: 90vw; 
-            height: 90vh; 
-            position: fixed; 
-            top: 5vh;
-            left: 5vw;
-            z-index: 1000; 
-            background-color: white; 
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            border: 3px solid #007bff;
-			
-			/* NEW: INCREASE FONT SIZE IN MAXIMIZED MODE */
-			font-size: 20px; /* Larger font size for the maximized view */
-        }
-
-		/* --- Nested Section & Wrapper Styles --- */
-        
-        #teamCardsWrapper {
-            display: flex;
-            flex-direction: column; /* Stack cards vertically in min mode */
-            gap: 8px;
-            height: auto;
-        }
-
-        /* MAX MODE: Change layout for the card wrapper */
-        .teams-section-wrapper.maximized #teamCardsWrapper {
-            height: 100%; 
-            flex-direction: row; /* Layout cards horizontally */
-            flex-wrap: wrap; /* Allow cards to wrap */
-            gap: 2%; /* Gap between cards (2 cards per row) */
-            padding-top: 0px;
-            overflow-y: auto; 
-        }
-
-                       
-        /* Max Mode Style for all numbered cards - FONT & SIZE INCREASE HERE */
-        /* Targets any element whose class STARTS WITH "team-card" */
-        .teams-section-wrapper.maximized [class^="team-card"] {
-            /* SIZE INCREASE */
-            width: 100%; /* Almost half the width (2 cards per row) */
-            min-height: 150px; 
-                                           
-            border-color: #007bff;
-            background-color: #f0f8ff;
-        }
-		
-		.teams-section-wrapper.maximized [class^="team-name-card"] {
-			font-size:25px;
-		}
+    cursor: pointer;          /* Pointer on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
 	
-	/* --- LEFT MENU STYLES (Dynamic Width & Height) --- */
-        .left-menu {
-            position: absolute; 
-            top: 0;
-            left: 0;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 0;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
+    }
 
-        /* The clickable header/title (Icon Container) */
-        .menu-header {
-            position: relative; 
-            font-size: 1.1em;
-            font-weight: bold;
-            text-align: center;
-            padding: 15px 20px;
-            color: #1abc9c;
-            background-color: #34495e;
-            cursor: pointer;
-            user-select: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Styling for the icon itself */
-        .menu-header i {
-            font-size: 1.5em; 
-            transition: transform 0.3s ease;
-        }
+.back-btn1 {
+    position: absolute;       /* Position it over the popup */
+    top: 15px;
+    right: 15px;             /* Distance from right */
+    width: 30px;              /* Circular width */
+    height: 30px;             /* Circular height */
+    background-color: #f44336; /* Red background */
+    color: white;             /* White X */
+    border: none;             /* No border */
+    border-radius: 50%;       /* Circle shape */
+    font-size: 20px;          /* X size */
+    font-weight: bold;
+    cursor: pointer;          /* Pointer on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+	
+    }
+	
+    .back-btn:hover {
+      background: #b2bec3;
+      transform: scale(1.05);
+    }
+	
+    .payment-container h2 {
+      margin-bottom: 20px;
+      color: #2d3436;
+    }
 
-        /* Optional: Rotate icon when the menu is open */
-        .menu-header.active i {
-            transform: rotate(90deg);
-        }
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
 
-        /* --- TOOLTIP STYLES --- */
-        .menu-header .menu-name-tooltip {
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            z-index: 1;
-            left: 100%; 
-            top: 0;
-            background-color: #333;
-            color: #fff;
-            padding: 10px 15px;
-            white-space: nowrap;
-            border-radius: 4px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s, visibility 0.3s;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #636e72;
+      font-size: 14px;
+    }
 
-        .menu-header:hover .menu-name-tooltip {
-            visibility: visible;
-            opacity: 1;
-        }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #dfe6e9;
+      outline: none;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
 
-        /* --- REST OF THE MENU STYLES --- */
-        
-        .menu-options {
-            display: none; 
-            padding-bottom: 10px;
-        }
+    .form-group input:focus {
+      border-color: #0984e3;
+    }
 
-        .menu-item {
-            padding: 0;
-            transition: background-color 0.3s ease;
-        }
+    .card-details {
+      display: flex;
+      gap: 10px;
+    }
 
-        .menu-item a {
-            display: block; 
-            padding: 12px 20px;
-            text-decoration: none;
-            color: #ecf0f1;
-            font-size: 1em;
-            white-space: nowrap;
-        }
+    .card-details input {
+      flex: 1;
+    }
 
-        .menu-item:hover {
-            background-color: #3f5872;
-        }
+    hr {
+      border: none;
+      border-top: 1px solid #dfe6e9;
+      margin: 20px 0;
+      position: relative;
+    }
 
-        /* --- CONTENT AREA STYLES --- */
-        .main-content {
-            padding: 20px;
-            min-height: inherit; 
-        }
-		
-		/* 2. CSS Styles: Soft & Professional Color Scheme */
-        .place-bid-btn {
-             background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
-            color: #ecf0f1; /* Off-white text */
-            border: 2px solid #e74c3c; /* Red border to signify the 'Unsold' status */
-            padding: 12px 25px;
-            border-radius: 8px; /* Slightly rounded corners */
-            cursor: pointer;
-            font-family: 'Arial', sans-serif; 
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            transition: all 0.2s ease;
-            
-            /* Flexbox for alignment */
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            
-            /* Optional: Small inner shadow for depth */
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-        }
+    hr::after {
+      content: "OR";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      padding: 0 10px;
+      color: #636e72;
+      font-size: 12px;
+      font-weight: bold;
+    }
 
-        .place-bid-btn:hover {
-            background-color: #4b5e78; /* Slightly darker slate blue on hover */
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-        }
+    .qr-section {
+      margin: 10px 0 20px 0;
+    }
 
-        .place-bid-btn:active {
-            background-color: #3b4c62;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transform: translateY(1px);
-        }
+    .qr-section img {
+      width: 150px;
+      height: 150px;
+      border: 2px solid #dfe6e9;
+      border-radius: 8px;
+    }
 
-        /* Specific icon styling */
-        .place-bid-btn .fas {
-            font-size: 20px;
-        }
-		
-		.player-unsold-btn {
-            /* Base Button Style */
-            background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
-            color: #ecf0f1; /* Off-white text */
-            border: 2px solid #e74c3c; /* Red border to signify the 'Unsold' status */
-            padding: 12px 25px;
-            border-radius: 8px; /* Slightly rounded corners */
-            cursor: pointer;
-            font-family: 'Arial', sans-serif; 
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            transition: all 0.2s ease;
-            
-            /* Flexbox for alignment */
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            
-            /* Optional: Small inner shadow for depth */
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
-        }
+    .pay-btn, .download-btn , .share-btn {
+      width: 100%;
+      padding: 14px;
+      background: #0984e3;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
 
-        .player-unsold-btn:hover {
-            background-color: #34495e; /* Slightly lighter dark color on hover */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Lift and shadow */
-            border-color: #c0392b; /* Darker red border on hover */
-        }
+    .pay-btn:hover {
+      background: #74b9ff;
+      transform: scale(1.03);
+    }
 
-        .player-unsold-btn:active {
-            background-color: #2c3e50; 
-            transform: translateY(2px); /* Press down effect */
-            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5); 
-        }
+.qr-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+	
+.download-btn {
+      background: #00b894;
+      color: #fff;
+    }
 
-        .player-unsold-btn .icon {
-            font-size: 20px;
-            /* Subtle red glow around the text icon */
-            filter: drop-shadow(0 0 1px #e74c3c); 
-        }
-		
-		/* --- The Core Note Style --- */
-        .modern-note {
-            /* 1. Container & Sizing */
-            padding: 10px;
-            margin: 10px;
-            width: 90%;
-            max-width: 680px;
-            
-            /* 2. Background and Shape */
-            //background-color: #ffffff; /* White card background */
-            border-radius: 12px;       /* Heavily rounded corners for modern look */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft, noticeable shadow */
-            
-            /* 3. The Stylish Border (Key Feature) */
-            /* Add padding around the whole note for the border to sit in */
-            padding: 5px;            /* Inner border property - using background for a pseudo-border effect */
-            border: 1px solid transparent; 
-            
-            /* Creates a border using a gradient, then clips the inner content */
-            background-origin: border-box;
-            background-clip: padding-box, border-box;
-            //background-image: linear-gradient(to right, #ffffff, #ffffff), 
-            linear-gradient(90deg, #1e90ff, #3498db); /* Blue Gradient */
+    .download-btn:hover {
+      background: #55efc4;
+      transform: scale(1.03);
+    }
+	
+    .secure-text {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #636e72;
+    }
+	
+	 .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+	.form-row label {
+      font-size: 16px;
+      font-weight: bold;
+      margin-right: 10px;
+      min-width: 80px; /* keeps label aligned neatly */
+    }
+	
+	.form-row input[type="text"] {
+      flex: 1; /* textbox grows to take available space */
+      padding: 10px;
+      border: 2px solid #007BFF;
+      border-radius: 8px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+	
+	.required-star {
+      color: red;
+      margin-left: 4px;
+    }
+	
+	#overlay {
+      position: fixed;
+      display: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+    }
 
-            /* 4. Layout (Flexbox for icon and text) */
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            line-height: 1.5;
-        }
+    /* Alert box styling */
+    #customAlert, #customAlert1 {
+      position: fixed;
+      display: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1001;
+      min-width: 250px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
 
-.modern-note-PlayerUnavailibilty {
-            /* 1. Container & Sizing */
-            //padding: 10px;
-            //margin: 10px;
-            //width: 90%;
-            //max-width: 680px;
-            
-            /* 2. Background and Shape */
-            //background-color: #ffffff; /* White card background */
-            //border-radius: 12px;       /* Heavily rounded corners for modern look */
-            //box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft, noticeable shadow */
-            
-            /* 3. The Stylish Border (Key Feature) */
-            /* Add padding around the whole note for the border to sit in */
-            //padding: 5px;            /* Inner border property - using background for a pseudo-border effect */
-            //border: 1px solid transparent; 
-            
-            /* Creates a border using a gradient, then clips the inner content */
-            //background-origin: border-box;
-            //background-clip: padding-box, border-box;
-            //background-image: linear-gradient(to right, #ffffff, #ffffff), 
-             linear-gradient(90deg, #1e90ff, #3498db); /* Blue Gradient */
+    #customAlert button,#customAlert1 button {
+      margin-top: 15px;
+      padding: 8px 20px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-            /* 4. Layout (Flexbox for icon and text) */
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            line-height: 1;
-			
-			color: #dc3545; /* A standard, professional red color */
-            font-weight: bold; /* Make the highlighted text stand out more */
-            text-transform: uppercase; /* Optional: Make it all caps for urgency */
-        }
+    #customAlert button:hover {
+      background-color: #0056b3;
+    }
+	
+	#customAlert1 button:hover {
+      background-color: #0056b3;
+    }
+	
+	 #confirmDialog {
+      position: fixed;
+      display: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      z-index: 1001;
+      min-width: 300px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
 
+    #confirmDialog p {
+      margin-bottom: 20px;
+    }
 
-        /* The Lightbulb Icon */
-        .modern-icon {
-            font-size: 30px;
-            color: #3498db; /* Matches the gradient color */
-            flex-shrink: 0;
-            margin-top: -2px;
-        }
+    #confirmDialog button {
+      padding: 8px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-        /* --- Stylish Text Enhancements --- */
+    #confirmOk {
+      background-color: #28a745;
+      color: white;
+    }
 
-        /* The text container */
-        .note-content {
-            flex-grow: 1;
-        }
-        
-        /* The main title/label (e.g., "Key Point:") */
-        .note-content strong {
-            color: #2c3e50;
-            font-weight: 700;
-            font-size: 1.1em; /* Larger, bolder label */
-            display: block;
-            margin-bottom: 4px;
-        }
+    #confirmOk:hover {
+      background-color: #218838;
+    }
 
-        /* The main body text */
-        .note-content p {
-            margin: 0; /* Remove default paragraph margin */
-            font-size: 1em;
-            font-weight: 400;
-        }
+    #confirmCancel {
+      background-color: #dc3545;
+      color: white;
+    }
 
-        /* Highlighting a critical phrase */
-        .note-content .critical {
-            color: #e74c3c; /* A sharp red for high importance */
-            font-weight: 700;
-        }
-		
-		.symbol {
-  /* Style for the symbols */
-  font-size: 20px; /* Make the symbols large */
-  font-weight: bold;
-  cursor: pointer; /* Indicates they might be clickable (e.g., in a counter) */
-  user-select: none; /* Prevents text selection on click */
-}
+    #confirmCancel:hover {
+      background-color: #c82333;
+    }
+	
+	ul {
+      list-style: none; /* remove default bullets */
+      padding: 0;
+      max-width: 400px;
+      margin: auto;
+    }
 
-.plus {
-  color: green;
-}
+    ul li {
+      background: #eef3ff;
+      margin: 10px 0;
+      padding: 12px 15px;
+      border-left: 6px solid #3366cc;
+      border-radius: 6px;
+      font-size: 16px;
+      color: #333;
+      position: relative;
+    }
 
-.minus {
-  color: red;
-}
+    /* Add custom circle bullets */
+    ul li::before {
+      content: "•";
+      color: #3366cc;
+      font-weight: bold;
+      position: absolute;
+      left: -20px;
+      font-size: 20px;
+    }
 
-.bid-label {
-            font-size: 1.1rem; 
-            font-weight: 600; 
-            color: var(--text-color);
-            display: block;
-            margin-bottom: 15px; 
-            text-align: left;
-            border-left: 4px solid var(--primary-color); 
-            padding-left: 10px;
-        }
-
-        .bid-input {
-            /* STYLING CHANGES FOR THE BORDER */
-            width: 100%;
-            padding: 14px 16px;
-            font-size: 1.2rem; 
-            color: var(--primary-color);
-            
-            /* ADDED FULL BORDER */
-            border: 2px solid var(--border-color); 
-            
-            border-radius: 8px; /* Slightly more rounded corners for the input */
-            box-sizing: border-box;
-            background-color: #f7f7f7;
-            transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-            text-align: right; 
-        }
-
-        .bid-input:focus {
-            /* Focus state now changes the entire border color */
-            border-color: var(--primary-color); /* Highlight border on focus */
-            background-color: #ffffff; 
-            box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1); /* Subtle inner glow on focus */
-            outline: none; 
-        }
-
-        .input-group {
-            position: relative;
-        }
-
-        .currency-symbol {
-            position: absolute;
-            top: 50%;
-            left: 16px;
-            transform: translateY(-50%);
-            color: #999;
-            font-size: 1.2rem;
-            pointer-events: none; 
-        }
-        
-        .input-group .bid-input {
-            padding-left: 40px; 
-            text-align: right;
-        }
-		
-</style>
+    /* Hover effect */
+    ul li:hover {
+      background: #dfe8ff;
+      transform: translateX(5px);
+      transition: 0.2s ease;
+    }
+	
+  </style>
 </head>
 <body>
 
-
+  <div class="payment-container">
+<button class="back-btn" onclick="window.close();">&times;</button>
+	<button class="back-btn1" onclick="window.close();">&times;</button>
+	
+ <h2>Pay for R21 Premier League (RPL)</h2>
+	
+	
+	
+	 <form>
+	  <div id="overlay"></div>
+	  <!-- Custom Alert -->
+  <div id="customAlert">
+    <p id="alertMessage"></p>
+    <button onclick="closeAlert()">OK</button>
+  </div>
   
-<div id="left">
+    <div id="overlay1"></div>
+	  <!-- Custom Alert -->
+  <div id="customAlert1">
+    <p id="alertMessage1"></p>
+	<p  id="alertMessage2" class="secure-text" style="font-size:15px; color:blue;">🔒 Payer name - Umesh Mahadev Jadhav </p>
+	<p  id="alertMessage3" class="secure-text" style="font-size:15px; color:blue;">🔒 Amount - 300rs </p>
+    <button type="button" onclick="OkToProceed()">OK</button>
+	<button type="button" onclick="cancelAlert1()">Cancel</button>
+  </div>
   
-  <nav class="left-menu" id="rplNavMenu">
-            <div class="menu-header" onclick="toggleMenu(event)">
-                <i class="fas fa-bars"></i> 
-              
-            </div>
+    <!--
+	  <div class="form-row">
+    <label for="tower">Tower<span class="required-star">*</span></label>
+    <input type="text" id="tower" name="tower" maxlength="7" pattern="[A-Za-z0-9\s\-]+" required>
+  </div>
 
-            <div class="menu-options" id="rplMenuOptions">
-                
-                <div class="menu-item">
-                    <a href="#" onclick="showContent('playerListDiv', 'startSpinId'); return false;">
-                        Upload Player List
-                    </a>
-                </div>
-
-                <div class="menu-item">
-                    <a href="#" onclick="showContent('startSpinId', 'playerListDiv'); return false;">
-                        Spinner
-                    </a>
-                </div>
-
-                <div class="menu-item">
-                    <a href="#" onclick="UnsoldtoSold(); return false;">
-                        Unsold to Sold
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-   <!-- <h2>Players</h2> -->
-      <div class="Submit_team-owner-card" id = "startSpinId" style=" display: block;  padding: 30px;">
-        <button onclick="highlightRandomRow()" id="toggleButton">Spin for<Br>RPL<BR> R21 Premium League</button>
-	</div> 		
-	  	 
-<div style=" display: none;padding: 20px;" id = "playerListDiv">		 
-<input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
-    	
-  <table id="playerTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Mobile</th>
-        <th>Role</th>
-        <th>Base Price</th>
-		<th>Unavailibilty</th>
-        <th>Sold</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  </div> 		
-  
-  <div style=" display: block;padding: 20px;" id = "AuctionConfigID">
-  
-  <label for="excel-file" class="block text-lg font-semibold text-blue-700 mb-2">
-               Please upload Configuration File:
-  </label>
- </BR>			
-  <input 
-	type="file" 
-	id="excel-file" 
-	accept=".xlsx, .xls" 
-	class="block w-full text-sm text-gray-500 cursor-pointer"
-  >
-  </div> 
-  
-</div>
-
-
-<div id="right" style=" display: none; ">
-  
-  <div id="spinnerContainer" class="spinnerContainerClass">
-        <div id="circularSpinner">
-            <span class="center-text"></span> 
-        </div>
- </div>		
-		
-  
-  <div id="rightPlayer" class="auction-section" style=" display: none; ">
-    <div class="player-info">
-      <img id="playerPhoto" src="#" alt="Player Photo"/>
-      <div class="player-details">
-      	
-		<div class="modern-note">
-			<div class="user-icon" aria-hidden="true">👤🏏</div>
- 			 <div id="selectedPlayer">Please Select Player</div>
-		</div>
-		
-		<div class="modern-note">
-			<div class="modern-icon" aria-hidden="true" Style = "font-size: 21px;">₹</div>
- 			  <div id="selectedPlayerBasePrice">Base Price <span id="basePrice">-</span></div>
-		</div>
-		
-		<div class="modern-note-PlayerUnavailibilty">
-			<div class="modern-icon" aria-hidden="true" Style = "font-size: 21px;">💡</div>
-        
-			<div class="note-content">
-				<div id="PlayerUnavailibiltyID">-</div>
-				
-			</div>
-		</div>
-       
-        
-        <div class="bid-section" >
-         <!-- <label for="bidInput" class="bid-label">Enter Bid Amount:</label> -->
-		  <input type="text" id="finalBid" readonly value="-"/>
+  <div class="form-row">
+    <label for="flat">Flat<span class="required-star">*</span></label>
+    <input type="text" id="flat" name="flat" maxlength="10" pattern="[A-Za-z0-9\s\-]+" required>
+  </div>
+  	
+	<div class="form-group">
+	 <a id="PayButtonIdLink" href="#"> 
+          <button type="button" class="pay-btn" onclick="pay()" > Pay using UPI app</button>
+	 </a>
+             
+      </div>
+	 
+	 
+      <hr> -->
+	  <hr>
+      <!-- QR Payment Section -->
+      <div class="qr-section">
+      <!--  <p><B>Having trouble with the above option? Scan below QR code to pay.</B></p> -->
+	  <p><B>Step1 - Download below QR</B></p>
+		<a id="QRCodeClickId" href="#"> 
+           <img id="qrImage" onclick="downloadQR()" src="Kotak-QR-Code.png" alt="QR Code" > </img>
+		</a>
+		<div class="qr-buttons">
+          <button type="button" class="download-btn" onclick="downloadQR()">⬇ Download</button>
+          <!-- <button type="button" class="share-btn" onclick="shareQR()">🔗 Share</button> -->
+		  <button type="button" class="share-btn" onclick="shareQRFile()">🔗 Share</button>
 		  
-		  	<button id="placeBidBtn" class="" onclick="placeBid()">
-         <span class="symbol plus">+</span> Increase Bid (+100000)
-    </button>
-	
-	
-		<button id="reduceBidBtn" class="" onclick="reduceBid()">
-       <span class="symbol minus">-</span> Reduce Bid (-100000)
-    </button>
-	
-       <!--   <button id="placeBidBtn" class="disabled" onclick="placeBid()">Increase Bid (+10,0000)</button>
-          <button id="reduceBidBtn" class="disabled" onclick="reduceBid()">Reduce Bid (-10,0000)</button> -->
         </div>
       </div>
-    </div>
+	  <hr>
+	<p><B>Step2</B></p>
+	<div class="qr-buttons">
+	
+	 <a id="PayButtonIdLink" href="#">  </a>
+          <button type="button" class="download-btn" onclick="redirectingToUPIApp()" > Open PhonePay</button>
+		  <button type="button" class="share-btn" onclick="redirectingToUPIApp_GPAY()" > Open GPay</button>
+		  
+	 
+      </div>
+	  <hr>
+	 <p><B>Step3 - Pay in App (Rs 300)</B></p>
+	  <ul>
+    <li>Scan Downloaded QR In App</li>
+    <li>Pay, Rs 300</li>
+	</ul>
+   <hr>
+
+    </form>
   </div>
-</div>
+  
+  <script>
+       	
+  function showAlert(message) {
+      document.getElementById('alertMessage').innerText = message;
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('customAlert').style.display = 'block';
+    }
 
-<div class="teams-section-wrapper" id="teamsListMainId">
-<span 
-            class="max-min-icon" 
-            id="maxMinIcon" 
-            onclick="toggleMaximize('teamsListMainId')"
-            title="Maximize/Minimize"
-        >
-            &#9724; </span>
-
-  <div class="teams-section" style="margin-top: 0px;">
-   
-    <div id="teamsList" style="margin-top: 0px;">
+    function closeAlert() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('customAlert').style.display = 'none';
+    }
 	
-	<!--
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="CSK" data-owner="N. Srinivasan">
-        <div class="team-name-card" >CSK</div>
-        <div class="team-owner-card">Owner: N. Srinivasan</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-       
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	  <div class="team-details" onclick="showTeamDetails('CSK')">CSK Details</div>
-	</div>
-	 
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="MI" data-owner="Mukesh Ambani">
-        <div class="team-name-card">MI</div>
-        <div class="team-owner-card">Owner: Mukesh Ambani</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-       
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	   <div class="team-details" onclick="showTeamDetails('MI')">Details</div>
-	</div>
+	 function showAlert1(message) {
+      document.getElementById('alertMessage1').innerText = message;
+      document.getElementById('overlay1').style.display = 'block';
+      document.getElementById('customAlert1').style.display = 'block';
+    }
+
+    function OkToProceed() {
+	  redirectingToUPIApp();
+	  document.getElementById('overlay1').style.display = 'none';
+      document.getElementById('customAlert1').style.display = 'none';
+	  window.close();
+    }
 	
+	function cancelAlert1() {
+      document.getElementById('overlay1').style.display = 'none';
+      document.getElementById('customAlert1').style.display = 'none';
+    }
 	
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="RCB" data-owner="United Spirits">
-        <div class="team-name-card">RCB</div>
-        <div class="team-owner-card">Owner: United Spirits</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-      
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	  <div class="team-details" onclick="showTeamDetails('RCB')">Details</div>
-	</div>
-	
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="KKR" data-owner="Shah Rukh Khan">
-        <div class="team-name-card">KKR</div>
-        <div class="team-owner-card">Owner: Shah Rukh Khan</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-        
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	  <div class="team-details" onclick="showTeamDetails('KKR')">Details</div>
-	</div>
-	
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="SRH" data-owner="Kalanithi Maran">
-        <div class="team-name-card">SRH</div>
-        <div class="team-owner-card">Owner: Kalanithi Maran</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-         
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	  <div class="team-details" onclick="showTeamDetails('SRH')">Details</div>
-	</div>
-
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="DC" data-owner="GMR & JSW">
-        <div class="team-name-card">DC</div>
-        <div class="team-owner-card">Owner: GMR & JSW</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-        
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	  <div class="team-details" onclick="showTeamDetails('DC')">Details</div>
-	</div>
-
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="RR" data-owner="Manoj Badale">
-        <div class="team-name-card">RR</div>
-        <div class="team-owner-card">Owner: Manoj Badale</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-       
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	   <div class="team-details" onclick="showTeamDetails('RR')">Details</div>
-	 </div>
-
-	<div id="teamCardsWrapper">
-      <div class="team-card" data-name="PBKS" data-owner="Preity Zinta & Ness Wadia">
-        <div class="team-name-card">PBKS</div>
-        <div class="team-owner-card">Owner: Preity Zinta & Ness Wadia</div>
-        <div class="team-baseprice">Owner Base Price: 50,000</div>
-        
-        <div class="team-tobebid">Bid Balance: 2,000,000</div>
-        <div class="team-balance">Available Balance: 2,000,000</div>
-        <div class="team-toselect">Remainining Players: 6</div>
-      </div>
-	  <div class="team-details" onclick="showTeamDetails('PBKS')">Details</div>
-    </div>
-	
-	<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
-        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
-        <button class="place-bid-btn" onclick="submitAuction()">
-        <i class="fas fa-hammer"></i> 
-        Place Bid
-    </button>
-    </div>
-	
-	
-	<div id="teamCardsWrapper_MarkUnsold" style=" display: block; ">
-      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Btn2">
-        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
-		<button class="player-unsold-btn" onclick="markUnsold()">
-        <span class="icon">🏷️</span>
-        Unsold Player
-    </button>
-	</div> 
-	-->
-  </div> 
-</div>
-</div>
-</div>
-
-<!-- (Popup and JS remain same as previous version) -->
-
-</body>
-</html>
-</div>
-
-<!-- Team details popup (owner as item 1, then sold players) -->
-<div class="popup" id="teamDetailPopup">
-  <div class="box">
-    <h3 id="td-name">Team Details</h3>
-    <div id="td-list" class="numbered-list"></div>
-    <button class="close" onclick="closeTeamPopup()">Close</button>
-  </div>
-</div>
-
-<script>
-/* ------------------------
-   Data & helpers
-   ------------------------ */
-const TOTAL_BALANCE = 2000000;
-const TOTAL_PLAYERS = 6;
- 
-let ownerBasePrices = {
-  "CSK": 50000,
-  "MI": 50000,
-  "RCB": 50000,
-  "KKR": 50000,
-  "SRH": 50000,
-  "DC": 50000,
-  "RR": 50000,
-  "PBKS": 50000
-};
-
-let teamSoldPlayers = {
-  "CSK": [], "MI": [], "RCB": [], "KKR": [], "SRH": [], "DC": [], "RR": [], "PBKS": []
-};
-
-let workbook = null;
-let mainSheetName = null;
-let currentPlayer = null; // raw object from sheet
-let currentBid = 0;       // numeric value in rupees, not formatted string
-let selectedTeam = null;
-
-let SOLD_INDEX = 5;
-let name_INDEX = 0;
-
-/* format as Indian rupee with commas */
-function formatINR(n){
-  if(n === null || n === undefined || n === '-') return '-';
-  const num = Number(n) || 0;
-  return '₹' + num.toLocaleString('en-IN');
-}
-
-function convertInrToNumber(inrString) {
-  // Input validation: Check if the input is actually a string
-  if (typeof inrString !== 'string') {
-    console.error("Input must be a string.");
-    return null;
-  }
-
-  // 1. Remove the Rupee symbol (₹) using a global replace
-  let cleanString = inrString.replace(/₹/g, '');
-
-  // 2. Remove all commas (,) using a global replace
-  cleanString = cleanString.replace(/,/g, '');
-
-  // 3. Trim any leading/trailing whitespace that might remain
-  cleanString = cleanString.trim();
-
-  // 4. Convert the final clean string to a floating-point number
-  const numberValue = parseFloat(cleanString);
-
-  // 5. Final check: Ensure the result is a valid number
-  if (isNaN(numberValue)) {
-    console.error(`Failed to convert string "${inrString}" to a number.`);
-    return null;
-  }
-
-  return numberValue;
-}
-
-/* ------------------------
-   Compute availability = Total - owner base - sum(sold bids)
-   ------------------------ */
-function computeAvailableForTeam(teamName){
-  const base = ownerBasePrices[teamName] || 0;
-  const soldList = teamSoldPlayers[teamName] || [];
-  const spent = soldList.reduce((s, p) => s + (Number(p.bid) || 0), 0);
-  return TOTAL_BALANCE - base - spent;
-}
-
-// Function to get remaining players to be selected for a team
-function getPlayersToBeSelected(teamName, TOTAL_PLAYERS) {
-   const soldList = teamSoldPlayers[teamName] || [];
-   const soldListSize = soldList.length;
-   const remaining = TOTAL_PLAYERS - soldListSize;
-   //alert("remaining-->"+ remaining);
-    // Ensure it never goes below 0
-    return remaining < 0 ? 0 : remaining;
-}
-
-function validateIfTeamHasBalanceToBid(teamName){
-	 const available = computeAvailableForTeam(teamName);
-	 const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName, TOTAL_PLAYERS);
-	 const toBeBidBalanceAvailable = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	 const toBeBidBalanceAvailableformatINR = formatINR(toBeBidBalanceAvailable);
-	 const finalBid = document.getElementById('finalBid').value
-	 if(convertInrToNumber(finalBid)>toBeBidBalanceAvailable){
-		alert(
-	  'You do not have sufficient Bidding balance.\n\n' +
-	  'Your current Bidding balance is '+ toBeBidBalanceAvailableformatINR +
-	  '\n\nThe Player bid amount is ' + finalBid);
-	  return "N";
-	 } 
-	  return "Y";
- }
-
-/* ------------------------
-   Initialize team card numbers
-   ------------------------ */
-function initTeamCardsFormatting(){
-
-	const fileInput = document.getElementById('excel-file');
-            
-	if (fileInput) {
-		fileInput.addEventListener('change', handleFileSelect, false);
-	}
-			
- //numberOfUnSoldPlayer = 6;
- //um
- // const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName);
-  //circularSpinner.classList.add('visible'); // Makes the spinner visible (display: flex)
-    
-  document.querySelectorAll('#teamsList .team-card').forEach(card => {
-    const name = card.getAttribute('data-name');
-    const base = ownerBasePrices[name] || 0;
-    card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
-    //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
-    const available = computeAvailableForTeam(name);
-	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
-    card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
-    if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
-    else card.querySelector('.team-balance').classList.remove('low-balance');
-	
-	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
-	
-  });
-}
-
-function initTeamCardsFormattingOnTeamClick(){
-     
-  document.querySelectorAll('#teamsList .team-card').forEach(card => {
-    const name = card.getAttribute('data-name');
-    const base = ownerBasePrices[name] || 0;
-    card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
-    //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
-    const available = computeAvailableForTeam(name);
-	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
-    card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
-    if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
-    else card.querySelector('.team-balance').classList.remove('low-balance');
-	
-	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
-	
-  });
-}
-
-function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
-  // 1. Input Validation: Check if both inputs are valid numbers.
-  if (typeof availableBalance !== 'number' || typeof numberOfUnSoldPlayer !== 'number' || isNaN(availableBalance) || isNaN(numberOfUnSoldPlayer)) {
-    console.error("Invalid input: Both Available Balance and Number of Unsold Player must be valid numbers.");
-    return null; 
-  }
-
-  // 2. Core Calculation: Balance = Available Balance - Number of Unsold Player
-  exceptNumberOfUnSoldPlayer = numberOfUnSoldPlayer-1;
-  const toBeBidBalance = availableBalance - (exceptNumberOfUnSoldPlayer * 50000);
-
-  // 3. Return the result
-  return toBeBidBalance;
-}
-
-/* ------------------------
-   Excel upload & render players
-   ------------------------ */
-document.getElementById('excelFile').addEventListener('change', event=>{
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e){
-    const data = new Uint8Array(e.target.result);
-    workbook = XLSX.read(data, { type: 'array' });
-    mainSheetName = workbook.SheetNames[0];
-    renderPlayers();
-  };
-  reader.readAsArrayBuffer(file);
-});
-
-function renderPlayers(){
-  if(!workbook || !mainSheetName) return;
-  const sheet = workbook.Sheets[mainSheetName];
-  const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-  const tbody = document.querySelector('#playerTable tbody');
-  tbody.innerHTML = '';
-
-  data.forEach((p,i) => {
-    const tr = document.createElement('tr');
-
-    // defensive keys
-    const name = p.Name || p.name || '';
-    const mobile = p.Mobile || p.mobile || 'N/A';
-    const role = p.Role || p.role || '';
-    const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
-    const sold = p.Sold || '';
-    const unavailibilty = p.Unavailibilty || '';
-
-    tr.innerHTML = `
-      <td>${name}</td>
-	  <td>${mobile}</td>
-      <td>${role}</td>
-      <td>${formatINR(base)}</td>
-	  <td>${unavailibilty}</td>
-      <td>${sold}</td>
-      
-    `;
-/**
- tr.innerHTML = `
-      <td>${name} \n ${mobile}</td>
-      <td>${mobile}</td>
-      <td>${role}</td>
-      <td>${formatINR(base)}</td>
-      <td>${sold}</td>
-      
-    `;
-**/
-
-    // clicking the row selects player (but clicking Details link opens popup)
-    tr.addEventListener('click', () => {
-	if(true) {
-		return; //Stopped click event of row
-	}
-      if(sold === "Yes"){
-        alert("Player already sold");
-        document.getElementById('placeBidBtn').classList.add('disabled');
-        document.getElementById('reduceBidBtn').classList.add('disabled');
-        return;
-      }
-	
-      currentPlayer = p;
-      currentBid = base; // numeric
-      // show formatted values
-      document.getElementById('finalBid').value = formatINR(currentBid);
-      document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
-      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo;
-      document.getElementById('basePrice').textContent = formatINR(base);
-	  document.getElementById('PlayerUnavailibiltyID').textContent = "Unavailibilty - " + unavailibilty;
-	 
-      // enable buttons
-      document.getElementById('placeBidBtn').classList.remove('disabled');
-      document.getElementById('reduceBidBtn').classList.remove('disabled');
-
-      // highlight selected row visually
-      document.querySelectorAll('#playerTable tbody tr').forEach(r => r.style.backgroundColor = '');
-      tr.style.backgroundColor = '#d4edda';
-	  
-	  clearAllTeamSelection();
-    });
-
-   tbody.appendChild(tr);
-  });
-}
-
-/* ------------------------
-   Player details popup (shows mobile)
-   ------------------------ */
-function showPlayerDetailsPopup(p){
-  document.getElementById('pd-name').textContent = p.Name || p.name || 'Player';
-  document.getElementById('pd-photo').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
-  document.getElementById('pd-role').textContent = p.Role || p.role || '-';
-  document.getElementById('pd-base').textContent = formatINR(parseInt(p.BasePrice || p.basePrice || 0));
-  document.getElementById('pd-mobile').textContent = p.Mobile || p.mobile || 'N/A';
-  document.getElementById('playerDetailPopup').style.display = 'flex';
-}
-function closePlayerPopup(){
-  document.getElementById('playerDetailPopup').style.display = 'none';
-}
-
-function clearAllTeamSelection(){
- document.querySelectorAll('#teamsList .team-card').forEach(c => {
-	 c.classList.remove('selected');
-	});	
-}
-
-
-/* ------------------------
-   Team card selection & update
-   ------------------------ */
-const teamCards = document.querySelectorAll('#teamsList .team-card');
-teamCards.forEach(card => {
-  card.addEventListener('click', function(){
-    teamCards.forEach(c => c.classList.remove('selected'));
-		
-    selectedTeam = { name: this.getAttribute('data-name'), owner: this.getAttribute('data-owner') };
-    
-	//document.getElementById('selectedTeam').textContent = 'Team: ' + selectedTeam.name;
-	
-	//Players to be selected must be greater than 0
-	if(updateTeamStyle(selectedTeam.name) == "Y"){
-		this.classList.add('selected');
-	} else{
-		this.classList.remove('selected');
-		this.style.backgroundColor = '#FFCCCB';
-	}
-	
-	//Player Bid amount must be greater than to be available Bid amount.
-	if(validateIfTeamHasBalanceToBid(selectedTeam.name) == "Y"){
-		this.classList.add('selected');
-	} else{
-		this.classList.remove('selected');
-	}
-	
-    // update available on right (Total - owner base - sold players)
-    const avail = computeAvailableForTeam(selectedTeam.name);
-    //document.getElementById('availableBalance').textContent = formatINR(avail);
-	//alert("Team name -<" + document.getElementById('selectedTeam').textContent);
-	//updateTeamStyle(selectedTeam.name);
-    // update team card UI
-	
-    initTeamCardsFormattingOnTeamClick();
-  });
-});
-
-function updateTeamStyle(teamName) {
-    const remaining = getPlayersToBeSelected(teamName,TOTAL_PLAYERS);
-	 if(remaining ==0) {
-        alert("You have selected all the players. Your Auction over.");	
-		return "N";
-	 }else {
-	   return "Y";
+	function redirectingToUPIApp_GPAY() {
+	  const paymentLink = document.getElementById("PayButtonIdLink");
+	  //const paymentLinkValue="tez://open";
+	  const paymentLinkValue="tez://upi/open";
+	  paymentLink.href = paymentLinkValue;
+	  paymentLink.click();
+	  window.close();	 
 	 }
-}
-
-/* Update team card's available display (keeps to the requested formula) */
-function updateTeamCardAvailable(teamName){
-  document.querySelectorAll('#teamsList .team-card').forEach(card => {
-    if(card.getAttribute('data-name') === teamName){
-      const avail = computeAvailableForTeam(teamName);
-      const balanceDiv = card.querySelector('.team-balance');
-      balanceDiv.textContent = 'Available Balance: ' + formatINR(avail);
-      if(avail < 0) balanceDiv.classList.add('low-balance'); else balanceDiv.classList.remove('low-balance');
-	  
-	  const playersToBeSelected = getPlayersToBeSelected(teamName);
 	 
-	  const toselectDiv = card.querySelector('.team-toselect');
-      toselectDiv.textContent = 'Players to be Selected: ' + playersToBeSelected;
-    }
-  });
-}
-
-/* ------------------------
-   Bidding functions
-   ------------------------ */
-function placeBid(){
-  if(!currentPlayer){ alert('Select a player first!'); return; }
-  currentBid = (Number(currentBid) || 0) + 50000;
-  document.getElementById('finalBid').value = formatINR(currentBid);
-  clearAllTeamSelection();
-}
-
-function reduceBid(){
-  if(!currentPlayer){ alert('Select a player first!'); return; }
-  const basePrice = parseInt(currentPlayer.BasePrice || currentPlayer.basePrice) || 0;
-  if((currentBid - 50000) >= basePrice){
-    currentBid = currentBid - 50000;
-    document.getElementById('finalBid').value = formatINR(currentBid);
-  } else {
-    alert('Bid cannot be lower than base price!');
-  }
-  clearAllTeamSelection();
-}
-
-function updateTeamStyle_Submit(teamName) {
-    const remaining = getPlayersToBeSelected(teamName);
-	 if(remaining ==0) {
-     	document.querySelectorAll('#teamsList .team-card').forEach(c => {
-    // 1. Remove the 'selected' class (keeping your original functionality)
-    //c.classList.remove('selected');
-
-if(c.getAttribute('data-name') === teamName){
-    // 2. Set the background color
-    c.style.backgroundColor = '#FFCCCB'; // Example: Set to White
-}
-    // OR
-    // c.style.backgroundColor = 'transparent'; // Example: Set to transparent
-});
-
-		return "N";
-	 }else {
-	   return "Y";
+	function redirectingToUPIApp() {
+	  /**const amountToPay = 1;
+	  //const payeeUPIID = "8983646362@kotak";
+	  //const payeeUPIID = "7843026362@ybl";
+	  const payeeUPIID = "Q659488962@ybl";
+      const tower = document.getElementById("tower");
+	  const towerValue = tower.value.trim();
+	  const filteredtowerValue =  processInput(towerValue);  
+	  
+	  const flat = document.getElementById("flat");
+	  const flatValue = flat.value.trim();
+	  const filteredflatValue =  processInput(flatValue); 
+	  
+	  const paymentNote = "RPL-"+filteredtowerValue+"-"+filteredflatValue;
+	  	  
+	  
+	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak;tn=%20;&cu=INR&pn=%20&tr=%20";
+	  //const paymentLinkValue="phonepe://pay?pa=8983646362@kotak&pn=UMESH MAHADEV JADHAV HUF&cu=INR";
+	  
+	  //const paymentLinkValue="upi://pay?pa=8983646362@kotak&am=$20;tn="+paymentNote+"&cu=INR&pn=%20&tr=%20";
+	  //const paymentLinkValue="upi://pay?pa="+payeeUPIID+"&am="+amountToPay+";tn="+paymentNote; **/
+	  
+	  const paymentLink = document.getElementById("PayButtonIdLink");
+	  const paymentLinkValue="phonepe://open";
+	  paymentLink.href = paymentLinkValue;
+	  paymentLink.click();
+	  window.close();
+	  //showAlert(paymentLinkValue);
 	 }
-}
-
-
-function UnsoldtoSold(){
-	const tbody = document.querySelector('#playerTable tbody');
-	const rows = tbody.getElementsByTagName('tr');
-    
-    if (rows.length === 0) {
-     alert("Please upload players.");
-     return;
-    }
 	
-	var confirmMsg = "You are putting all unsold players to sold Category. Please confirm."
-	if(!confirm(confirmMsg)){
+  function pay() {
+      /**const tower = document.getElementById("tower");
+	  if(tower==null || tower.value.trim().length==0){
+		showAlert("Please enter your Tower number to include it in the payment note.");
 		return;
-	}
-	
-	var isAllSoldOut = "Y";
-	for (let i = 0; i < rows.length; i++) {
-		const row = rows[i];
-		const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
-		//alert(soldValueOfEachRow);
-		if(soldValueOfEachRow=="Unsold"){
-			row.cells[SOLD_INDEX].textContent = "";
-		}
-	}
-	 collapseMenu();
-}
-
-function markUnsold(){
-
-	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
-	if("Please Select Player"==selectedPlayerValue){
-		alert("Player is not selected for Bid.");
-		return;
-	}
-	
-	var confirmMsg = "Are you sure to mark this player as unsold?"
-	if(confirm(confirmMsg)){
-	
-	if(workbook && mainSheetName){
-    const sheet = workbook.Sheets[mainSheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
-    data.forEach(p => {
-      if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
-        p.Sold = 'Unsold';
-		//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
-      }
-    });
-	
-	workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
-	renderPlayers();
-	}
-		
-	  document.getElementById('finalBid').value = '-';
-	  document.getElementById('selectedPlayer').textContent = 'Please Select Player';
-	  document.getElementById('basePrice').textContent = '-';
-	  //document.getElementById('availableBalance').textContent = '-';
-	  document.getElementById('placeBidBtn').classList.add('disabled');
-	  document.getElementById('reduceBidBtn').classList.add('disabled');
-	  document.getElementById('playerPhoto').src = '';
-	  document.getElementById('PlayerUnavailibiltyID').textContent = '-';
-	  
-	} else {
-		return;
-	}
-}
-
-/* ------------------------
-   Submit auction (sell player)
-   ------------------------ */
-function submitAuction(){
-
- if(!selectedTeam){
-    alert('Please select Team before placing a bid.');
-    return;
-  }
-  
-  if(!currentPlayer){
-    alert('Please select Player before placing a bid.');
-    return;
-  }
-  
- 
-
- if (updateTeamStyle_Submit(selectedTeam.name) =="N") {
-    alert("You have selected all the players. Your Auction is over.");
-	return;
- }
-
-	if(validateIfTeamHasBalanceToBid(selectedTeam.name) == "N"){
-		return;
-	}
-
-  // Available calculation: Total - owner base - sold players
-  const available = computeAvailableForTeam(selectedTeam.name);
-
-  if(currentBid > available){
-    alert(`This team does not have enough balance!\nAvailable: ${formatINR(available)}\nBid: ${formatINR(currentBid)}`);
-    return;
-  }
-
-  //const confirmMsg = `Confirm auction details:\n\nPlayer: ${currentPlayer.Name || currentPlayer.name}\nTeam: ${selectedTeam.name} (Owner: ${selectedTeam.owner})\nFinal Bid: //${formatINR(currentBid)}\n\nProceed?`;
-  //if(!confirm(confirmMsg)) return;
-
-  // Update workbook data
-  if(workbook && mainSheetName){
-    const sheet = workbook.Sheets[mainSheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
-    data.forEach(p => {
-      if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
-        // store plain number for Excel
-        p.FinalBid = Number(currentBid);
-        p.SoldToTeam = `${selectedTeam.name} (Owner: ${selectedTeam.owner})`;
-        p.Sold = 'Yes';
-		//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
-      }
-    });
-
-    workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
-
-    // Update team sheet with sold players (plain numbers)
-    const teamSheetName = selectedTeam.name;
-    const soldPlayers = data.filter(p => p.SoldToTeam === `${selectedTeam.name} (Owner: ${selectedTeam.owner})`);
-    workbook.Sheets[teamSheetName] = XLSX.utils.json_to_sheet(soldPlayers);
-    if(!workbook.SheetNames.includes(teamSheetName)) workbook.SheetNames.push(teamSheetName);
-
-    // Track sold players for display (store mobile too)
-    teamSoldPlayers[selectedTeam.name].push({
-      name: currentPlayer.Name || currentPlayer.name,
-      mobile: currentPlayer.Mobile || currentPlayer.mobile || 'N/A',
-      bid: Number(currentBid)
-    });
-
-    // Update the team card available (Total - owner base - sold)
-    updateTeamCardAvailable(selectedTeam.name);
-
-    // save file (numbers only)
-    XLSX.writeFile(workbook, 'AuctionResult.xlsx');
-	//XLSX.write(workbook, 'AuctionResult.xlsx');
-
-    //alert(`Player sold to ${selectedTeam.name} (Owner: ${selectedTeam.owner}) with final bid ${formatINR(currentBid)}`);
-  } else {
-    alert('No workbook loaded — the local Excel data is not available.');
-  }
-
-  // Reset UI selections (but keep team cards updated)
-  renderPlayers();
-  currentPlayer = null;
-  currentBid = 0;
-  
-  const numberOfUnSoldPlayer = getPlayersToBeSelected(selectedTeam.name);
-  
-  document.getElementById('finalBid').value = '-';
-  document.getElementById('selectedPlayer').textContent = 'Please Select Player';
-  document.getElementById('basePrice').textContent = '-';
-  //document.getElementById('availableBalance').textContent = '-';
-  document.getElementById('placeBidBtn').classList.add('disabled');
-  document.getElementById('reduceBidBtn').classList.add('disabled');
-  document.getElementById('playerPhoto').src = '';
-  document.getElementById('PlayerUnavailibiltyID').textContent = '-';
-  // unselect team cards (you can keep selected by removing this line if you prefer)
-  document.querySelectorAll('#teamsList .team-card').forEach(c => c.classList.remove('selected'));
-  updateTeamStyle_Submit(selectedTeam.name);
-  
-  const availableBalanceAfterSubmit = computeAvailableForTeam(selectedTeam.name);
-  const toBeBidBalance = calculateToBeBidBalance(availableBalanceAfterSubmit, numberOfUnSoldPlayer);
-  setBidBalanceAfterSubmit(selectedTeam.name,availableBalanceAfterSubmit,toBeBidBalance);
-  selectedTeam = null;
-
-const startSpinIdVar = document.getElementById('startSpinId');
-const teamsListMainIdVar = document.getElementById('teamsListMainId');
-
-//After successful Submit Visible Spin clock for spinning to go to next player
-startSpinIdVar.style.display = 'block';
-
-teamsListMainIdVar.style.display = 'block';
-
-//After successful submit, hide rotatating circul
-const spinnerContainerIDVar = document.getElementById('spinnerContainer');
-spinnerContainerIDVar.classList.remove('visible')
-spinnerContainerIDVar.classList.remove('spinnerContainerClass');
-
-const rightrightPlayerIDVar = document.getElementById('rightPlayer');
-rightrightPlayerIDVar.style.display = 'none';
-}
-
-function setBidBalanceAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBidBalance) {
-    document.querySelectorAll('#teamsList .team-card').forEach(c => {
-   
-	if(c.getAttribute('data-name') === teamName){
-	  c.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
-		}
-	});	
-}
-
-function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
-  // 1. Input Validation: Check if both inputs are valid numbers.
-  if (typeof availableBalance !== 'number' || typeof numberOfUnSoldPlayer !== 'number' || isNaN(availableBalance) || isNaN(numberOfUnSoldPlayer)) {
-    console.error("Invalid input: Both Available Balance and Number of Unsold Player must be valid numbers.");
-    return null; 
-  }
-
-  // 2. Core Calculation: Balance = Available Balance - Number of Unsold Player
-  exceptNumberOfUnSoldPlayer = numberOfUnSoldPlayer-1;
-  const toBeBidBalance = availableBalance - (exceptNumberOfUnSoldPlayer * 50000);
-
-  // 3. Return the result
-  return toBeBidBalance;
-}
-
-
-function getTeamParticularDetails(teamName, attributeNm){
-  var valueofdivVal = "";
-  document.querySelectorAll('#teamsList .team-card').forEach(card => {
-    if(card.getAttribute('data-name') === teamName){
- 	  const attributeDiv = card.querySelector(attributeNm);
-      valueofdivVal = attributeDiv.getAttribute('valueofdiv');
-    }
-  });
-  return valueofdivVal;
-}
-
-/* ------------------------
-   Show team details popup (owner as item 1, then sold players)
-   ------------------------ */
-function showTeamDetails(teamName){
-  const owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).textContent.replace("Owner: ","");
-  const base = getTeamParticularDetails(teamName,'.team-baseprice');
-  let html = '';
-
-  // Owner as item 1
-  html += `<span class="available-highlight">Total Allocated Balance:  ₹20,00,000</span>`;
-  html +="\n\n";
-  html += `1. Owner: ${owner} — Base: ${formatINR(base)}\n\n`;
-
-  // Sold players starting from 2, with mobile and one blank line after each
-  const sold = teamSoldPlayers[teamName] || [];
-  if(sold.length === 0){
-    html += `No players bought yet.\n`;
-  } else {
-    sold.forEach((p, idx) => {
-      const mobileText = p.mobile ? ` (Mobile: ${p.mobile})` : '';
-      html += `${idx+2}. ${p.name}${mobileText} — ${formatINR(p.bid)}\n\n`;
-    });
-  }
-
-  // Totals summary with dotted line above
-  const spent = sold.reduce((s,p)=> s + (Number(p.bid)||0), 0);
-  const available = computeAvailableForTeam(teamName);
-
-  html += `\n-----------------------------------\n`;
-  html += `Total Spent on Players: ${formatINR(spent)}\n`;
-  // available highlighted
-  html += `<span class="available-highlight">Available (Total - OwnerBase - Spent): ${formatINR(available)}</span>`;
-
-  document.getElementById('td-name').textContent = `${teamName} Details`;
-  document.getElementById('td-list').innerHTML = html;
-  document.getElementById('teamDetailPopup').style.display = 'flex';
-}
-function closeTeamPopup(){
-  document.getElementById('teamDetailPopup').style.display = 'none';
-}
-
-function rgbToHex(rgb) {
-    if (!rgb || !rgb.startsWith('rgb')) {
-        return null; // Return null if not a valid RGB string
-    }
-
-    // Function to convert a single decimal number (0-255) to a two-digit hex string
-    const componentToHex = (c) => {
-        const hex = c.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
-    };
-
-    // Extract the numbers using a regular expression
-    // Matches the 3 numbers inside the parentheses (e.g., "254, 249, 195")
-    const match = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-
-    if (match) {
-        // match[1], match[2], match[3] are the R, G, B values as strings
-        const r = parseInt(match[1], 10);
-        const g = parseInt(match[2], 10);
-        const b = parseInt(match[3], 10);
-
-        // Convert and concatenate to form the hex code
-        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-    }
-    
-    return null;
-  }
-  
-   function processLikeRowClick(selectedRow) {
-   const soldValue = selectedRow.cells[SOLD_INDEX].textContent;
-  
-	if(soldValue === "Yes"){
-        alert("Player already sold");
-        document.getElementById('placeBidBtn').classList.add('disabled');
-        document.getElementById('reduceBidBtn').classList.add('disabled');
-        return;
-      }
-	  
-	 const sheet = workbook.Sheets[mainSheetName];
-	 const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-	const rowIndex = selectedRow.sectionRowIndex; 
-	 data.forEach((p,i) => {
-	 if(rowIndex == i){
-		//alert(i + " " + rowIndex)
-				
-		const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
-		 currentPlayer = p;
-         currentBid = base; 
-	  
-		const name = p.Name || p.name || '';
-		const mobile = p.Mobile || p.mobile || 'N/A';
-		const role = p.Role || p.role || '';
-		const unavailibilty = p.Unavailibilty || '';
-		const sold = p.Sold || '';
-	  
-      // show formatted values
-      document.getElementById('finalBid').value = formatINR(currentBid);
-      document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
-      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
-      document.getElementById('basePrice').textContent = formatINR(base);
-      document.getElementById('PlayerUnavailibiltyID').textContent = "Unavailibilty - " + unavailibilty;
-	  
-      // enable buttons
-      document.getElementById('placeBidBtn').classList.remove('disabled');
-      document.getElementById('reduceBidBtn').classList.remove('disabled');
-	 
-	 }
-	 });
-
-	  
-  }
-   
-let currentHighlightedRow = null;
-function highlightRandomRow() {
-    const tbody = document.querySelector('#playerTable tbody');
-	const rows = tbody.getElementsByTagName('tr');
-    
-    if (rows.length === 0) {
-     alert("Please upload players.");
-     return;
-    }
-	
-	var isAllSoldOut = "Y";
-	for (let i = 0; i < rows.length; i++) {
-		const row = rows[i];
-		const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
-		//alert(soldValueOfEachRow);
-		if(soldValueOfEachRow === "Yes" || soldValueOfEachRow === "Unsold"){
-			isAllSoldOut = "Y";
-		} else {
-			isAllSoldOut = "N";
-			break;
-		}
-	}
-	
-	//alert("isAllSoldOut - " + isAllSoldOut);
-	if(isAllSoldOut=="Y") {
-		alert("All the current uploaded players are sold out. Please upload new players.");
-		return;
-	}
-	
-	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
-	if("Please Select Player"!=selectedPlayerValue){
-	const messageC = "Your current player is not sold out. Do you really wanted to Spin again? Pleae check if it is not a by mistake Spin.";
-		if(!confirm(messageC)){
-			return;
-		}
-	}
-
-const playerListDivVar = document.getElementById('playerListDiv');
-const startSpinIdVar = document.getElementById('startSpinId');
-const teamsListMainIdVar = document.getElementById('teamsListMainId');
-const rightPlayerIDVar = document.getElementById('rightPlayer');
-const spinnerContainerIDVar = document.getElementById('spinnerContainer');
-const rightMainIdDiv = document.getElementById('right');
-
-startSpinIdVar.style.display = 'none';
-teamsListMainIdVar.style.display = 'none';
-rightPlayerIDVar.style.display = 'none';
-rightMainIdDiv.style.display = 'block';
-
-spinnerContainerIDVar.classList.add('visible')
-spinnerContainerIDVar.classList.add('spinnerContainerClass');
-
-startSpinner();
-    
-    // 1. Remove highlight from the previously selected row
-    if (currentHighlightedRow) {
-      const backgroundColorOfLastRow = rgbToHex(currentHighlightedRow.style.backgroundColor);
-	  if(backgroundColorOfLastRow == '#d4edda'){
-		currentHighlightedRow.style.backgroundColor = 'white';
 	  }
-    }
-
-	var selectedRow = null;
-	for(i=0;i<9;i++){
-		// 2. Generate a random index
-		// Math.random() generates a number between 0 (inclusive) and 1 (exclusive)
-		// rows.length is the total number of rows
-		const randomIndex = Math.floor(Math.random() * rows.length);
-		
-		// 3. Select the new random row
-		selectedRow = rows[randomIndex];
-		
-	    const soldValue = selectedRow.cells[SOLD_INDEX].textContent;
-  
-		if(soldValue === "Yes" || soldValue === "Unsold"){
-			//alert("Found already sold player " + randomIndex);
-			continue;
-		}
-		break;
+	  
+	  const flat = document.getElementById("flat");
+	  if(flat==null || flat.value.trim().length==0){
+		showAlert("Please enter your Flat number to include it in the payment note.");
+		return;
+	  } **/
+	  		
+	 const finalMessageBeforePay = "Redirecting you to UPI App\n\n"+
+	  "Please Verify below details on your UPI App and then only Pay.\n"
+	  showAlert1(finalMessageBeforePay);
 	}
-    
-    // 4. Highlight the selected row
-    //selectedRow.classList.add('highlight');
-	selectedRow.style.backgroundColor = '#d4edda';
-    currentHighlightedRow = selectedRow;
 	
-	processLikeRowClick(selectedRow);
-	
-    clearAllTeamSelection();
-  }
-
-const spinButton = document.getElementById('toggleButton');
-const spinnerContainer = document.getElementById('spinnerContainer');
-const rightPlayerDiv = document.getElementById('rightPlayer');
-
- const circularSpinner = document.getElementById('circularSpinner');
- const toggleButton = document.getElementById('toggleButton');
- let isSpinning = false; // Initial state is stopped (false)
- 
- const teamsListMainIdDiv = document.getElementById('teamsListMainId');
-
- function startSpinner() {
-    circularSpinner.classList.add('visible'); // Makes the spinner visible (display: flex)
-	circularSpinner.classList.add('running');
-	circularSpinner.classList.add('spinnerContainerClass');
-	spinnerContainer.classList.add('spinnerContainerClass');
-	
-	teamsListMainIdDiv.style.display = 'none';
-	
-	//circularSpinner.style.display = 'none';
-	//circularSpinner.classList.add('hidden');
-	//teamsListMainIdDiv.classList.remove('running');
-	//teamsListMainIdDiv.classList.remove('visible'); 
 		
-	toggleButton.textContent = 'Stop Spin';
-	toggleButton.classList.add('stop-btn');
-	isSpinning = true;
-
-    // 3. Stop the spinning after a random duration (e.g., 2 to 5 seconds)
-    const spinDuration = Math.random() * 3000 + 2000; // 2000ms to 5000ms
-    setTimeout(() => {
-      stopSpinner();
-    }, spinDuration);
-  }
-
-  /**
-   * Stops the spinning effect, hides the spinner, and finalizes the selection.
-   */
-  function stopSpinner() {
-    // 1. Hide the running emoji spinner and show the table
-    circularSpinner.classList.remove('running');
-	circularSpinner.classList.remove('visible'); // Hides the spinner
-	toggleButton.innerHTML = 'Start Spin<Br>RPL<BR> R21 Premium League';
-	toggleButton.classList.remove('stop-btn');
-	isSpinning = false;
-
-	spinnerContainer.classList.remove('spinnerContainerClass');
-	
-	rightPlayerDiv.style.display = 'block';
-	teamsListMainIdDiv.style.display = 'block';
-	
-	rightPlayerDiv.classList.toggle('open');
-  }
-  
-  function showContent(showId, hideId) {
-        // Get the elements
-        const showDiv = document.getElementById(showId);
-        const hideDiv = document.getElementById(hideId);
-
-        // Show the requested div
-        if (showDiv) {
-            showDiv.style.display = 'block';
-        }
-
-        // Hide the other div
-        if (hideDiv) {
-            hideDiv.style.display = 'none';
-        }
-		const teamsListMainIdVar = document.getElementById('teamsListMainId');
-		teamsListMainIdVar.style.display = 'none';
-		 
-		collapseMenu();
+ function processInput(input1Value) {
+	 var newInput = "";
+      let inputValue = input1Value;
+	  let allowedNumbers = ["0","1","2","3","4","5","6","7","8","9","10"];
+	  let allowedChars = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+      // Loop through each character
+      for (let i = 0; i < inputValue.length; i++) {
+	  let char1 = inputValue[i];
+	   if (allowedNumbers.includes(char1)) {
+			newInput = newInput+char1;
+		}else{
+			char1 = char1.toUpperCase();
+			if (allowedChars.includes(char1)) {
+			newInput = newInput+char1;
+			}
+		}
+		}
+		return newInput;
     }
-
-
-// =========================================================
-        // 1. MAXIMIZE/MINIMIZE JAVASCRIPT
-        // =========================================================
-        function toggleMaximize(divId) {
-            const div = document.getElementById(divId);
-            const icon = document.getElementById('maxMinIcon');
-
-            if (!div || !icon) {
-                console.error(`Element with ID ${divId} or icon not found.`);
-                return;
-            }
-
-            // Toggle the 'maximized' class on the div
-            div.classList.toggle('maximized');
-
-            // Update the icon character based on the current state
-            if (div.classList.contains('maximized')) {
-                // Change to a different icon when maximized (e.g., minimize/contract icon)
-                icon.innerHTML = '&#9746;'; // Unicode for a ballot box with X (☒)
-                icon.title = 'Minimize';
-				
-				document.getElementById('teamCardsWrapper_PlaceBid').style.display = 'none';
-				document.getElementById('teamCardsWrapper_MarkUnsold').style.display = 'none';
-				  
-            } else {
-                // Revert to the default icon when minimized/default
-                icon.innerHTML = '&#9724;'; // Unicode for a small square (☐)
-                icon.title = 'Maximize';
-				
-				document.getElementById('teamCardsWrapper_PlaceBid').style.display = 'block';
-				document.getElementById('teamCardsWrapper_MarkUnsold').style.display = 'block';
-            }
-        }
-
-
- // Function to dynamically adjust the content margin (ESSENTIAL for auto-width menu)
-       const rplNavMenu = document.getElementById('rplNavMenu'); 
-        const optionsDiv = document.getElementById('rplMenuOptions');
-        const headerDiv = document.querySelector('.menu-header');
-        //const rplMainContent = document.getElementById('rplMainContent'); 
-        
-        // ⭐ NEW: Reference the container element by its new ID
-        const leftContainer = document.getElementById('left'); 
-
-        // Function to dynamically adjust the content margin
-        function updateContentMargin() {
-            const menuWidth = rplNavMenu.offsetWidth; 
-            //rplMainContent.style.marginLeft = (menuWidth + 20) + 'px'; 
-        }
-
-        // Function to collapse the menu
-        function collapseMenu() {
-            if (optionsDiv.style.display === 'block') {
-                optionsDiv.style.display = 'none';
-                headerDiv.classList.remove('active');
-                updateContentMargin();
-            }
-        }
-
-        // Function to toggle the menu visibility (Expand/Collapse logic)
-        function toggleMenu(event) {
-            if (event) {
-                event.stopPropagation(); 
-            }
-            
-            if (optionsDiv.style.display !== 'block') {
-                optionsDiv.style.display = 'block';
-                headerDiv.classList.add('active');
-                updateContentMargin();
-            } else {
-                collapseMenu();
-            }
-        }
-
-        // --- CORE FUNCTIONALITY: OUTSIDE CLICK LISTENER ---
-        document.addEventListener('click', function(event) {
-            // Check if the click target is OUTSIDE the menu container
-            if (!rplNavMenu.contains(event.target)) {
-                collapseMenu();
-            }
-        });
-       
-        // Set initial margin on load and update on resize
-        window.onload = updateContentMargin;
-        window.onresize = updateContentMargin;
-        
-		 // The required sheet name
-        const SHEET_NAME = 'Owner_List';
-        // The required file name for validation
-        const REQUIRED_FILENAME = 'Auction_Configuration.xlsx';
-		
-		
-		 /**
-         * Converts Excel column names to standard keys.
-         */
-        function normalizeHeader(header) {
-            const key = header.trim().toLowerCase().replace(/\s/g, '');
-            if (key.includes('ownername')) return 'OwnerName';
-            if (key.includes('teamname')) return 'TeamName';
-            if (key.includes('baseprice')) return 'BasePrice';
-            return header; 
-        }
-
-        /**
-         * Main function to handle file selection and process the Excel file.
-         * This function is called when the file input changes.
-         * @param {Event} evt The file selection event.
-         */
-        function handleFileSelect(evt) {
-            const output = document.getElementById('data-output');
-            const error = document.getElementById('error-output');
-            const status = document.getElementById('file-status');
-            const files = evt.target.files;
-
-            if (files.length === 0) {
-                status.textContent = 'No file selected.';
-                output.innerHTML = '<p class="text-gray-500 italic">Data will appear here after successful load.</p>';
-                return;
-            }
-            
-            const file = files[0];
-
-            // 1. File Name Validation Check
-            if (file.name !== REQUIRED_FILENAME) {
-                const invalidFileMsg ='Invalid file selected. Please upload configuration file.';
-                alert(invalidFileMsg);
-                return;
-            }
-            
-            const reader = new FileReader();
-
-            // Setup the onload handler to process the data once the file is read
-            reader.onload = (e) => {
-                try {
-                    const data = new Uint8Array(e.target.result);
-
-                    // 3. Read the workbook using SheetJS
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    // 4. Check if the required sheet exists
-                    if (!workbook.SheetNames.includes(SHEET_NAME)) {
-                        status.textContent = 'Processing failed.';
-                        throw new Error(`Sheet "${SHEET_NAME}" not found in the workbook. Found sheets: ${workbook.SheetNames.join(', ')}`);
-                    }
-    
-                    const worksheet = workbook.Sheets[SHEET_NAME];
-                    
-                    // 5. Convert the sheet data to a JSON array (array of arrays)
-                    const jsonOptions = { header: 1 };
-                    const sheetData = XLSX.utils.sheet_to_json(worksheet, jsonOptions);
-    
-                    if (sheetData.length <= 1) { // 1 row is just the header
-                        output.innerHTML = '<p class="text-gray-500 italic">The selected sheet is empty or contains only headers.</p>';
-                        status.textContent = 'Successfully processed file (0 records).';
-                        return;
-                    }
-                    
-                    // The first row is the header row
-                    const headers = sheetData[0];
-                    const dataRows = sheetData.slice(1);
-                    
-                    // 6. Map the data rows to objects using normalized keys
-                    const result = dataRows.map(row => {
-                        const rowObject = {};
-                        headers.forEach((header, index) => {
-                            const key = normalizeHeader(header);
-                            if (['OwnerName', 'TeamName', 'BasePrice'].includes(key)) {
-                                // Clean up the value
-                                let value = row[index];
-                                if (key === 'BasePrice') {
-                                    // Attempt to parse number, handling strings with currency/commas
-                                    if (typeof value === 'string') {
-                                        value = parseFloat(value.replace(/[^0-9.-]+/g,""));
-                                    }
-                                    value = isNaN(value) ? 0 : value; // Default to 0 if invalid
-                                } else {
-                                    // Ensure OwnerName/TeamName are treated as strings
-                                    value = String(value || '');
-                                }
-                                rowObject[key] = value;
-                            }
-                        });
-                        return rowObject;
-                    });
-                    
-					//alert(result);
-                    // 7. Display the structured data as cards
-                    displayData(result);
-                   alert("Configuration applied successfully.");
-
-                } catch (err) {
-                   alert('Error in loading configuration file ' + err);
-                }
-            };
-
-            // Setup the onerror handler
-            reader.onerror = (e) => {
-                status.textContent = 'File read failed.';
-                error.innerHTML = `<div class="p-4 bg-red-100 rounded-lg border border-red-300">
-                    <p class="text-red-700 font-bold mb-2">File Read Error:</p>
-                    <p class="text-sm text-red-600">An error occurred while reading the file: ${e.target.error.name}</p>
-                </div>`;
-            };
-
-            // Start reading the file as an ArrayBuffer
-            reader.readAsArrayBuffer(file);
-        }
-
-        /**
-         * Displays the processed JSON data in the requested HTML card structure.
-         */
-        function displayData(data) {
-            const output = document.getElementById('teamsList');
-            
-            if (data.length === 0) {
-                output.innerHTML = '<p class="text-gray-500 italic">No valid data rows found after parsing.</p>';
-                return;
-            }
-
-            // Start of the main card wrapper, styled as a responsive grid
-            let html = ``;
-           
-			const totalAllocatedAvailableBalance = 2000000;
-			
-			const initialPlayerCount = 7;
-            data.forEach((row) => {
-                const teamName = row.TeamName || 'N/A Team';
-                const ownerName = row.OwnerName || 'N/A Owner';
-                // Format BasePrice for display
-                const basePriceDisplay = row.BasePrice;
-                
-                // Escape single quotes for safe embedding in the onclick attribute
-                const safeTeamName = teamName.replace(/'/g, "\\'");
-                const availableBalance = totalAllocatedAvailableBalance-basePriceDisplay;
-				
-				const numberOfUnSoldPlayer = initialPlayerCount-1;
-				const toBeBidBalanceAvailable = calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer);
-	 
-                // The requested structure for a single item, styled with Tailwind
-                html += `
-						<div id="teamCardsWrapper">
-                        <div class="team-card" data-name="${teamName}" data-owner="${ownerName}">
-                            <div class="team-name-card" valueofdiv="${teamName}">${teamName}</div>
-                            <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName}</div>
-                            <div class="team-baseprice" valueofdiv="${basePriceDisplay}" >Owner Base Price: ${formatINR(basePriceDisplay)}</div>
-							<div class="team-balance" valueofdiv="${availableBalance}" >Available Balance: ${formatINR(availableBalance)}</div>
-							<div class="team-tobebid" valueofdiv="${toBeBidBalanceAvailable}" >Bid Balance: ${formatINR(toBeBidBalanceAvailable)}</div>
-							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >Remainining Players: ${numberOfUnSoldPlayer}</div>
-                        </div>
-                        <div class="team-details" onclick="showTeamDetails('${safeTeamName}')" > Details </div>
-						</div>
-                `;
-            });
-		
-html += `		
-			<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
-        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
-        <button class="place-bid-btn" onclick="submitAuction()">
-        <i class="fas fa-hammer"></i> 
-        Place Bid
-    </button>
-    </div>
 	
+    function downloadQR() {
+      const qr = document.getElementById("qrImage");
+      const link = document.createElement("a");
+      link.href = qr.src;
+      link.download = "QR_Code.png";
+      link.click();
+    }
 	
-	<div id="teamCardsWrapper_MarkUnsold" style=" display: block; ">
-      <div class="Submit_team-card" data-name="Submit Button1" data-owner="Btn2">
-        <div class="Submit_team-name-card">&nbsp;---------------------------------------</div>
-        <div class="Submit_team-owner-card">&nbsp;</div>
-		<button class="player-unsold-btn" onclick="markUnsold()">
-        <span class="icon">🏷️</span>
-        Unsold Player
-    </button>
-	</div> 
-	`;
-            html += `</div>`; // Close teamCardsWrapper
-           
-            //alert(html);
-			//console.error(html); // Already exists
-           
-            output.innerHTML = html;
+	// Share QR Code
+    async function shareQR() {
+      const qr = document.getElementById("qrImage");
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'QR Code Payment',
+            text: 'Scan this QR code to pay.',
+            url: qr.src
+          });
+          //alert('QR code shared successfully!');
+        } catch (err) {
+          //alert('Share canceled or failed.');
         }
-		
-/* ------------------------
-   Initial formatting on page load
-   ------------------------ */
-initTeamCardsFormatting();
+      } else {
+        alert('Sharing not supported on this browser.');
+      }
+    }
+	
+	async function shareQRFile() {
+	  const response = await fetch("https://raw.githubusercontent.com/umesh-m-jadhav/Umesh_Repo_Jadhav/main/Kotak-QR-Code.png");
+	  const blob = await response.blob();
+	  const file = new File([blob], "Kotak-QR-Code.png", { type: blob.type });
 
-</script>
+	  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+		await navigator.share({
+		  title: "QR Code",
+		  text: "Please check this QR code",
+		  files: [file],
+		});
+	  } else {
+		alert("File sharing is not supported on this browser/device");
+	  }
+}
+	
+  </script>
+  
 </body>
 </html>
