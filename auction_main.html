@@ -1321,11 +1321,12 @@ display: flex;
 <body>
 <input type="hidden" id="TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION" value="">
 <input type="hidden" id="AUCTION_ALLOCATED_BALANCE" value="">
-<input type="hidden" id="NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER" value="">
+<input type="hidden" id="NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER" value="">
 <input type="hidden" id="PLAYER_BASE_PRICE" value="">
 <input type="hidden" id="INCREMENTAL_DECREMENTAL_BID_AMOUNT" value="">
 <input type="hidden" id="TOURNAMENT_NAME" value="">
 <input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
+<input type="hidden" id="TOTAL_TEAM_COUNT" value="">
  
  <!-- 1st Row -->
  <div id="top-div-id" class="responsive-div">
@@ -1617,7 +1618,8 @@ function computeAvailableBalanceForTeam(teamName){
 
 // Function to get remaining players to be selected for a team
 function getPlayersToBeSelected(teamName) {
-   const TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER').value);
+   var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+   TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
    const soldList = teamSoldPlayers[teamName] || [];
    const soldListSize = soldList.length;
    const remaining = TOTAL_PLAYERS - soldListSize;
@@ -1628,19 +1630,32 @@ function getPlayersToBeSelected(teamName) {
 
 function validateIfTeamHasBalanceToBid(teamName){
 	 const available = computeAvailableBalanceForTeam(teamName);
-	 const TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER').value);
+	 var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+	 TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	 const numberOfUnSoldPlayer = getPlayersToBeSelected(teamName, TOTAL_PLAYERS);
 	 //const toBeBidBalanceAvailable = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
 	 const toBeBidBalanceAvailable = getTeamParticularDetails(teamName,'.team-tobebid');
 	 const toBeBidBalanceAvailableformatINR = formatINR(toBeBidBalanceAvailable);
 	 const finalBid = document.getElementById('finalBid').value
+	 
+	 if(numberOfUnSoldPlayer==0){
+		alert("You have selected all the players. Your Auction is over.");
+		return "N";
+	 }
+	 
+	 if(!currentPlayer){ 
+		alert('No Player found. Please rotate Spinner to get player for Auction.');
+		return "N";
+	}
+	
 	 if(convertInrToNumber(finalBid)>toBeBidBalanceAvailable){
 		alert(
 	  'You do not have sufficient Bidding balance.\n\n' +
 	  'Your current Bidding balance is '+ toBeBidBalanceAvailableformatINR +
 	  '\n\nThe Player bid amount is ' + finalBid);
 	  return "N";
-	 } 
+	 }
+	 
 	  return "Y";
  }
 
@@ -1666,7 +1681,8 @@ function initTeamCardsFormatting(){
     card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
     //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
     const available = computeAvailableBalanceForTeam(name);
-	const TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER').value);
+	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
     card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
@@ -1686,7 +1702,8 @@ function initTeamCardsFormattingOnTeamClick(){
     card.querySelector('.team-baseprice').textContent = 'Owner Base Price: ' + formatINR(base);
     //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
     const available = computeAvailableBalanceForTeam(name);
-	const TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER').value);
+	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
     card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
@@ -1850,7 +1867,7 @@ teamCards.forEach(card => {
 	//document.getElementById('selectedTeam').textContent = 'Team: ' + selectedTeam.name;
 	
 	//Players to be selected must be greater than 0
-	if(updateTeamStyle(selectedTeam.name) == "Y"){
+	if(isAllPlayersSoldOut(selectedTeam.name) == "Y"){
 		this.classList.add('selected');
 	} else{
 		this.classList.remove('selected');
@@ -1868,7 +1885,7 @@ teamCards.forEach(card => {
     const avail = computeAvailableBalanceForTeam(selectedTeam.name);
     //document.getElementById('availableBalance').textContent = formatINR(avail);
 	//alert("Team name -<" + document.getElementById('selectedTeam').textContent);
-	//updateTeamStyle(selectedTeam.name);
+	//isAllPlayersSoldOut(selectedTeam.name);
     // update team card UI
 	
     initTeamCardsFormattingOnTeamClick();
@@ -1876,14 +1893,15 @@ teamCards.forEach(card => {
 });
 **/
 
-function updateTeamStyle(teamName) {
-	const TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_WITHOUT_OWNER').value);
+function isAllPlayersSoldOut(teamName) {
+	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
     const remaining = getPlayersToBeSelected(teamName,TOTAL_PLAYERS);
 	 if(remaining ==0) {
         alert("You have selected all the players. Your Auction is over.");	
-		return "N";
+		return "Y";
 	 }else {
-	   return "Y";
+	   return "N";
 	 }
 }
 
@@ -1897,7 +1915,7 @@ document.querySelectorAll('#teamsList .team-card').forEach(card => {
 }
 
 /* Update team card's available display (keeps to the requested formula) */
-function updateTeamCardAvailable(teamName){
+function updateAvailableBalance(teamName){
   document.querySelectorAll('#teamsList .team-card').forEach(card => {
     if(card.getAttribute('data-name') === teamName){
       const avail = computeAvailableBalanceForTeam(teamName);
@@ -2090,7 +2108,8 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
   
   const availableBalanceAfterSubmit = computeAvailableBalanceForTeam(selectedTeamName);
   const toBeBidBalance = calculateToBeBidBalance(availableBalanceAfterSubmit, numberOfUnSoldPlayer);
-  setBidBalanceAfterSubmit(selectedTeamName,availableBalanceAfterSubmit,toBeBidBalance);
+  var totalRemainingPlayers = getTotalRemainingPlayers();
+  setTeamParamsAfterSubmit(selectedTeamName,availableBalanceAfterSubmit,toBeBidBalance, totalRemainingPlayers);
   selectedTeam = null;
 	
 	const teamsListMainIdVar = document.getElementById('teamsListMainId');
@@ -2104,7 +2123,7 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
 	const rightrightPlayerIDVar = document.getElementById('rightPlayer');
 	rightrightPlayerIDVar.style.display = 'none';
 	
-	var totalRemainingPlayers = getTotalRemainingPlayers();
+	
 	document.getElementById('toggleButtonMsg3').innerHTML = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value) - totalRemainingPlayers;
 	document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
 	
@@ -2117,12 +2136,14 @@ function handleConfirm() {
 		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		submitAuction();
+		applyAuctionOverColorToAllTeam();
     }
 
 function handleCancel() {
         const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		changeBGImageToOriginalMode();
+		applyAuctionOverColorToAllTeam();
 		//alert("❌ CANCELED: The transaction has been stopped.");
 }
 
@@ -2276,7 +2297,7 @@ function submitAuction(){
     });
 
     // Update the team card available (Total - owner base - sold)
-    updateTeamCardAvailable(selectedTeam.name);
+    updateAvailableBalance(selectedTeam.name);
 
     // save file (numbers only)
     XLSX.writeFile(workbook, 'AuctionResult.xlsx');
@@ -2310,9 +2331,8 @@ function submitAuction(){
   const availableBalanceAfterSubmit = computeAvailableBalanceForTeam(selectedTeam.name);
   const numberOfUnSoldPlayerAfterSubmit = getPlayersToBeSelected(selectedTeam.name);
   const toBeBidBalance = calBidBalance(availableBalanceAfterSubmit,numberOfUnSoldPlayerAfterSubmit);
-  setBidBalanceAfterSubmit(selectedTeam.name,availableBalanceAfterSubmit,toBeBidBalance);
+  setTeamParamsAfterSubmit(selectedTeam.name,availableBalanceAfterSubmit,toBeBidBalance,numberOfUnSoldPlayerAfterSubmit);
   selectedTeam = null;
-     
 }
 
 function calBidBalance(availableBalance, remainingPlayers) {
@@ -2328,12 +2348,13 @@ function calBidBalance(availableBalance, remainingPlayers) {
 	}
 }
 
-function setBidBalanceAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBidBalance) {
+function setTeamParamsAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBidBalance, remainingPlayers) {
     document.querySelectorAll('#teamsList .team-card').forEach(c => {
    
 	if(c.getAttribute('data-name') === teamName){
 	  c.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
 	  c.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
+	  c.querySelector('.team-toselect').setAttribute('valueofdiv', remainingPlayers);
 		}
 	});	
 }
@@ -2888,7 +2909,10 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 								document.getElementById(key).value=value;
 							}
 						});
+						const totalTeamCount = Number(document.getElementById('TOTAL_TEAM_COUNT').value);
+						const totalPlayersPerTeam = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 						
+						document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value = totalTeamCount * totalPlayersPerTeam;
 						document.getElementById('Increase_Bid_value').textContent=formatINR(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
 						document.getElementById('Decrease_Bid_value').textContent=formatINR(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
 						
@@ -2929,7 +2953,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
            
 			const totalAllocatedAvailableBalance = document.getElementById('AUCTION_ALLOCATED_BALANCE').value;
 			
-			const initialPlayerCount = 7;
+			const initialPlayerCount = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 			var counter = 1;
             data.forEach((row) => {
                 const teamName = row.TeamName || 'N/A Team';
@@ -3012,49 +3036,47 @@ teamCards.forEach(card => {
     teamCards.forEach(c => c.classList.remove('selected'));
 	
     selectedTeam = { name: this.getAttribute('data-name'), owner: this.getAttribute('data-owner') };
-		  
-	//Players to be selected must be greater than 0
-	if(updateTeamStyle(selectedTeam.name) == "Y"){
-		this.classList.add('selected');
-		//this.style.backgroundColor = '#28a745';
-		//this.style.color = '#fff';
-	} else{
-		this.classList.remove('selected');
-		this.style.backgroundColor = '#FFCCCB';
-		return; 
-	}
-	
-	//Player Bid amount must be greater than to be available Bid amount.
+		
+	//Multiple validations inside this function.
 	if(validateIfTeamHasBalanceToBid(selectedTeam.name) == "Y"){
-		this.classList.add('selected');
-	} else{
-		this.classList.remove('selected');
-	}
+		applySelectedUnselectedColorToAllTeam(selectedTeam.name);
+	} 
 	
-	if(!currentPlayer){ 
-		alert('No Player found. Please rotate Spinner to get player for Auction.'); 
-		return; 
-	}
-	
-	 document.querySelectorAll('#teamsList .team-card').forEach(card => {
-		  if(card.getAttribute('data-name') == selectedTeam.name){
-			card.style.background = "#28a745";
-    }else {
-			card.style.background = "#f0f0f0";
-	}
-      });
-	
+	applyAuctionOverColorToAllTeam();
     initTeamCardsFormattingOnTeamClick();
   });
 });
 			
         }
 		
+		function applySelectedUnselectedColorToAllTeam(teamName) {
+			 document.querySelectorAll('#teamsList .team-card').forEach(card => {
+			 if(card.getAttribute('data-name') === teamName){
+				card.style.background = '#28a745';
+			  }else{
+				card.style.background = 'white';
+			  }
+		  });
+		}
+		
+		function applyAuctionOverColorToAllTeam() {
+			 document.querySelectorAll('#teamsList .team-card').forEach(card => {
+				const attributeDiv = card.querySelector('.team-toselect');
+				const remainingPlayerCountFromScreen = Number(attributeDiv.getAttribute('valueofdiv'));
+				 if(remainingPlayerCountFromScreen==0){
+					card.style.background = '#FFCCCB';
+				 }
+		  });
+		}
+		
 		function closePopup() {
   			const startSpinIdDiv = document.getElementById('startSpinId');
 			startSpinIdDiv.style.display = 'block';
 			changeBGImageToOriginalMode();
 			afterSoldPopup();
+			applyAuctionOverColorToAllTeam();
+			
+			selectedTeam = null;
 			
 			const popup = document.getElementById('successPopup');
             
