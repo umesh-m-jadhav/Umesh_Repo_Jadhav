@@ -1327,6 +1327,7 @@ display: flex;
 <input type="hidden" id="TOURNAMENT_NAME" value="">
 <input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
 <input type="hidden" id="TOTAL_TEAM_COUNT" value="">
+<input type="hidden" id="AUCTION_ACTION" value="">
  
  <!-- 1st Row -->
  <div id="top-div-id" class="responsive-div">
@@ -1569,6 +1570,8 @@ let selectedTeam = null;
 let SOLD_INDEX = 5;
 let name_INDEX = 0;
 const CONGRATE_MEG_ON_CONFIGURATION_UPLOAD = "Congratulations! Auction Configuration data is already loaded. Please proceed."
+const AUCTION_ACTION_PLACE_BID = "AUCTION_ACTION_PLACE_BID";
+const AUCTION_ACTION_UNSOLD_PLAYER = "AUCTION_ACTION_UNSOLD_PLAYER";
 
 /* format as Indian rupee with commas */
 function formatINR(n){
@@ -1800,7 +1803,7 @@ function renderPlayers(){
 		return; //Stopped click event of row
 	}
       if(sold === "Yes"){
-        alert("Player already sold");
+        alert("Player already sold...");
         document.getElementById('placeBidBtn').classList.add('disabled');
         document.getElementById('reduceBidBtn').classList.add('disabled');
         return;
@@ -2030,37 +2033,63 @@ function UnsoldtoSold(){
 }
 
 function markUnsold(){
-
+	document.getElementById('AUCTION_ACTION').value = AUCTION_ACTION_UNSOLD_PLAYER;
 	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
 	if("Please Select Player"==selectedPlayerValue){
 		alert("Player is not selected for Bid.");
 		return;
 	}
 	
-	var confirmMsg = "Are you sure to mark this player as unsold?"
-	if(confirm(confirmMsg)){
+	changeBGImageToDarkMode();
+	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+	confirmationBoxDiv.style.display = 'block';
 	
-	if(workbook && mainSheetName){
-    const sheet = workbook.Sheets[mainSheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+	const container = document.getElementById('dataContainer');
+    container.innerHTML = ''; 
+	
+	container.innerHTML += `
+                    <div class="data-separator">
+                        <hr class="separator-line">
+                        <span class="separator-text">Are you sure to mark this player as unsold?
+						<BR><BR>
+						Unsold Players will be bidded at last.
+						</span>
+                    </div>
+                `;
+	
+	 const separatorDiv = container.querySelector('.data-separator');
+        if (separatorDiv && separatorDiv.nextElementSibling) {
+            separatorDiv.nextElementSibling.style.paddingTop = '8px';
+        }
+	
+}
 
-    data.forEach(p => {
-      if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
-        p.Sold = 'Unsold';
-		//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
-      }
-    });
+function markUnsold_Yes(){
+	if(workbook && mainSheetName){
+		const sheet = workbook.Sheets[mainSheetName];
+		const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+
+		data.forEach(p => {
+		  if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
+			p.Sold = 'Unsold';
+			//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
+		  }
+		});
+		
+		workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
+		renderPlayers();
+		}
 	
-	workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
-	renderPlayers();
-	}
+	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+	confirmationBoxDiv.style.display = 'none';
+	
+	  currentPlayer = null;
 	  const startSpinIdVar = document.getElementById('startSpinId');
 	  startSpinIdVar.style.display = 'block';
-	  afterSubmitOrMarkUnsold(selectedTeam.name);
+	  afterSoldPopup();
+	  changeBGImageToOriginalMode();
+	  applyAuctionOverColorToAllTeam();
 	  
-	} else {
-		return;
-	}
 }
 
 function afterSoldPopup(){
@@ -2093,7 +2122,7 @@ function afterSoldPopup(){
 }
 
 function afterSubmitOrMarkUnsold(selectedTeamName){
- const numberOfUnSoldPlayer = getPlayersToBeSelected(selectedTeamName);
+  const numberOfUnSoldPlayer = getPlayersToBeSelected(selectedTeamName);
   
   document.getElementById('finalBid').value = '-';
   document.getElementById('selectedPlayer').textContent = 'Please Select Player';
@@ -2133,10 +2162,16 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
 }
 
 function handleConfirm() {
-		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
-		confirmationBoxDiv.style.display = 'none';
-		submitAuction();
-		applyAuctionOverColorToAllTeam();
+		const actionTaken  = document.getElementById('AUCTION_ACTION').value
+		//alert('actionTaken -->' + actionTaken);
+		if (actionTaken == AUCTION_ACTION_PLACE_BID ) {
+			const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+			confirmationBoxDiv.style.display = 'none';
+			submitAuction();
+			applyAuctionOverColorToAllTeam();
+		}else if (actionTaken == AUCTION_ACTION_UNSOLD_PLAYER ) {
+			markUnsold_Yes();
+		}
     }
 
 function handleCancel() {
@@ -2167,7 +2202,7 @@ function handleCancel() {
 		finalBidDiv.style.background = "grey";
 		
 		document.querySelectorAll('#teamsList .team-card').forEach(card => {
-		   if(card.getAttribute('data-name') != selectedTeam.name){
+		   if(selectedTeam == null || card.getAttribute('data-name') != selectedTeam.name){
 				card.style.background = "grey";
 		   }
       });
@@ -2191,7 +2226,7 @@ function handleCancel() {
 	}
 	
 function confirmationMessageOnSubmit(){
-	
+	document.getElementById('AUCTION_ACTION').value = AUCTION_ACTION_PLACE_BID;
 	 if(!selectedTeam){
     alert('Please select Team before placing a bid.');
     return;
@@ -2443,7 +2478,7 @@ function rgbToHex(rgb) {
    const soldValue = selectedRow.cells[SOLD_INDEX].textContent;
   
 	if(soldValue === "Yes"){
-        alert("Player already sold");
+        alert("Player already sold..");
         document.getElementById('placeBidBtn').classList.add('disabled');
         document.getElementById('reduceBidBtn').classList.add('disabled');
         return;
