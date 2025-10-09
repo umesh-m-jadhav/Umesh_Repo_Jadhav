@@ -254,7 +254,7 @@ text-align:right; }
   
   .team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
   .team-card.selected { background-color:#28a745; color:#fff; }
-  .team-name-card { font-weight:bold; font-size:16px; margin-bottom:5px;
+  .team-name-card { font-weight:bold; margin-bottom:5px;
 	color: #8b4513; /* Brown text */
     font-family: 'Verdana', sans-serif;
     font-size: 1.0em;
@@ -1277,7 +1277,7 @@ display: flex;
             //top: 20%;          
             //left: 70%;         
             //transform: translate(-50%, -50%);
-			padding-top: 70px;
+			padding-top: 130px;
             
             font-family: 'Arial Black', Gadget, sans-serif; 
             font-size: 1.5em; 
@@ -1316,6 +1316,106 @@ display: flex;
             //padding: 0 10px; 
         }
 		
+.bat-container {
+    position: fixed;
+    top: 20px;        /* 💥 Updated to 30px from the top edge */
+    right: 200px;        /* Move to the right edge */
+    width: 200px;
+    height: 300px;
+    filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
+    z-index: 1000; 
+}
+
+.bat-blade {
+    position: absolute;
+    top: 100px;
+    width: 200px; 
+    height: 300px;
+    
+    background: linear-gradient(to right, #B8860B 0%, #D8A54B 50%, #B8860B 100%);
+    
+    border-bottom-left-radius: 100px; 
+    border-bottom-right-radius: 100px; 
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.bat-message {
+    position: absolute;
+    top: 80px; 
+    width: 100%;
+    text-align: center;
+    color: #2F4F4F; /* DarkSlateGray */
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3; 
+    text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.3);
+    user-select: none;
+    transform: rotateZ(-1deg);
+    z-index: 2;
+}
+
+/* Handle and Grip */
+.handle {
+    position: absolute;
+    top: 0;
+    left: 85px; 
+    width: 30px;
+    height: 120px;
+    background-color: #704214; 
+    border-radius: 5px;
+    z-index: 2;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.grip {
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 80px;
+    
+    border-top-left-radius: 50% 10px;
+    border-top-right-radius: 50% 10px;
+    
+    background-image: repeating-linear-gradient(
+        45deg,
+        #4A4A4A,
+        #4A4A4A 4px,
+        #606060 4px,
+        #606060 8px
+    );
+    z-index: 3;
+}
+
+.handle-cap {
+    position: absolute;
+    top: -10px;
+    left: 0;
+    width: 30px;
+    height: 20px;
+    background-color: #4A4A4A; 
+    border-radius: 50%;
+    z-index: 4;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.shoulder {
+    position: absolute;
+    top: 90px;
+    left: 70px; 
+    width: 60px;
+    height: 20px;
+    background-color: #8B4513; 
+    border-radius: 5px;
+    z-index: 2;
+}
+		
+		.large-money {
+  font-size: 1.0rem; /* 'rem' is often preferred as it's relative to the root font size */
+}
 </style>
 </head>
 <body>
@@ -1371,22 +1471,8 @@ display: flex;
 		 <div class="split-ball" onclick="highlightRandomRow()" id = "startSpinId" style=" display: block;">
 		 <Div id="toggleButton1" class="ball-text">
 				<span id="toggleButtonMsg1"> </span>
-				<BR><BR>
-				<span id="toggleButtonMsg1_2" style="font-size: 14px;font-style: italic;padding-top: 20;">
-				Total Team: <span  id="toggleButtonMsg5">8</span>
-				</span>
-				<BR>
-				<span id="toggleButtonMsg1_2" style="font-size: 14px;font-style: italic;padding-top: 20;">
-				Total Player: <span  id="toggleButtonMsg2"> </span>
-				</span>
-				<BR><BR>
-				<span id="toggleButtonMsg1_3"  style="font-size: 16px;font-style: italic;">Sold Player: <span  id="toggleButtonMsg3"> </span>
-				</span>
-				<BR>
-				<span id="toggleButtonMsg1_4"  style="font-size: 18px;font-style: italic;width:200px;">Unsold Player: <span  id="toggleButtonMsg4"> </span>
-				</span>
+				
 		 </Div>
-		 
 		</div>
 
 <div class="success-container" id="successPopup" style=" display: none;">
@@ -1471,6 +1557,23 @@ display: flex;
     </div>
 	
   </div> 
+  
+  <div class="bat-container" id="bat-container-id" style="display: block;">
+    <div class="handle">
+        <div class="handle-cap"></div>
+        <div class="grip"></div>
+    </div>
+    <div class="shoulder"></div>
+    <div class="bat-blade">
+        <div class="bat-message">
+            Total Team = <span id="toggleButtonMsg5"></span><br>
+            Total players = <span id="toggleButtonMsg2"> </span><br><br>
+			
+			Sold Player = <span  id="toggleButtonMsg3"></span><br>
+            UnSold Player = <span  id="toggleButtonMsg4"> </span>
+        </div>
+    </div>
+</div>
  
 </div>
 
@@ -1687,12 +1790,12 @@ function initTeamCardsFormatting(){
 	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
-    card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
+    card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + formatINR(available)+ '<span class="large-money" >💰</span>';
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
     else card.querySelector('.team-balance').classList.remove('low-balance');
 	
 	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
+	card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance) + '<span class="large-money">📌</span>';
 	
   });
 }
@@ -1708,12 +1811,12 @@ function initTeamCardsFormattingOnTeamClick(){
 	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
-    card.querySelector('.team-balance').textContent = 'Available Balance: ' + formatINR(available);
+    card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + formatINR(available) + '<span class="large-money">💰</span>';
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
     else card.querySelector('.team-balance').classList.remove('low-balance');
 	
 	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
+	card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance)+ '<span class="large-money">📌</span>';
 	
   });
 }
@@ -1799,9 +1902,13 @@ function renderPlayers(){
 	index = index+1;
     // clicking the row selects player (but clicking Details link opens popup)
     tr.addEventListener('click', () => {
-	if(true) {
-		return; //Stopped click event of row
-	}
+	//if(true) {
+		//return; //Stopped click event of row
+	//}
+	
+	currentHighlightedRow_ClickOfRow(tr);
+	
+	/**
       if(sold === "Yes"){
         alert("Player already sold...");
         document.getElementById('placeBidBtn').classList.add('disabled');
@@ -1826,7 +1933,7 @@ function renderPlayers(){
       document.querySelectorAll('#playerTable tbody tr').forEach(r => r.style.backgroundColor = '');
       tr.style.backgroundColor = '#d4edda';
 	  
-	  clearAllTeamSelection();
+	  clearAllTeamSelection(); **/
     });
 
    tbody.appendChild(tr);
@@ -1923,7 +2030,7 @@ function updateAvailableBalance(teamName){
     if(card.getAttribute('data-name') === teamName){
       const avail = computeAvailableBalanceForTeam(teamName);
       const balanceDiv = card.querySelector('.team-balance');
-      balanceDiv.textContent = 'Available Balance: ' + formatINR(avail);
+      balanceDiv.innerHTML = 'Available Balance: ' + formatINR(avail) + '<span class="large-money">💰</span>';
       if(avail < 0) balanceDiv.classList.add('low-balance'); else balanceDiv.classList.remove('low-balance');
 	  
 	  const playersToBeSelected = getPlayersToBeSelected(teamName);
@@ -2000,6 +2107,9 @@ function UnsoldtoSold(){
 	const startSpinIdDivIdVar = document.getElementById('startSpinId');
 	startSpinIdDivIdVar.style.display = 'none';
 	
+	const batContainer = document.getElementById('bat-container-id');
+	batContainer.style.display = 'none';
+
 	var confirmMsg = "You are putting all unsold players to sold Category. Please confirm."
 	if(!confirm(confirmMsg)){
 		return;
@@ -2086,6 +2196,10 @@ function markUnsold_Yes(){
 	  currentPlayer = null;
 	  const startSpinIdVar = document.getElementById('startSpinId');
 	  startSpinIdVar.style.display = 'block';
+	  
+	  const batContainer = document.getElementById('bat-container-id');
+	  batContainer.style.display = 'block';
+
 	  afterSoldPopup();
 	  changeBGImageToOriginalMode();
 	  applyAuctionOverColorToAllTeam();
@@ -2112,7 +2226,10 @@ function afterSoldPopup(){
 	rightrightPlayerIDVar.style.display = 'none';
 	
 	var totalRemainingPlayers = getTotalRemainingPlayers();
-	document.getElementById('toggleButtonMsg3').innerHTML = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value) - totalRemainingPlayers;
+	const totalNumOfPlayer = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value);
+	const totalOwnerCount = Number(document.getElementById('TOTAL_TEAM_COUNT').value);
+	const totalSoldCount = totalNumOfPlayer - totalRemainingPlayers - totalOwnerCount;
+	document.getElementById('toggleButtonMsg3').innerHTML = totalSoldCount;
 	document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
@@ -2351,9 +2468,6 @@ function submitAuction(){
   const confirmationBoxDiv = document.getElementById('successPopup');
   confirmationBoxDiv.style.display = 'block';
   
-  //const startSpinIdDiv = document.getElementById('startSpinId');
-  //startSpinIdDiv.style.display = selectedTeam.name;
-  
   const soldOutTeamNameIDDiv = document.getElementById('SoldOutTeamNameID');
   soldOutTeamNameIDDiv.textContent = selectedTeam.name;
    
@@ -2387,7 +2501,7 @@ function setTeamParamsAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBid
     document.querySelectorAll('#teamsList .team-card').forEach(c => {
    
 	if(c.getAttribute('data-name') === teamName){
-	  c.querySelector('.team-tobebid').textContent = 'Bid Balance: ' + formatINR(toBeBidBalance);
+	  c.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance) + '<span class="large-money">📌</span>';
 	  c.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
 	  c.querySelector('.team-toselect').setAttribute('valueofdiv', remainingPlayers);
 		}
@@ -2517,15 +2631,46 @@ function rgbToHex(rgb) {
 
 	  
   }
-   
+
+let currentHighlightedRow_ClickOfRowVar = null;
+function currentHighlightedRow_ClickOfRow(clickedRow) {
+    const tbody = document.querySelector('#playerTable tbody');
+ 	const soldValueOfRow = clickedRow.cells[SOLD_INDEX].textContent;
+	
+	if(soldValueOfRow=="Yes") {
+		alert("This Player is already sold out, so can't open it again for Auction.");
+		return;
+	}
+	
+	const rightPlayerIDVar = document.getElementById('rightPlayer');
+	const rightMainIdDiv = document.getElementById('right');
+	rightPlayerIDVar.style.display = 'block';
+	rightMainIdDiv.style.display = 'block';
+	
+	const playerListDivVar = document.getElementById('playerListDiv');
+	playerListDivVar.style.display = 'none';
+	
+	const startSpinIdVar = document.getElementById('startSpinId');
+	startSpinIdVar.style.display = 'none';
+	
+	const batContainer = document.getElementById('bat-container-id');
+	batContainer.style.display = 'none';
+	
+	const teamsListMainIdVar = document.getElementById('teamsListMainId');
+	teamsListMainIdVar.style.display = 'block';
+	
+	processLikeRowClick(clickedRow);
+	
+}
+  
 let currentHighlightedRow = null;
 function highlightRandomRow() {
     const tbody = document.querySelector('#playerTable tbody');
 	const rows = tbody.getElementsByTagName('tr');
     
     if (rows.length === 0) {
-     alert("Please upload players.");
-     return;
+		alert("Please upload players.");
+		return;
     }
 	
 	var isAllSoldOut = "Y";
@@ -2547,6 +2692,7 @@ function highlightRandomRow() {
 		return;
 	}
 	
+	/**
 	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
 	if("Please Select Player"!=selectedPlayerValue){
 	const messageC = "Your current player is not sold out. Do you really wanted to Spin again? Pleae check if it is not a by mistake Spin.";
@@ -2554,14 +2700,17 @@ function highlightRandomRow() {
 			return;
 		}
 	}
+	**/
 
 const playerListDivVar = document.getElementById('playerListDiv');
 const startSpinIdVar = document.getElementById('startSpinId');
+const batContainer = document.getElementById('bat-container-id');
 const teamsListMainIdVar = document.getElementById('teamsListMainId');
 const rightPlayerIDVar = document.getElementById('rightPlayer');
 const spinnerContainerIDVar = document.getElementById('spinnerContainer');
 const rightMainIdDiv = document.getElementById('right');
 
+batContainer.style.display = 'none';
 startSpinIdVar.style.display = 'none';
 teamsListMainIdVar.style.display = 'none';
 rightPlayerIDVar.style.display = 'none';
@@ -2680,10 +2829,13 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
         }
 		
 		const teamsListMainIdVar = document.getElementById('teamsListMainId');
+		const batContainer = document.getElementById('bat-container-id');
 		if(showId=="startSpinId"){
+			batContainer.style.display = 'block';
 			teamsListMainIdVar.style.display = 'block';
 		} else {
 			teamsListMainIdVar.style.display = 'none';
+			batContainer.style.display = 'none';
 		}
 		
 		const AuctionConfigIDDiv = document.getElementById('AuctionConfigID');
@@ -2717,6 +2869,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		
+		const batContainer = document.getElementById('bat-container-id');
+		batContainer.style.display = 'none';
+
 		collapseMenu();
     }
 
@@ -3013,8 +3168,10 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
                             <div class="team-name-card" valueofdiv="${teamName}">${teamName}</div>
                             <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName}</div>
                             <div class="team-baseprice" valueofdiv="${basePriceDisplay}" >Owner Base Price: ${formatINR(basePriceDisplay)}</div>
-							<div class="team-balance" valueofdiv="${availableBalance}" >Available Balance: ${formatINR(availableBalance)}</div>
-							<div class="team-tobebid" valueofdiv="${toBeBidBalanceAvailable}" >Bid Balance: ${formatINR(toBeBidBalanceAvailable)}</div>
+							<div class="team-balance" valueofdiv="${availableBalance}" >Available Balance: ${formatINR(availableBalance)}
+							<span class="large-money" >💰</span></div>
+							<div class="team-tobebid" valueofdiv="${toBeBidBalanceAvailable}" >Bid Balance: 
+							${formatINR(toBeBidBalanceAvailable)} <span class="large-money">📌</span> </div>
 							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >Remainining Players: ${numberOfUnSoldPlayer}</div>
                         </div>
                         <div class="team-details" onclick="showTeamDetails('${safeTeamName}')" > <span style=" background: #fff;font-style: italic;">Details</span> </div>
@@ -3062,6 +3219,7 @@ html += `
 	document.getElementById('toggleButtonMsg2').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
 	document.getElementById('toggleButtonMsg3').innerHTML = "0" 
 	document.getElementById('toggleButtonMsg4').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
+	document.getElementById('toggleButtonMsg5').innerHTML = document.getElementById('TOTAL_TEAM_COUNT').value;
 
 //On click of Team box		
 const teamCards = document.querySelectorAll('#teamsList .team-card');
@@ -3107,6 +3265,10 @@ teamCards.forEach(card => {
 		function closePopup() {
   			const startSpinIdDiv = document.getElementById('startSpinId');
 			startSpinIdDiv.style.display = 'block';
+			
+			const batContainer = document.getElementById('bat-container-id');
+			batContainer.style.display = 'block';
+
 			changeBGImageToOriginalMode();
 			afterSoldPopup();
 			applyAuctionOverColorToAllTeam();
