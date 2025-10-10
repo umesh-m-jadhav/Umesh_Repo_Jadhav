@@ -1299,6 +1299,16 @@ display: flex;
             font-size: clamp(1rem, 2.5vw, 7.8rem); 
         }
 		
+		label[for="auction-file-for"] {
+            display: block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: blue;
+            
+            /* Label scales from 1rem to 1.8rem */
+            font-size: clamp(1rem, 2.5vw, 7.8rem); 
+        }
+		
 		 .rowOfDiv {
             /* 1. Makes the row a flex container */
             display: flex;
@@ -1573,6 +1583,7 @@ responsive-box-title { /* <-- RENAMED CLASS HERE */
     <thead>
       <tr>
         <th>Name</th>
+		<th>PlayerType</th>
         <th>Mobile</th>
         <th>Role</th>
         <th>Base Price</th>
@@ -1753,6 +1764,7 @@ let currentBid = 0;       // numeric value in rupees, not formatted string
 let selectedTeam = null;
 
 let SOLD_INDEX = 5;
+let PLAYER_TYPE_INDEX = 1;
 let name_INDEX = 0;
 const CONGRATE_MEG_ON_CONFIGURATION_UPLOAD = "Congratulations! Auction Configuration data is already loaded. Please proceed."
 const AUCTION_ACTION_PLACE_BID = "AUCTION_ACTION_PLACE_BID";
@@ -1987,10 +1999,44 @@ document.getElementById('auction-file-id').addEventListener('change', event=>{
   reader.readAsArrayBuffer(file);
 });
 
+function sortData(dataArray){
+	dataArray.sort((a, b) => {
+		const PlayerTypeA = a.PlayerType.toLowerCase();
+		const PlayerTypeB = b.PlayerType.toLowerCase();
+
+		// --- 1. Handle Empty/Null Values ---
+		const isEmptyA = PlayerTypeA === '' || PlayerTypeA === null;
+		const isEmptyB = PlayerTypeB === '' || PlayerTypeB === null;
+
+		if (isEmptyA && isEmptyB) {
+			return 0; // Both are empty/null, keep original relative order
+		}
+		if (isEmptyA) {
+			return 1; // PlayerTypeA is empty, place it after nameB (at the end)
+		}
+		if (isEmptyB) {
+			return -1; // nameB is empty, place it after nameA (nameA comes before)
+		}
+
+		// --- 2. Handle Ascending String Sort ---
+		if (PlayerTypeA < PlayerTypeB) {
+			return -1; // nameA comes before nameB
+		}
+		if (PlayerTypeA > PlayerTypeB) {
+			return 1; // nameA comes after nameB
+		}
+		return 0; // names are equal
+	});
+
+	return dataArray;
+}
+
 function renderPlayers(){
   if(!workbook || !mainSheetName) return;
   const sheet = workbook.Sheets[mainSheetName];
-  const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+  const data = sortData(rowData);
+  
   const tbody = document.querySelector('#playerTable tbody');
   tbody.innerHTML = '';
   var index = 1;
@@ -2004,10 +2050,12 @@ function renderPlayers(){
     const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
     const sold = p.Sold || '';
     const unavailibilty = p.Unavailibilty || '';
+	const PlayerType = p.PlayerType || '';
 
     tr.innerHTML = `
       <td>${index}>&nbsp;&nbsp;&nbsp;${name}</td>
-	  <td>${mobile}</td>
+	  <td>${PlayerType}</td>
+	  td>${mobile}</td>
       <td>${role}</td>
       <td>${formatINR(base)}</td>
 	  <td>${unavailibilty}</td>
@@ -2246,8 +2294,9 @@ function UnsoldtoSold(){
 	
 	if(workbook && mainSheetName){
 		const sheet = workbook.Sheets[mainSheetName];
-		const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
+		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+		const data = sortData(rowData);
+		
 		data.forEach(p => {
 		  if(p.Sold === 'Unsold'){
 			p.Sold = '';
@@ -2297,8 +2346,8 @@ function markUnsold(){
 function markUnsold_Yes(){
 	if(workbook && mainSheetName){
 		const sheet = workbook.Sheets[mainSheetName];
-		const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
+		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+		const data = sortData(rowData);
 		data.forEach(p => {
 		  if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
 			p.Sold = 'Unsold';
@@ -2552,8 +2601,9 @@ function submitAuction(){
   // Update workbook data
   if(workbook && mainSheetName){
     const sheet = workbook.Sheets[mainSheetName];
-    const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
+    const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+    const data = sortData(rowData);
+	
     data.forEach(p => {
       if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
         // store plain number for Excel
@@ -2569,7 +2619,16 @@ function submitAuction(){
     // Update team sheet with sold players (plain numbers)
     const teamSheetName = selectedTeam.name;
     const soldPlayers = data.filter(p => p.SoldToTeam === `${selectedTeam.name} (Owner: ${selectedTeam.owner})`);
-    workbook.Sheets[teamSheetName] = XLSX.utils.json_to_sheet(soldPlayers);
+	
+	const soldPlayersDetailsToWriteInExcel = soldPlayers.map(player => {
+		return { Name: player.Name, 
+				TowerFlat: player.TowerFlat,
+				Mobile: player.Mobile,
+				Unavailibilty: player.Unavailibilty,
+				BidAmount: player.FinalBid};
+	});
+
+    workbook.Sheets[teamSheetName] = XLSX.utils.json_to_sheet(soldPlayersDetailsToWriteInExcel);
     if(!workbook.SheetNames.includes(teamSheetName)) workbook.SheetNames.push(teamSheetName);
 
     // Track sold players for display (store mobile too)
@@ -2727,17 +2786,20 @@ function rgbToHex(rgb) {
   
    function processLikeRowClick(selectedRow) {
    const soldValue = selectedRow.cells[SOLD_INDEX].textContent;
+   const playerName = selectedRow.cells[0].textContent;
   
 	if(soldValue === "Yes"){
-        alert("Player already sold..");
+        alert("Player already sold.." + playerName);
         document.getElementById('placeBidBtn').classList.add('disabled');
         document.getElementById('reduceBidBtn').classList.add('disabled');
         return;
       }
 	  
 	 const sheet = workbook.Sheets[mainSheetName];
-	 const data = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-	const rowIndex = selectedRow.sectionRowIndex; 
+	 const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+	 const data = sortData(rowData);
+	 
+	 const rowIndex = selectedRow.sectionRowIndex; 
 	 data.forEach((p,i) => {
 	 if(rowIndex == i){
 		//alert(i + " " + rowIndex)
@@ -2837,15 +2899,28 @@ function highlightRandomRow() {
 		return;
 	}
 	
-	/**
-	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
-	if("Please Select Player"!=selectedPlayerValue){
-	const messageC = "Your current player is not sold out. Do you really wanted to Spin again? Pleae check if it is not a by mistake Spin.";
-		if(!confirm(messageC)){
-			return;
+	//Check for last Premium Category Index to make sure Premium players will be consider on priority for bid.
+		
+	var playerCategoryIndex = null;
+	var isPremiumPlayerAvailableForAuction=false;
+	for (let i = 0; i < rows.length; i++) {
+		const row = rows[i];
+		const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
+		const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
+		
+		if(playerCategory.startsWith("A-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
+			isPremiumPlayerAvailableForAuction=true;
+		}else if(!playerCategory.startsWith("A-")){
+			playerCategoryIndex = (i-1);
+			break;
 		}
 	}
-	**/
+	
+	if(!isPremiumPlayerAvailableForAuction){
+		playerCategoryIndex = null;
+	}
+	
+	//alert('playerCategoryIndex ' + playerCategoryIndex);
 
 const playerListDivVar = document.getElementById('playerListDiv');
 const startSpinIdVar = document.getElementById('startSpinId');
@@ -2876,24 +2951,41 @@ startSpinner();
 		currentHighlightedRow.style.backgroundColor = 'white';
 	  }
     }
-
-	var selectedRow = null;
-	for(i=0;i<9;i++){
+	var rowSize = rows.length;
 	
-		const randomIndex = Math.floor(Math.random() * rows.length);
+	if(playerCategoryIndex!=null){
+		rowSize = playerCategoryIndex;
+	}
+	
+	var selectedRow = null;
+	var soldValueOfSelectedRow = null;
+	for(i=0;i<9;i++){
+		const randomIndex = Math.floor(Math.random() * rowSize);
 		
 		// 3. Select the new random row
 		selectedRow = rows[randomIndex];
 		
-	    const soldValue = selectedRow.cells[SOLD_INDEX].textContent;
+	    soldValueOfSelectedRow = selectedRow.cells[SOLD_INDEX].textContent;
   
-		if(soldValue === "Yes" || soldValue === "Unsold"){
+		if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
 			//alert("Found already sold player " + randomIndex);
 			continue;
 		}
 		break;
 	}
-    
+	
+    //alert('soldValueOfSelectedRow ' + soldValueOfSelectedRow);
+	if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
+		for (let j = 0; j < rows.length; j++) {
+			const row = rows[j];
+			const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
+			//alert(soldValueOfEachRow);
+			if(soldValueOfEachRow == null || soldValueOfEachRow.trim()==""){
+				selectedRow = rows[j];
+				break;
+			}
+		}
+	}
     // 4. Highlight the selected row
     //selectedRow.classList.add('highlight');
 	selectedRow.style.backgroundColor = '#d4edda';
