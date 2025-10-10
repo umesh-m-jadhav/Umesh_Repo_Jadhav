@@ -860,7 +860,7 @@ display: flex;
         }
 		
 		/* Styling for the span element */
-        #congrats-message {
+        #congrats-message, #congrats-message1 {
             /* Text properties */
             color: #ffffff; /* White text */
             font-size: 1em; 
@@ -1282,7 +1282,7 @@ display: flex;
             font-family: 'Arial Black', Gadget, sans-serif; 
             font-size: 1.5em; 
             font-weight: 900; 
-            color: var(--text-color); /* Still references the variable inherited from .split-ball */
+            color: black;
             text-align: center;
             line-height: 1; 
             
@@ -1607,25 +1607,28 @@ responsive-box-title { /* <-- RENAMED CLASS HERE */
     </div>
   </div> 
   
-    <div style="display: none;padding: 20px;" id="latestAuctionUploadID">
- 	  <label for="excel-file">
+    <div id="latestAuctionUploadID" style="display: none;padding: 20px;" >
+ 	  <label for="auction-file-for">
 				  <span>
 				  Please upload Latest Auction File</span>
 				  <BR>
 				   <span style="color: black;font-size: clamp(1rem, 1.0vw, 6.0rem);font-style: italic;"> 
-				   (Note - File must be latest else you will loose the auction data) </span>
+				   Note - 1. File must be latest else you will loose the auction data</BR> 
+				    2. Valid Auction file starts with AuctionResult e.g (AuctionResult.xlsx)
+				   <BR>
+				   </span>
 				   
 	  </label>
 	 </BR>		</BR>		
 	  <input 
 		type="file" 
-		id="excel-file" 
+		id="auction-file-id" 
 		accept=".xlsx, .xls" 
 		class="block w-full text-sm text-gray-500 cursor-pointer"
 	  >
 	  
 	  </BR>		</BR>
-	   <div id="congrats-message" style="display: block;">
+	   <div id="congrats-message1" style="display: none;">
         <!-- Message set from function displayData() -->
     </div>
   </div> 
@@ -1924,6 +1927,39 @@ document.getElementById('excelFile').addEventListener('change', event=>{
   
   if (!file.name.startsWith("Player_List")) {
 		const invalidFileMsg ='"' +file.name + '" This is invalid file. Allowed file is start with "Player_List".';
+		alert(invalidFileMsg);
+		return;
+  }
+  
+  const congratsMessageDiv = document.getElementById('congrats-message');
+  const congratsMessageDivValue = congratsMessageDiv.textContent;
+  if (!congratsMessageDivValue.includes(CONGRATE_MEG_ON_CONFIGURATION_UPLOAD)) {
+	 const msg1 = 'Auction Configuration data is not found, Please upload it before uploading players list.\n\n Please follow below steps\n'+
+		'1> Expand Left Menu\n'+ 
+		'2> Click on "Upload Configuration"\n'+
+		'3> Please "Auction_Configuration.xlsx"\n'+
+		'4> Only "Auction_Configuration.xlsx" is allowed to upload\n';
+		const invalidFileMsg =msg1;
+		alert(invalidFileMsg);
+		//return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const data = new Uint8Array(e.target.result);
+    workbook = XLSX.read(data, { type: 'array' });
+    mainSheetName = workbook.SheetNames[0];
+    renderPlayers();
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+document.getElementById('auction-file-id').addEventListener('change', event=>{
+  const file = event.target.files[0];
+  if(!file) return;
+  
+  if (!file.name.startsWith("AuctionResult")) {
+		const invalidFileMsg ='"' +file.name + '" This is invalid file. Allowed file is start with "AuctionResult e.g AuctionResult.xlsx".';
 		alert(invalidFileMsg);
 		return;
   }
@@ -2253,6 +2289,8 @@ function markUnsold(){
         if (separatorDiv && separatorDiv.nextElementSibling) {
             separatorDiv.nextElementSibling.style.paddingTop = '8px';
         }
+		
+		disableOnUnsoldPlayerClickButton();
 	
 }
 
@@ -2288,10 +2326,13 @@ function markUnsold_Yes(){
 	  afterSoldPopup();
 	  changeBGImageToOriginalMode();
 	  applyAuctionOverColorToAllTeam();
-	  
+	  enableOnUnsoldPlayerClickButton();
 }
 
 function afterSoldPopup(){
+
+  enableAllButton();
+  
   document.getElementById('finalBid').value = '-';
   document.getElementById('selectedPlayer').textContent = 'Please Select Player';
   document.getElementById('basePrice').textContent = '-';
@@ -2367,10 +2408,13 @@ function handleConfirm() {
 		const actionTaken  = document.getElementById('AUCTION_ACTION').value
 		//alert('actionTaken -->' + actionTaken);
 		if (actionTaken == AUCTION_ACTION_PLACE_BID ) {
+			disableOnPlaceBidClickButton();
 			const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 			confirmationBoxDiv.style.display = 'none';
 			submitAuction();
+			disableAllButton();
 			applyAuctionOverColorToAllTeam();
+
 		}else if (actionTaken == AUCTION_ACTION_UNSOLD_PLAYER ) {
 			markUnsold_Yes();
 		}
@@ -2381,6 +2425,7 @@ function handleCancel() {
 		confirmationBoxDiv.style.display = 'none';
 		changeBGImageToOriginalMode();
 		applyAuctionOverColorToAllTeam();
+		enableAllButton();
 		//alert("❌ CANCELED: The transaction has been stopped.");
 }
 
@@ -2489,6 +2534,7 @@ function confirmationMessageOnSubmit(){
         if (separatorDiv && separatorDiv.nextElementSibling) {
             separatorDiv.nextElementSibling.style.paddingTop = '8px';
         }
+		disableOnPlaceBidClickButton();
 }
 /* ------------------------
    Submit auction (sell player)
@@ -2756,6 +2802,7 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	
 	const teamsListMainIdVar = document.getElementById('teamsListMainId');
 	teamsListMainIdVar.style.display = 'block';
+	enableAllButton();
 	
 	processLikeRowClick(clickedRow);
 	
@@ -2818,6 +2865,7 @@ rightMainIdDiv.style.display = 'block';
 
 spinnerContainerIDVar.classList.add('visible')
 spinnerContainerIDVar.classList.add('spinnerContainerClass');
+enableAllButton();
 
 startSpinner();
     
@@ -2956,6 +3004,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		
+		const latestAuctionUploadIDDivID = document.getElementById('latestAuctionUploadID');
+		latestAuctionUploadIDDivID.style.display = 'none';
+		
 		highlightUnsoldPlayerByBG();
 		collapseMenu();
     }
@@ -2984,6 +3035,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		
 		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 		auctionTitleDivID.style.display = 'none';
+		
+		const latestAuctionUploadIDDivID = document.getElementById('latestAuctionUploadID');
+		latestAuctionUploadIDDivID.style.display = 'none';
 
 		collapseMenu();
     }
@@ -3139,8 +3193,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 			teamSoldPlayers = {};
 			
             if (files.length === 0) {
-                status.textContent = 'No file selected.';
-                output.innerHTML = '<p class="text-gray-500 italic">Data will appear here after successful load.</p>';
+                const invalidFileMsg ='Invalid file selected. Please upload configuration file.i.e Auction_Configuration.xlsx';
+                alert(invalidFileMsg);
                 return;
             }
             
@@ -3148,7 +3202,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 
             // 1. File Name Validation Check
             if (file.name !== REQUIRED_FILENAME) {
-                const invalidFileMsg ='Invalid file selected. Please upload configuration file.';
+                const invalidFileMsg ='Invalid file selected. Please upload configuration file.i.e Auction_Configuration.xlsx';
                 alert(invalidFileMsg);
                 return;
             }
@@ -3337,12 +3391,12 @@ html += `
         <div class="Submit_team-name-card">
 		
         
-        <button class="place-bid-btn" onclick="confirmationMessageOnSubmit();">
+        <button id="place-bid-btn-id" class="place-bid-btn" onclick="confirmationMessageOnSubmit();">
         <i class="fas fa-hammer"></i> 
         Place Bid
 		</button>
 		
-		<button class="player-unsold-btn" onclick="markUnsold()">
+		<button id="player-unsold-btn-id" class="player-unsold-btn" onclick="markUnsold()">
         <span class="icon">🏷️</span>
         Unsold Player
     </button>
@@ -3359,7 +3413,7 @@ html += `
 	congratsMessageDiv.textContent=CONGRATE_MEG_ON_CONFIGURATION_UPLOAD;
 	congratsMessageDiv.style.display = 'block';
 		
-	document.getElementById('toggleButtonMsg1').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
+	document.getElementById('toggleButtonMsg1').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR></BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
 	
 	document.getElementById('toggleButtonMsg2').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
 	document.getElementById('toggleButtonMsg3').innerHTML = "0" 
@@ -3435,6 +3489,55 @@ teamCards.forEach(card => {
                 popup.style.display = 'none';
             }, 300); 
         }
+		
+		const increaseBidBtnButton = document.getElementById('placeBidBtn');
+		const reduceBidBtnButton = document.getElementById('reduceBidBtn');
+		
+		function disableAllButton() {
+		const placeBidButton = document.getElementById('place-bid-btn-id');
+		const markUnsoldButton = document.getElementById('player-unsold-btn-id');
+			increaseBidBtnButton.disabled = true; 
+			reduceBidBtnButton.disabled = true; 
+			placeBidButton.disabled = true; 
+			markUnsoldButton.disabled = true; 
+		}
+		
+		function enableAllButton() {
+		const placeBidButton = document.getElementById('place-bid-btn-id');
+		const markUnsoldButton = document.getElementById('player-unsold-btn-id');
+			increaseBidBtnButton.disabled = false; 
+			reduceBidBtnButton.disabled = false; 
+			placeBidButton.disabled = false; 
+			markUnsoldButton.disabled = false; 
+		}
+		
+		function disableOnPlaceBidClickButton() {
+			const markUnsoldButton = document.getElementById('player-unsold-btn-id');
+			markUnsoldButton.disabled = true; 
+			increaseBidBtnButton.disabled = true; 
+			reduceBidBtnButton.disabled = true; 
+		}
+		
+		function enableOnPlaceBidClickButton() {
+			const markUnsoldButton = document.getElementById('player-unsold-btn-id');
+			markUnsoldButton.disabled = false; 
+			increaseBidBtnButton.disabled = true; 
+			reduceBidBtnButton.disabled = true; 
+		}
+		
+		function disableOnUnsoldPlayerClickButton() {
+			const placeBidButton = document.getElementById('place-bid-btn-id');
+			placeBidButton.disabled = true; 
+			increaseBidBtnButton.disabled = true; 
+			reduceBidBtnButton.disabled = true; 
+		}
+		
+		function enableOnUnsoldPlayerClickButton() {
+			const placeBidButton = document.getElementById('place-bid-btn-id');
+			placeBidButton.disabled = false; 
+			increaseBidBtnButton.disabled = true; 
+			reduceBidBtnButton.disabled = true; 
+		}
 		
 /* ------------------------
    Initial formatting on page load
