@@ -1416,6 +1416,50 @@ display: flex;
 		.large-money {
   font-size: 1.0rem; /* 'rem' is often preferred as it's relative to the root font size */
 }
+
+.styled-fallback {
+  /* 1. Define the size of the fallback area */
+  width: 100px;
+  height: 100px;
+  
+  /* 2. Hide the default alt text */
+  font-size: 0; 
+  
+  /* 3. Add styling for the container */
+  border: 1px dashed #999;
+  background-color: #f0f0f0;
+  position: relative; 
+}
+
+responsive-box-title { /* <-- RENAMED CLASS HERE */
+            /* Background Color: DarkGoldenrod (#B8860B) */
+            background-color: #B8860B; 
+            
+            /* Text Color: Black (#000000) */
+            color: #000000; 
+            
+            /* Define a box size based on viewport width (responsive) */
+            width: 80vw; 
+            height: 30vw; 
+            
+            /* Center the text "R21" within the box */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* Decorative styling */
+            border-radius: 15px;
+            box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .responsive-text {
+            /* Key: Use 'vw' (viewport width) for responsive font size. */
+            font-size: 7vw; 
+            font-weight: 900;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+        }
+
 </style>
 </head>
 <body>
@@ -1465,6 +1509,12 @@ display: flex;
                     </a>
                 </div>
 				
+				 <div class="menu-item">
+                    <a href="#" onclick="uploadLatestAuctionFile('startSpinId', 'playerListDiv'); return false;">
+                        Upload Latest Auction
+                    </a>
+                </div>
+				
             </div>
         </nav>
 		
@@ -1494,9 +1544,9 @@ display: flex;
             <img id="SoldOutPlayerPhotoId" src="#" class="messageSoldOut-image">
         </div>
         		
-        <button class="close-btn-bottom" onclick="closePopup()">
-            Click here to close
-        </button>
+        <div class="messageSoldOut" id="SoldOutPlayerNameID">
+                
+        </div>
 
     </div>
 	
@@ -1555,7 +1605,29 @@ display: flex;
 	   <div id="congrats-message" style="display: block;">
         <!-- Message set from function displayData() -->
     </div>
-	
+  </div> 
+  
+    <div style="display: none;padding: 20px;" id="latestAuctionUploadID">
+ 	  <label for="excel-file">
+				  <span>
+				  Please upload Latest Auction File</span>
+				  <BR>
+				   <span style="color: black;font-size: clamp(1rem, 1.0vw, 6.0rem);font-style: italic;"> 
+				   (Note - File must be latest else you will loose the auction data) </span>
+				   
+	  </label>
+	 </BR>		</BR>		
+	  <input 
+		type="file" 
+		id="excel-file" 
+		accept=".xlsx, .xls" 
+		class="block w-full text-sm text-gray-500 cursor-pointer"
+	  >
+	  
+	  </BR>		</BR>
+	   <div id="congrats-message" style="display: block;">
+        <!-- Message set from function displayData() -->
+    </div>
   </div> 
   
   <div class="bat-container" id="bat-container-id" style="display: block;">
@@ -1567,6 +1639,7 @@ display: flex;
     <div class="bat-blade">
         <div class="bat-message">
             Total Team = <span id="toggleButtonMsg5"></span><br>
+			Players per Team = <span id="toggleButtonMsg6"></span><br>
             Total players = <span id="toggleButtonMsg2"> </span><br><br>
 			
 			Sold Player = <span  id="toggleButtonMsg3"></span><br>
@@ -1587,7 +1660,7 @@ display: flex;
   
   <div id="rightPlayer" class="auction-section" style=" display: none; ">
     <div class="player-info">
-      <img id="playerPhoto" src="#" alt="Player Photo"/>
+      <img id="playerPhoto" src="#" alt="👤"/>
       <div class="player-details">
  		<div class="modern-note">
 			<div class="user-icon" aria-hidden="true">👤🏏</div>
@@ -1629,9 +1702,15 @@ display: flex;
 </div>
 </div>
 
+<div  id="auction_title_id_below_spin" class="responsive-box-title" style=" display: none; "> 
+  <div class="responsive-text" id="auction_title_id_below_text">
+            
+        </div>
+    </div>
 
  <!-- 2nd Row -->
  <div class="teams-section-wrapper" id="teamsListMainId">
+  
 <span 
             class="max-min-icon" 
             id="maxMinIcon" 
@@ -1945,7 +2024,7 @@ function renderPlayers(){
    ------------------------ */
 function showPlayerDetailsPopup(p){
   document.getElementById('pd-name').textContent = p.Name || p.name || 'Player';
-  document.getElementById('pd-photo').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
+  document.getElementById('pd-photo').src = p.PhotoURL || p.photo;
   document.getElementById('pd-role').textContent = p.Role || p.role || '-';
   document.getElementById('pd-base').textContent = formatINR(parseInt(p.BasePrice || p.basePrice || 0));
   document.getElementById('pd-mobile').textContent = p.Mobile || p.mobile || 'N/A';
@@ -2109,6 +2188,9 @@ function UnsoldtoSold(){
 	
 	const batContainer = document.getElementById('bat-container-id');
 	batContainer.style.display = 'none';
+	
+	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+	auctionTitleDivID.style.display = 'none';
 
 	var confirmMsg = "You are putting all unsold players to sold Category. Please confirm."
 	if(!confirm(confirmMsg)){
@@ -2199,7 +2281,10 @@ function markUnsold_Yes(){
 	  
 	  const batContainer = document.getElementById('bat-container-id');
 	  batContainer.style.display = 'block';
-
+	
+	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+	auctionTitleDivID.style.display = 'none';
+	
 	  afterSoldPopup();
 	  changeBGImageToOriginalMode();
 	  applyAuctionOverColorToAllTeam();
@@ -2476,6 +2561,12 @@ function submitAuction(){
   const photoURL = document.getElementById('playerPhoto').src;
   soldOutPlayerPhotoIdDiv.src = photoURL;
   
+  const SoldOutPlayerNameIDDiv = document.getElementById('SoldOutPlayerNameID'); 
+  const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
+  const parts = selectedPlayerValue.split("(");
+  const selectedPlayerOnly =parts[0].trim();
+  SoldOutPlayerNameIDDiv.textContent = selectedPlayerOnly;
+  
   //Re-calculate Bid balance
   const availableBalanceAfterSubmit = computeAvailableBalanceForTeam(selectedTeam.name);
   const numberOfUnSoldPlayerAfterSubmit = getPlayersToBeSelected(selectedTeam.name);
@@ -2612,13 +2703,17 @@ function rgbToHex(rgb) {
 		const name = p.Name || p.name || '';
 		const mobile = p.Mobile || p.mobile || 'N/A';
 		const role = p.Role || p.role || '';
-		const unavailibilty = p.Unavailibilty || '';
+		const unavailibilty = p.Unavailibilty || 'Full availability';
 		const sold = p.Sold || '';
-	  
+			  
       // show formatted values
       document.getElementById('finalBid').value = formatINR(currentBid);
       document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
-      document.getElementById('playerPhoto').src = p.PhotoURL || p.photo || 'https://via.placeholder.com/300';
+	  if(p.PhotoURL == null || p.PhotoURL.trim()==""){
+		document.getElementById('playerPhoto').src = 'Image_Not_Given.png';
+	  }else{
+		document.getElementById('playerPhoto').src = "PlayersPhoto\\"+p.PhotoURL;
+	  }
       document.getElementById('basePrice').textContent = formatINR(base);
       document.getElementById('PlayerUnavailibiltyID').textContent = "Unavailibilty - " + unavailibilty;
 	  
@@ -2655,6 +2750,9 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	
 	const batContainer = document.getElementById('bat-container-id');
 	batContainer.style.display = 'none';
+	
+	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+	auctionTitleDivID.style.display = 'none';
 	
 	const teamsListMainIdVar = document.getElementById('teamsListMainId');
 	teamsListMainIdVar.style.display = 'block';
@@ -2705,12 +2803,14 @@ function highlightRandomRow() {
 const playerListDivVar = document.getElementById('playerListDiv');
 const startSpinIdVar = document.getElementById('startSpinId');
 const batContainer = document.getElementById('bat-container-id');
+const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 const teamsListMainIdVar = document.getElementById('teamsListMainId');
 const rightPlayerIDVar = document.getElementById('rightPlayer');
 const spinnerContainerIDVar = document.getElementById('spinnerContainer');
 const rightMainIdDiv = document.getElementById('right');
 
-batContainer.style.display = 'none';
+batContainer.style.display = 'block';
+auctionTitleDivID.style.display = 'block';
 startSpinIdVar.style.display = 'none';
 teamsListMainIdVar.style.display = 'none';
 rightPlayerIDVar.style.display = 'none';
@@ -2797,6 +2897,12 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	rightPlayerDiv.style.display = 'block';
 	teamsListMainIdDiv.style.display = 'block';
 	
+	const batContainer = document.getElementById('bat-container-id');
+	batContainer.style.display = 'none';
+	
+	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+	auctionTitleDivID.style.display = 'none';
+
 	rightPlayerDiv.classList.toggle('open');
   }
   
@@ -2830,11 +2936,15 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		
 		const teamsListMainIdVar = document.getElementById('teamsListMainId');
 		const batContainer = document.getElementById('bat-container-id');
+		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+		
 		if(showId=="startSpinId"){
 			batContainer.style.display = 'block';
+			auctionTitleDivID.style.display = 'none';
 			teamsListMainIdVar.style.display = 'block';
 		} else {
 			teamsListMainIdVar.style.display = 'none';
+			auctionTitleDivID.style.display = 'none';
 			batContainer.style.display = 'none';
 		}
 		
@@ -2871,10 +2981,45 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		
 		const batContainer = document.getElementById('bat-container-id');
 		batContainer.style.display = 'none';
+		
+		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+		auctionTitleDivID.style.display = 'none';
 
 		collapseMenu();
     }
+	
+	function uploadLatestAuctionFile(showId, hideId) {
+        // Get the elements
+        const showDiv = document.getElementById(showId);
+        const hideDiv = document.getElementById(hideId);
 
+        showDiv.style.display = 'none';
+        hideDiv.style.display = 'none';
+ 
+		const teamsListMainIdVar = document.getElementById('teamsListMainId');
+		teamsListMainIdVar.style.display = 'none';
+		
+		const latestAuctionUploadIDDiv = document.getElementById('latestAuctionUploadID');
+		latestAuctionUploadIDDiv.style.display = 'block';
+		
+		const auctionConfigIDDiv = document.getElementById('AuctionConfigID');
+		auctionConfigIDDiv.style.display = 'none';
+		
+		const rightMainIdDiv = document.getElementById('right');
+		rightMainIdDiv.style.display = 'none';
+		
+		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+		confirmationBoxDiv.style.display = 'none';
+		
+		const batContainer = document.getElementById('bat-container-id');
+		batContainer.style.display = 'none';
+		
+		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+		auctionTitleDivID.style.display = 'none';
+
+		collapseMenu();
+    }
+	
 
 // =========================================================
         // 1. MAXIMIZE/MINIMIZE JAVASCRIPT
@@ -3220,7 +3365,10 @@ html += `
 	document.getElementById('toggleButtonMsg3').innerHTML = "0" 
 	document.getElementById('toggleButtonMsg4').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
 	document.getElementById('toggleButtonMsg5').innerHTML = document.getElementById('TOTAL_TEAM_COUNT').value;
-
+	document.getElementById('toggleButtonMsg6').innerHTML = document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value;
+	
+	document.getElementById('auction_title_id_below_text').innerHTML = document.getElementById('TOURNAMENT_NAME').value + " - " + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
+	
 //On click of Team box		
 const teamCards = document.querySelectorAll('#teamsList .team-card');
 teamCards.forEach(card => {
@@ -3268,6 +3416,9 @@ teamCards.forEach(card => {
 			
 			const batContainer = document.getElementById('bat-container-id');
 			batContainer.style.display = 'block';
+			
+			const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+			auctionTitleDivID.style.display = 'none';
 
 			changeBGImageToOriginalMode();
 			afterSoldPopup();
