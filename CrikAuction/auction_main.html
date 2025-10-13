@@ -20,12 +20,18 @@
     /* 2 rows, each taking 50% of the viewport height (50% 50%) */
      //grid-template-rows: 50% 50%; 
     
-     //margin: 0; 
+     min-height: 100vh;
+    margin: 0;
 	 background-image: url('BG1.png');
 	 height: 100%;
     //height: 100vh; /* Critical: body must span the full viewport height */
     //background: #f2f2f2; 
     /* Remove the old flex properties and height:100vh from #left and #right */
+	
+	background-size: cover;
+    background-position: left;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
   }
 
   /* TOP-LEFT SECTION: Players */
@@ -42,7 +48,7 @@
 	//Width: 100%;
 	//padding-bottom : 150px;
 	
-	background-image: url('BG1.png');
+	//background-image: url('BG1.png');
 	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
   //background-size: contain; 
   
@@ -62,7 +68,7 @@
 	//background: #fff; 
 	//Width: 100%;
 	
-		background-image: url('BG1.png');
+		//background-image: url('BG1.png');
 	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
   //background-size: contain; 
   
@@ -86,6 +92,13 @@
 	color: white;
 	border-radius: 10px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	
+	background-image: url('BG2.png');
+	background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+	border: 3px solid #800020; 
   }
 
   /* Existing teams-section styling */
@@ -96,8 +109,12 @@
     box-shadow:0 2px 6px rgba(0,0,0,0.1); 
     height: calc(100% - 40px); /* Fill the remaining height of the wrapper (100% of row 2) minus the 20px top/bottom padding */
     overflow-y: auto; /* Allows scrolling of team cards if they overflow */
-	background-image: url('BG2.png');
-	 border: 3px solid #800020; 
+	//background-image: url('BG2.png');
+	//background-size: cover;
+    //background-position: center;
+    //background-repeat: no-repeat;
+    //background-attachment: fixed;
+	//border: 3px solid #800020; 
   }
 
 /* Add this new rule to your block */
@@ -262,10 +279,11 @@ text-align:right; }
   .team-owner-card { font-size:13px; color:#555; font-weight:bold;}
   .team-baseprice { font-size:13px; margin-top:4px; color:#333;font-weight:bold; }
   .team-total { font-size:12px; margin-top:6px; color:#111; font-weight:bold; }
-  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
-  .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:blue; }
-  .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:#d2691e; }
+  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:black; }
+  .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:black; }
+  .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:black; }
   .low-balance { color:red !important; }
+  .HighFontClass { color:#8b4513 !important;font-size: clamp(1rem, 1.0vw, 2.8rem);}
   .team-details { font-size:13px; 
   margin-top:-8px; 
   color:#007bff; cursor:pointer; 
@@ -290,7 +308,7 @@ display: flex;
   .disabled { opacity:0.6; cursor:not-allowed; }
   /* Player details popup */
   .popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:9999; }
-  .popup .box { background:#fff; padding:18px; border-radius:8px; width:420px; max-width:95%; text-align:left; box-shadow:0 6px 20px rgba(0,0,0,0.2); }
+  .popup .box { color: black;background:#fff; padding:18px; border-radius:8px; width:420px; max-width:95%; text-align:left; box-shadow:0 6px 20px rgba(0,0,0,0.2); }
   .popup .box h3 { margin:0 0 10px 0; }
   .popup .box img { width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px; }
   .popup .box .row { margin-bottom:6px; font-size:14px; }
@@ -437,10 +455,10 @@ display: flex;
             flex-direction: column;
             align-items: center;
             padding: 0px;
-            background-color: white;
+            //background-color: white;
             border-radius: 15px;
 			
-				background-image: url('BG1.png');
+				//background-image: url('BG1.png');
 	/* Use 'contain' to ensure the entire image is visible, even if it leaves some space */
   //background-size: contain; 
   
@@ -468,7 +486,11 @@ display: flex;
             background: white;
             border-radius: 3px;
             z-index: 10; /* Ensure it's above content */
-			
+			text-align: left;
+			align-items: left;
+			justify-content: left;
+			display: block;
+			width: 100%;
         }
         
         .max-min-icon:hover {
@@ -498,7 +520,8 @@ display: flex;
             display: flex;
             flex-direction: column; /* Stack cards vertically in min mode */
             gap: 8px;
-            height: auto;
+            //height: auto;
+			height: 40%;
         }
 
         /* MAX MODE: Change layout for the card wrapper */
@@ -1215,7 +1238,7 @@ display: flex;
             text-align: center;
             color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 		
 		.split-ball {
@@ -1512,7 +1535,7 @@ responsive-box-title {
  
  <!-- 1st Row -->
  <div id="top-div-id" class="responsive-div">
-<div id="left">
+<div id="left" >
 
   <nav class="left-menu" id="rplNavMenu">
             <div class="menu-header" onclick="toggleMenu(event)">
@@ -1765,8 +1788,7 @@ responsive-box-title {
 </div>
 
  <!-- 2nd Row -->
- <div class="teams-section-wrapper" id="teamsListMainId">
-  
+ <div class="teams-section-wrapper" id="teamsListMainId" style="display: none;">
 <span 
             class="max-min-icon" 
             id="maxMinIcon" 
@@ -1779,13 +1801,8 @@ responsive-box-title {
    
     <div id="teamsList" style="">
 	<!-- Data will set to teamsList from function displayData() -->
-  </div> 
-</div>
-</div>
-</div>
+  </div>
 
-</body>
-</html>
 </div>
 
 <div class="popup" id="teamDetailPopup">
@@ -1795,6 +1812,15 @@ responsive-box-title {
     <button class="close" onclick="closeTeamPopup()">Close</button>
   </div>
 </div>
+  
+</div>
+
+
+
+
+
+</body>
+</html>
 
 <script>
 
@@ -1929,12 +1955,13 @@ function initTeamCardsFormatting(){
 	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
-    card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + formatINR(available)+ '<span class="large-money" >💰</span>';
+    card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + '<span class="HighFontClass">'+
+	formatINR(available)+ '</span>' + '<span class="large-money" >💰</span>';
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
     else card.querySelector('.team-balance').classList.remove('low-balance');
 	
 	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance) + '<span class="large-money">📌</span>';
+	card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+formatINR(toBeBidBalance)+'</span>' + '<span class="large-money">📌</span>';
 	
   });
 }
@@ -1950,12 +1977,13 @@ function initTeamCardsFormattingOnTeamClick(){
 	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 	TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
 	const numberOfUnSoldPlayer = getPlayersToBeSelected(name,TOTAL_PLAYERS);
-    card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + formatINR(available) + '<span class="large-money">💰</span>';
+    card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + '<span class="HighFontClass">'+ formatINR(available) 
+	+ '</span>' + '<span class="large-money">💰</span>';
     if(available < 0) card.querySelector('.team-balance').classList.add('low-balance');
     else card.querySelector('.team-balance').classList.remove('low-balance');
 	
 	const toBeBidBalance = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
-	card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance)+ '<span class="large-money">📌</span>';
+	card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+ formatINR(toBeBidBalance)+ '</span>' + '<span class="large-money">📌</span>';
 	
   });
 }
@@ -2229,13 +2257,13 @@ function updateAvailableBalance(teamName){
     if(card.getAttribute('data-name') === teamName){
       const avail = computeAvailableBalanceForTeam(teamName);
       const balanceDiv = card.querySelector('.team-balance');
-      balanceDiv.innerHTML = 'Available Balance: ' + formatINR(avail) + '<span class="large-money">💰</span>';
+      balanceDiv.innerHTML = 'Available Balance: ' + '<span class="HighFontClass">' + formatINR(avail) + '</span>' + '<span class="large-money">💰</span>';
       if(avail < 0) balanceDiv.classList.add('low-balance'); else balanceDiv.classList.remove('low-balance');
 	  
 	  const playersToBeSelected = getPlayersToBeSelected(teamName);
 	 
 	  const toselectDiv = card.querySelector('.team-toselect');
-      toselectDiv.textContent = 'Players to be Selected: ' + playersToBeSelected;
+      toselectDiv.textContent = 'Remaining Player: ' + '<span class="HighFontClass">'+playersToBeSelected+'</span>';
     }
   });
 }
@@ -2734,7 +2762,8 @@ function setTeamParamsAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBid
     document.querySelectorAll('#teamsList .team-card').forEach(c => {
    
 	if(c.getAttribute('data-name') === teamName){
-	  c.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance) + '<span class="large-money">📌</span>';
+	  c.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+
+	  formatINR(toBeBidBalance) + '</span>' + '<span class="large-money">📌</span>';
 	  c.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
 	  c.querySelector('.team-toselect').setAttribute('valueofdiv', remainingPlayers);
 		}
@@ -2923,11 +2952,12 @@ function setTeamDataFromAuctionFile() {
 		const toBeBidBalance = calBidBalance(availableBalance,numberOfUnSoldPlayer);
 		
 		//Set Available Balance
-		card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + formatINR(availableBalance) + '<span class="large-money">💰</span>';
+		card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + '<span class="HighFontClass">'+ formatINR(availableBalance) + '</span>' + '<span class="large-money">💰</span>';
 		card.querySelector('.team-balance').setAttribute('valueofdiv', toBeBidBalance);
 		
 		//Set Bid Balance
-		card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + formatINR(toBeBidBalance) + '<span class="large-money">📌</span>';
+		card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+
+ formatINR(toBeBidBalance) + '</span>' + '<span class="large-money">📌</span>';
 	    card.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
 		
 		//Set Remaining Players
@@ -3524,12 +3554,15 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
                         <div class="team-card" data-name="${teamName}" data-owner="${ownerName}">
                             <div class="team-name-card" valueofdiv="${teamName}">${teamName}</div>
                             <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName}</div>
-                            <div class="team-baseprice" valueofdiv="${basePriceDisplay}" >Owner Base Price: ${formatINR(basePriceDisplay)}</div>
-							<div class="team-balance" valueofdiv="${availableBalance}" >Available Balance: ${formatINR(availableBalance)}
+                            <div class="team-baseprice" valueofdiv="${basePriceDisplay}" >Owner Base Price: 
+							${formatINR(basePriceDisplay)}</div>
+							<div class="team-balance" valueofdiv="${availableBalance}">Available Balance: 
+							<span class="HighFontClass">${formatINR(availableBalance)}</span>
 							<span class="large-money" >💰</span></div>
 							<div class="team-tobebid" valueofdiv="${toBeBidBalanceAvailable}" >Bid Balance: 
-							${formatINR(toBeBidBalanceAvailable)} <span class="large-money">📌</span> </div>
-							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >Remaining Players: ${numberOfUnSoldPlayer}</div>
+							<span class="HighFontClass">${formatINR(toBeBidBalanceAvailable)} </span><span class="large-money">📌</span> </div>
+							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >Remaining Players: 
+							<span class="HighFontClass">${numberOfUnSoldPlayer}</span></div>
                         </div>
                         <div class="team-details" onclick="showTeamDetails('${safeTeamName}')" > <span style=" background: #fff;font-style: italic;">Details</span> </div>
 						</div>
