@@ -3183,12 +3183,29 @@ function setTeamDataFromAuctionFile() {
 	    card.querySelector('.team-toselect').setAttribute('valueofdiv', numberOfUnSoldPlayer);
 	});
 }  
-  
+ 
+function getRandomIndex(startIndex, endIndex) {
+    // Calculate the size of the desired range (inclusive)
+    const rangeSize = endIndex - startIndex + 1;
+    
+    // Generate a random number: [0 up to rangeSize)
+    // Add the startIndex to shift the range
+	
+	// Example usage: Get a random index between 2 and 7 (inclusive)
+	//const randomIndex = getRandomIndex(2, 7);
+	//console.log(randomIndex); // Will be 2, 3, 4, 5, 6, or 7
+    const randomNumber = Math.floor(Math.random() * rangeSize) + startIndex;
+    
+    return randomNumber;
+}
+ 
 let currentHighlightedRow = null;
 function highlightRandomRow() {
     const tbody = document.querySelector('#playerTable tbody');
 	const rows = tbody.getElementsByTagName('tr');
-    
+    var startIndex = 0;
+	var endIndex = 0;
+	
     if (rows.length === 0) {
 		alert("Please upload players.");
 		return;
@@ -3222,18 +3239,44 @@ function highlightRandomRow() {
 		
 		if(playerCategory.startsWith("A-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
 			isPremiumPlayerAvailableForAuction=true;
-		}else if(!playerCategory.startsWith("A-")){
+		}else if(playerCategory.startsWith("B-")){
 			playerCategoryIndex = (i-1);
 			break;
 		}
 	}
 	
 	if(!isPremiumPlayerAvailableForAuction){
+		startIndex = playerCategoryIndex+1;
 		playerCategoryIndex = null;
+	}else {
+		endIndex = playerCategoryIndex;
 	}
 	
-	//alert('playerCategoryIndex ' + playerCategoryIndex);
-
+	if(!isPremiumPlayerAvailableForAuction){
+		var goldPlayerCategoryIndex = null;
+		var isGoldPlayerAvailableForAuction=false;
+		for (let i = 0; i < rows.length; i++) {
+			const row = rows[i];
+			const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
+			const soldValueOfEachRow = row.cells[SOLD_INDEX].textContent;
+			
+			if(playerCategory.startsWith("B-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
+				isGoldPlayerAvailableForAuction=true;
+			}else if(playerCategory==null || playerCategory.trim()==""){
+				goldPlayerCategoryIndex = (i-1);
+				break;
+			}
+		}
+		
+		if(!isGoldPlayerAvailableForAuction){
+			startIndex = goldPlayerCategoryIndex+1;
+			endIndex = rows.length;
+			goldPlayerCategoryIndex = null;
+		}else {
+			endIndex = goldPlayerCategoryIndex;
+		}
+	}
+	
 const playerListDivVar = document.getElementById('playerListDiv');
 const startSpinIdVar = document.getElementById('startSpinId');
 const batContainer = document.getElementById('bat-container-id');
@@ -3266,30 +3309,39 @@ startSpinner();
 		currentHighlightedRow.style.backgroundColor = 'white';
 	  }
     }
+	
+	/**
 	var rowSize = rows.length;
 	
-	if(playerCategoryIndex!=null){
-		rowSize = playerCategoryIndex;
+	if(playerCategoryIndex!=null || goldPlayerCategoryIndex!=null){
+		if(playerCategoryIndex!=null){
+			rowSize = playerCategoryIndex;
+		}else if(goldPlayerCategoryIndex!=null){
+			rowSize = goldPlayerCategoryIndex;
+		}
 	}
+	**/
 	
+	//alert("startIndex " + startIndex + " endIndex " + endIndex);
 	var selectedRow = null;
 	var soldValueOfSelectedRow = null;
 	for(i=0;i<9;i++){
-		const randomIndex = Math.floor(Math.random() * rowSize);
-		
+		//const randomIndex = Math.floor(Math.random() * rowSize);
+		const randomIndex = getRandomIndex(startIndex, endIndex);
 		// 3. Select the new random row
 		selectedRow = rows[randomIndex];
 		
-	    soldValueOfSelectedRow = selectedRow.cells[SOLD_INDEX].textContent;
-  
-		if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
-			//alert("Found already sold player " + randomIndex);
-			continue;
+		if(selectedRow!=null){
+			soldValueOfSelectedRow = selectedRow.cells[SOLD_INDEX].textContent;
+	  
+			if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
+				continue;
+			}
 		}
 		break;
 	}
 	
-    //alert('soldValueOfSelectedRow ' + soldValueOfSelectedRow);
+    //alert('selectedRow ' + selectedRow.rowIndex);
 	if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
 		for (let j = 0; j < rows.length; j++) {
 			const row = rows[j];
