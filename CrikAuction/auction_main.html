@@ -276,12 +276,12 @@ text-align:right; }
     font-family: 'Verdana', sans-serif;
     font-size: 1.0em;
 	}
-  .team-owner-card { font-size:13px; color:#555; font-weight:bold;}
-  .team-baseprice { font-size:13px; margin-top:4px; color:#333;font-weight:bold; }
-  .team-total { font-size:12px; margin-top:6px; color:#111; font-weight:bold; }
-  .team-tobebid { font-size:12px; margin-top:6px; font-weight:bold; color:black; }
-  .team-balance { font-size:12px; margin-top:6px; font-weight:bold; color:black; }
-  .team-toselect { font-size:12px; margin-top:6px; font-weight:bold; color:black; }
+  .team-owner-card { font-size:13px; color:#555; font-weight:bold;border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
+  .team-baseprice { font-size:13px; margin-top:4px; color:#333;font-weight:bold; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
+  .team-total { font-size:13px; margin-top:6px; color:#111; font-weight:bold; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
+  .team-tobebid { font-size:13px; margin-top:6px; font-weight:bold; color:black; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
+  .team-balance { font-size:13px; margin-top:6px; font-weight:bold; color:black; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
+  .team-toselect { font-size:13px; color:#555; font-weight:bold;border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;margin-top:4px;}
   .low-balance { color:red !important; }
   .HighFontClass { color:#8b4513 !important;font-size: clamp(1rem, 1.0vw, 2.8rem);}
   .team-details { font-size:13px; 
@@ -497,22 +497,6 @@ display: flex;
             color: #0056b3;
         }
 
-        /* Maximized state */
-        .teams-section-wrapper.maximized {
-            width: 90vw; 
-            height: 90vh; 
-            position: fixed; 
-            top: 5vh;
-            left: 5vw;
-            z-index: 1000; 
-            background-color: white; 
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            border: 3px solid #007bff;
-			
-			/* NEW: INCREASE FONT SIZE IN MAXIMIZED MODE */
-			font-size: 20px; /* Larger font size for the maximized view */
-        }
-
 		/* --- Nested Section & Wrapper Styles --- */
         
         #teamCardsWrapper {
@@ -524,31 +508,6 @@ display: flex;
 			height: 40%;
         }
 
-        /* MAX MODE: Change layout for the card wrapper */
-        .teams-section-wrapper.maximized #teamCardsWrapper {
-            height: 100%; 
-            flex-direction: row; /* Layout cards horizontally */
-            flex-wrap: wrap; /* Allow cards to wrap */
-            gap: 2%; /* Gap between cards (2 cards per row) */
-            padding-top: 0px;
-            overflow-y: auto; 
-        }
-
-                       
-        /* Max Mode Style for all numbered cards - FONT & SIZE INCREASE HERE */
-        /* Targets any element whose class STARTS WITH "team-card" */
-        .teams-section-wrapper.maximized [class^="team-card"] {
-            /* SIZE INCREASE */
-            width: 100%; /* Almost half the width (2 cards per row) */
-            min-height: 150px; 
-                                           
-            border-color: #007bff;
-            background-color: #f0f8ff;
-        }
-		
-		.teams-section-wrapper.maximized [class^="team-name-card"] {
-			font-size:25px;
-		}
 	
 	/* --- LEFT MENU STYLES (Dynamic Width & Height) --- */
         .left-menu {
@@ -1520,6 +1479,148 @@ responsive-box-title {
             transform: translateY(-50%); 
         }
 
+	/* 2. Styling for the Main Content Wrapper */
+        .main-content-wrapper-teamDetails {
+            width: 100%;
+            height: 95vh; 
+            background-color: #1a1a2e; 
+            padding: 5px 20px 20px 20px; 
+            box-sizing: border-box;
+            position: relative; 
+            overflow-y: auto; 
+        }
+
+        /* 3. Page Title Container */
+        .page-title-teamDetails-container-teamDetails { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-bottom: 15px; 
+            padding-bottom: 10px; 
+            border-bottom: 3px solid #e84118; 
+            position: relative; 
+            flex-shrink: 0;
+        }
+
+        .page-title-teamDetails {
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: #fbc531; 
+            margin: 0; 
+            line-height: 1; 
+        }
+
+        /* Top-Level Minimize Icon Styling */
+        .top-level-minimize-icon-teamDetails {
+            position: absolute; 
+            left: 20px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            color: rgba(255, 255, 255, 0.6); 
+            font-size: 1.8rem; 
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+            line-height: 1; 
+        }
+
+        .top-level-minimize-icon-teamDetails:hover {
+            color: #ffffff; 
+        }
+
+      /* 4. Main Grid Container - RENAMED */
+        .rowOfDiv-teamDetails {
+          	display: grid;
+			grid-template-columns: repeat(4, 1fr); 
+			justify-content: space-around;
+			flex-wrap: nowrap;
+			margin-bottom: 10px;
+			width: 99%;
+            margin-left: 0%;
+            margin-right: 0%;
+        }
+
+        /* 5. Team Card Wrapper Style - RENAMED */
+        [id="teamCardsWrapper-teamDetails"] {
+            border-radius: 8px; 
+            //overflow: hidden;
+            background-color: #2c3447;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); 
+            border: 1px solid #3d455d; 
+            transition: transform 0.2s, box-shadow 0.2s;
+			//display: flex;
+			//flex-direction: column;
+			//width: 24%;
+			//margin-left: 10%;
+			//margin-bottom: 20%;
+			margin-bottom: 5vw;
+        }
+
+
+        /* Hover effect */
+        [id="teamCardsWrapper-teamDetails"]:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        /* 6. Nicely Styled Team Name - BOLD & DYNAMIC */
+        .team-name-card-teamDetails {
+            font-family: 'Impact', 'Roboto Condensed', sans-serif; 
+            font-size: 2rem; 
+            font-weight: 900;
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            color: #ffeaa7;
+            
+            background: linear-gradient(90deg, #e84118 0%, #fbc531 100%);
+            padding: 15px 20px; 
+            margin-bottom: 15px; 
+            text-align: center; 
+            line-height: 1;
+            
+            transform: skewX(-5deg); 
+            display: block; 
+            margin-left: -5px;
+            position: relative; 
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Styles for the team name text span to handle overflow */
+        .team-name-text-teamDetails {
+            display: block;
+            transform: skewX(5deg); 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%; 
+        }
+        
+        /* 7. Card Details Styling - RENAMED */
+        .team-card-teamDetails {
+            padding: 0 20px 20px 20px; 
+        }
+        
+        .team-owner-card-teamDetails, .team-baseprice-teamDetails, .team-balance-teamDetails, .team-balance-teamDetails, .team-toselect-teamDetails {
+            font-size: 1rem;
+            color: #bdc3c7; 
+            margin-bottom: 10px;
+            padding-left: 15px; 
+            
+            border-left: 4px solid #00a8ff; 
+            
+            line-height: 1.5;
+        }
+
+        .HighFontClass-teamDetails {
+            font-weight: 700;
+            color: #2ecc71; 
+            font-size: 1.1rem; 
+            letter-spacing: 0.5px;
+        }
+		
 </style>
 </head>
 <body>
@@ -1815,9 +1916,123 @@ responsive-box-title {
   
 </div>
 
+ <!-- 3rd Row Player Details -->
+<div class="main-content-wrapper-teamDetails" id="main-content-wrapper-teamDetails-id" style="display: none;">
+    
+<div class="page-title-teamDetails-container-teamDetails">
+        <span  onclick="toggleMinimize()" class="top-level-minimize-icon-teamDetails">−</span> 
+        <h1 class="page-title-teamDetails">RPL Team and Bidding Stage</h1>
+    </div>
 
+    <div class="rowOfDiv-teamDetails">
+        
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails">
+                <span class="team-name-text-teamDetails">Pratapgad Warrior</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Pratapgad Warrior" data-owner="Atharva Jadhav">
+                <div class="team-owner-card-teamDetails">Owner: Atharva Jadhav</div>
+                <div class="team-baseprice-teamDetails">Owner Base Price: <span class="HighFontClass-teamDetails">₹4,00,000</span></div>
+                <div class="team-balance-teamDetails">Available Balance: <span class="HighFontClass-teamDetails">₹16,00,000</span></div>
+                <div class="team-balance-teamDetails">Bid Balance: <span class="HighFontClass-teamDetails">₹13,50,000 </span></div>
+                <div class="team-toselect-teamDetails">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
+        
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Janjira Marines">
+                <span class="team-name-text-teamDetails">Janjira Marines</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Janjira Marines" data-owner="Sandesh Kadam">
+                <div class="team-owner-card-teamDetails" valueofdiv="Sandesh Kadam">Owner: Sandesh Kadam</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="250000">Owner Base Price: <span class="HighFontClass-teamDetails">₹2,50,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1750000">Available Balance: <span class="HighFontClass-teamDetails">₹17,50,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1500000">Bid Balance: <span class="HighFontClass-teamDetails">₹15,00,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
+        
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Shivaneri Lions">
+                <span class="team-name-text-teamDetails">Shivaneri Lions</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Shivaneri Lions" data-owner="Yogesh Lalvani">
+                <div class="team-owner-card-teamDetails" valueofdiv="Yogesh Lalvani">Owner: Yogesh Lalvani</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="400000">Owner Base Price: <span class="HighFontClass-teamDetails">₹4,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1600000">Available Balance: <span class="HighFontClass-teamDetails">₹16,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1350000">Bid Balance: <span class="HighFontClass-teamDetails">₹13,50,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
+        
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Rajgad Capital">
+                <span class="team-name-text-teamDetails">Rajgad Capital</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Rajgad Capital" data-owner="Umesh Jadhav">
+                <div class="team-owner-card-teamDetails" valueofdiv="Umesh Jadhav">Owner: Umesh Jadhav</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="700000">Owner Base Price: <span class="HighFontClass-teamDetails">₹7,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1300000">Available Balance: <span class="HighFontClass-teamDetails">₹13,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1050000">Bid Balance: <span class="HighFontClass-teamDetails">₹10,50,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
 
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Torana Thunder">
+                <span class="team-name-text-teamDetails">Torana Thunder</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Torana Thunder" data-owner="Priya Sharma">
+                <div class="team-owner-card-teamDetails" valueofdiv="Priya Sharma">Owner: Priya Sharma</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="550000">Owner Base Price: <span class="HighFontClass-teamDetails">₹5,50,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1450000">Available Balance: <span class="HighFontClass-teamDetails">₹14,50,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1100000">Bid Balance: <span class="HighFontClass-teamDetails">₹11,00,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
 
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Sindhudurg Falcons">
+                <span class="team-name-text-teamDetails">Sindhudurg Falcons</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Sindhudurg Falcons" data-owner="Rohit Singh">
+                <div class="team-owner-card-teamDetails" valueofdiv="Rohit Singh">Owner: Rohit Singh</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="300000">Owner Base Price: <span class="HighFontClass-teamDetails">₹3,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1700000">Available Balance: <span class="HighFontClass-teamDetails">₹17,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1450000">Bid Balance: <span class="HighFontClass-teamDetails">₹14,50,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
+        
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Lohagad Defenders">
+                <span class="team-name-text-teamDetails">Lohagad Defenders</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Lohagad Defenders" data-owner="Kirti Patil">
+                <div class="team-owner-card-teamDetails" valueofdiv="Kirti Patil">Owner: Kirti Patil</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="600000">Owner Base Price: <span class="HighFontClass-teamDetails">₹6,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1400000">Available Balance: <span class="HighFontClass-teamDetails">₹14,00,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1200000">Bid Balance: <span class="HighFontClass-teamDetails">₹12,00,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
+        
+        <div id="teamCardsWrapper-teamDetails">
+            <div class="team-name-card-teamDetails" valueofdiv="Raigad Royals">
+                <span class="team-name-text-teamDetails">Raigad Royals</span>
+            </div>
+            <div class="team-card-teamDetails" data-name="Raigad Royals" data-owner="Arjun Deshmukh">
+                <div class="team-owner-card-teamDetails" valueofdiv="Arjun Deshmukh">Owner: Arjun Deshmukh</div>
+                <div class="team-baseprice-teamDetails" valueofdiv="450000">Owner Base Price: <span class="HighFontClass-teamDetails">₹4,50,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1550000">Available Balance: <span class="HighFontClass-teamDetails">₹15,50,000</span></div>
+                <div class="team-balance-teamDetails" valueofdiv="1300000">Bid Balance: <span class="HighFontClass-teamDetails">₹13,00,000 </span></div>
+                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
 
 </body>
 </html>
@@ -2263,7 +2478,7 @@ function updateAvailableBalance(teamName){
 	  const playersToBeSelected = getPlayersToBeSelected(teamName);
 	 
 	  const toselectDiv = card.querySelector('.team-toselect');
-      toselectDiv.textContent = 'Remaining Player: ' + '<span class="HighFontClass">'+playersToBeSelected+'</span>';
+      toselectDiv.innerHTML = 'Remaining Player: ' + '<span class="HighFontClass">'+ playersToBeSelected +'</span>';
     }
   });
 }
@@ -2933,6 +3148,9 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	teamsListMainIdVar.style.display = 'block';
 	enableAllButton();
 	
+	const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+	teamDetailsToDisplayFullId.style.display = 'none';
+		
 	processSelectedPlayerRow(clickedRow);
 	
 	/**
@@ -3036,6 +3254,9 @@ spinnerContainerIDVar.classList.add('visible')
 spinnerContainerIDVar.classList.add('spinnerContainerClass');
 enableAllButton();
 
+const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+teamDetailsToDisplayFullId.style.display = 'none';
+		
 startSpinner();
     
     // 1. Remove highlight from the previously selected row
@@ -3192,9 +3413,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		
-		
-		
-		
+		const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+		teamDetailsToDisplayFullId.style.display = 'none';
+				
 		highlightUnsoldPlayerByBG();
 		collapseMenu();
     }
@@ -3226,7 +3447,10 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		
 		const latestAuctionUploadIDDivID = document.getElementById('latestAuctionUploadID');
 		latestAuctionUploadIDDivID.style.display = 'none';
-
+		
+		const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+		teamDetailsToDisplayFullId.style.display = 'none';
+		
 		collapseMenu();
     }
 	
@@ -3258,43 +3482,33 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		
 		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 		auctionTitleDivID.style.display = 'none';
-
+		
+		const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+		teamDetailsToDisplayFullId.style.display = 'none';
+		
 		collapseMenu();
     }
-	
 
-// =========================================================
-        // 1. MAXIMIZE/MINIMIZE JAVASCRIPT
-        // =========================================================
-        function toggleMaximize(divId) {
-            const div = document.getElementById(divId);
-            const icon = document.getElementById('maxMinIcon');
-
-            if (!div || !icon) {
-                console.error(`Element with ID ${divId} or icon not found.`);
-                return;
-            }
-
-            // Toggle the 'maximized' class on the div
-            div.classList.toggle('maximized');
-
-            // Update the icon character based on the current state
-            if (div.classList.contains('maximized')) {
-                // Change to a different icon when maximized (e.g., minimize/contract icon)
-                icon.innerHTML = '&#9746;'; // Unicode for a ballot box with X (☒)
-                icon.title = 'Minimize';
-				
-				document.getElementById('teamCardsWrapper_PlaceBid').style.display = 'none';
-				document.getElementById('teamCardsWrapper_MarkUnsold').style.display = 'none';
-				  
-            } else {
-                // Revert to the default icon when minimized/default
-                icon.innerHTML = '&#9724;'; // Unicode for a small square (☐)
-                icon.title = 'Maximize';
-				
-				document.getElementById('teamCardsWrapper_PlaceBid').style.display = 'block';
-				document.getElementById('teamCardsWrapper_MarkUnsold').style.display = 'block';
-            }
+        function toggleMaximize() {
+  			const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+			teamDetailsToDisplayFullId.style.display = 'block';
+			
+			const firstRowID = document.getElementById('top-div-id');
+			firstRowID.style.display = 'none';
+			
+			const secondRowID = document.getElementById('teamsListMainId');
+			secondRowID.style.display = 'none';
+        }
+		
+		function toggleMinimize() {
+  			const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+			teamDetailsToDisplayFullId.style.display = 'none';
+			
+			const firstRowID = document.getElementById('top-div-id');
+			firstRowID.style.display = 'block';
+			
+			const secondRowID = document.getElementById('teamsListMainId');
+			secondRowID.style.display = 'block';
         }
 
 
