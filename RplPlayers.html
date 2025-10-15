@@ -29,7 +29,6 @@
     </div>
     <select id='playerSelect' onchange='showDetails()'>
       <option value=''>-- Select Player --</option>
-      <option value=""></option>
       <option value="Aadhyaraj Dhawade">Aadhyaraj Dhawade</option>
       <option value="Aarit Vijay Phalke">Aarit Vijay Phalke</option>
       <option value="Akshay Zolekar">Akshay Zolekar</option>
@@ -85,12 +84,11 @@
   </div>
   <script>
     const players = {
-      "": { name: "", towerFlat: "", mobile: "", unavailability: "", role: "", photo: "", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Aadhyaraj Dhawade": { name: "Aadhyaraj Dhawade", towerFlat: "T33-108", mobile: "8669204534", unavailability: "", role: "All Rounder", photo: "IMG-20250930-WA0014 - Dnyanada Dhawade.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Aarit Vijay Phalke": { name: "Aarit Vijay Phalke", towerFlat: "T31-2108", mobile: "8605451999", unavailability: "", role: "All Rounder", photo: "IMG20250914175258 - Vijay Phalke.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Akshay Zolekar": { name: "Akshay Zolekar", towerFlat: "32-1403", mobile: "7620098286", unavailability: "", role: "All Rounder", photo: "IMG_0654 - Akshay Zolekar.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Amit Jadhav": { name: "Amit Jadhav", towerFlat: "T32-0906", mobile: "9881677399", unavailability: "", role: "All Rounder", photo: "Amit_Jadhav.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
-      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
+      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "500000", toTeam: "Pratapgad Warrior", toOwner: "Atharva Jadhav", ownerMobile: "9155673500" },
       "Amit Mundra": { name: "Amit Mundra", towerFlat: "T31- 2208", mobile: "9623312391", unavailability: "8th November", role: "All Rounder", photo: "20250605_233115 - CA Amit Mundra.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Ankit patel": { name: "Ankit patel", towerFlat: "T-31,308", mobile: "7415555965", unavailability: "", role: "All Rounder", photo: "IMG_2087 - Ankit Patel.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Ashish Bajaj": { name: "Ashish Bajaj", towerFlat: "T33-1902", mobile: "9545412374", unavailability: "TBD", role: "All Rounder", photo: "63d588eb-fb7a-4954-a446-8b8baf79b41b - ASHISH BAJAJ.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
@@ -129,7 +127,7 @@
       "Saurav Lonkar": { name: "Saurav Lonkar", towerFlat: "38-2003", mobile: "7557441144", unavailability: "", role: "All Rounder", photo: "20231112_230203 - Saurav 7.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Soumik Saha": { name: "Soumik Saha", towerFlat: "T33-707", mobile: "9477438689", unavailability: "NA", role: "All Rounder", photo: "IMG-20231115-WA0024 - Soumik Saha.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Sujit Dessai": { name: "Sujit Dessai", towerFlat: "T31-1404", mobile: "9673731238", unavailability: "", role: "All Rounder", photo: "Sujit_Dessai.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
-      "Sujit Jadhav": { name: "Sujit Jadhav", towerFlat: "T33-1706", mobile: "9028050517", unavailability: "", role: "Batsman", photo: "Sujit_Jadhav_photo.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
+      "Sujit Jadhav": { name: "Sujit Jadhav", towerFlat: "T33-1706", mobile: "9028050517", unavailability: "", role: "Batsman", photo: "", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Sumit Kumar": { name: "Sumit Kumar", towerFlat: "T31-1904", mobile: "8149759914", unavailability: "Available in all", role: "All Rounder", photo: "", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Suraj Devgan": { name: "Suraj Devgan", towerFlat: "T32-1002", mobile: "8888899586", unavailability: "", role: "Batsman", photo: "29B5D81A-0ADB-444E-A336-8A133F0F36A3 - Suraj Devgan.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Tushar pund": { name: "Tushar pund", towerFlat: "T31-0201", mobile: "9595853245", unavailability: "", role: "All Rounder", photo: "77201571-C4E5-425E-83A3-493FE2026B8C - Tushar Pund.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
@@ -143,9 +141,12 @@
       const p = players[name] || {};
       let profileHtml = '';
       if (p.photo && p.photo.trim() !== '') {
-        profileHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}'>`;
+          profileHtml += `<div style='position: relative; display: inline-block;'>`;
+          profileHtml += `<span id='photoLoading' style='color: #ff5722; font-weight: bold;'>Please wait, your photo is coming...</span>`;
+          profileHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}' style='display:block; max-width:180px; border-radius:12px; border:3px solid #fff; box-shadow:0 6px 14px rgba(0,0,0,0.12); margin-bottom:16px;' onload='document.getElementById("photoLoading").style.display="none";' onerror='document.getElementById("photoLoading").innerText="Photo not available";'>`;
+          profileHtml += `</div>`;
       } else {
-        profileHtml += `<img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available'>`;
+          profileHtml += `<img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available'>`;
       }
       profileHtml += `<h3>Your Profile Info</h3>`;
       profileHtml += `<p><b>Name:</b> ${p.name || ''}</p>`;
@@ -155,7 +156,13 @@
       profileHtml += `<p><b>Role:</b> ${p.role || ''}</p>`;
       profileDiv.innerHTML = profileHtml;
       let biddingHtml = '<h3>Your Bidding Details</h3>';
-      biddingHtml += `<p><b>Final Bid:</b> ${p.soldAt || ''}</p>`;
+      if (!p.soldAt || p.soldAt.trim() === '') {
+          biddingHtml += `<p><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;
+      } else {
+          let bidNumber = Number(p.soldAt.replace(/,/g, ''));
+          let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);
+          biddingHtml += `<p><b>Final Bid:</b> ${formattedBid}</p>`;
+      }
       biddingHtml += `<p><b>Sold To Team:</b> ${p.toTeam || ''}</p>`;
       biddingHtml += `<p><b>Team Owner Name:</b> ${p.toOwner || ''}</p>`;
       biddingHtml += `<p><b>Team Owner Mobile:</b> ${p.ownerMobile || ''}</p>`;
