@@ -2214,6 +2214,7 @@ function renderPlayers(renderType){
 	const PlayerType = p.PlayerType || '';
 	const SoldToTeam = p.SoldToTeam || '';
 	const TeamOwnerName = p.TeamOwnerName || '';
+	const photoURL = p.PhotoURL || '';
 	
 	var bidDetails = "";
 	var soldVal = "";
@@ -2227,8 +2228,15 @@ function renderPlayers(renderType){
 		soldVal = sold;
 	}
 	
+	var playerNameToDisplay = name;
+	if(photoURL!=null && photoURL.trim()!=""){
+		playerNameToDisplay+="📸"+"<span style=\"font-size: 10px;\">✅</span>";
+	}else{
+		playerNameToDisplay+="📸"+"<span style=\"font-size: 10px;\">❌</span>";;
+	}
+
     tr.innerHTML = `
-      <td playerval="${name}">${index}>&nbsp;&nbsp;&nbsp;${name}</td>
+      <td playerval="${name}">${index}>&nbsp;&nbsp;&nbsp;${playerNameToDisplay}</td>
 	  <td>${PlayerType}</td>
 	  <td>${mobile}</td>
       <td>${role}</td>
