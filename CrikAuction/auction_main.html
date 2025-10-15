@@ -228,7 +228,9 @@
             object-fit: cover; 
             border: 5px solid #1abc9c; 
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-  .player-details { flex:1;  padding-top: 40px;}
+  .player-details { flex:1;  
+	//padding-top: 40px;
+	}
   .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
   .bid-section { margin-top:15px;text-align: left;}
   .bid-section input { 
@@ -1097,32 +1099,7 @@ display: flex;
         .close-btn-top:hover {
             color: #333; 
         }
-
-        /* Bottom Text Link Button */
-        .close-btn-bottom {
-            background: none;
-            border: none;
-            color: #1abc9c; 
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 30px; 
-            
-            align-self: flex-start; 
-            margin-left: 50px; 
-            
-            transition: color 0.2s;
-            padding: 0; 
-            z-index: 25; 
-        }
-        .close-btn-bottom:hover {
-            color: #16a085;
-        }
-
-        /* -------------------------------------- */
-        /* --- Central Content Styling --- */
-        /* -------------------------------------- */
+ 
         .central-content {
             z-index: 20; 
             position: relative;
@@ -1382,6 +1359,7 @@ display: flex;
     z-index: 3;
 }
 
+
 .handle-cap {
     position: absolute;
     top: -10px;
@@ -1392,7 +1370,8 @@ display: flex;
     border-radius: 50%;
     z-index: 4;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
-}
+} 
+
 
 .shoulder {
     position: absolute;
@@ -1403,24 +1382,10 @@ display: flex;
     background-color: #8B4513; 
     border-radius: 5px;
     z-index: 2;
-}
+} 
 		
 		.large-money {
   font-size: 1.0rem; /* 'rem' is often preferred as it's relative to the root font size */
-}
-
-.styled-fallback {
-  /* 1. Define the size of the fallback area */
-  width: 100px;
-  height: 100px;
-  
-  /* 2. Hide the default alt text */
-  font-size: 0; 
-  
-  /* 3. Add styling for the container */
-  border: 1px dashed #999;
-  background-color: #f0f0f0;
-  position: relative; 
 }
 
 responsive-box-title { 
@@ -1444,13 +1409,14 @@ responsive-box-title {
             box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3);
         }
 
+
         .responsive-text {
             /* Key: Use 'vw' (viewport width) for responsive font size. */
             font-size: 7vw; 
             font-weight: 900;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
-			color: #000000;
+			color: #000000; */
         }
 		
 		.dotted-text-break-separator {
@@ -1462,7 +1428,8 @@ responsive-box-title {
             /* Dotted line */
             border-bottom: 10px dotted #DAA520; 
             line-height: 0.1em; /* SHRINKS THE HEIGHT OF THE LINE */
-        }
+        } */
+
 
         .dotted-text-break-separator span {
             /* Text Block Styles */
@@ -1477,12 +1444,12 @@ responsive-box-title {
             
             /* Vertical alignment fix */
             transform: translateY(-50%); 
-        }
+        }  
 
 	/* 2. Styling for the Main Content Wrapper */
         .main-content-wrapper-teamDetails {
             width: 100%;
-            height: 95vh; 
+            height: 100vh; 
             background-color: #1a1a2e; 
             padding: 5px 20px 20px 20px; 
             box-sizing: border-box;
@@ -1775,6 +1742,7 @@ responsive-box-title {
 				<th>Base Price</th>
 				<th>Unavailibilty</th>
 				<th>Sold</th>
+				<th>Bid Details</th>
 			  </tr>
 			</thead>
 			<tbody></tbody>
@@ -1924,111 +1892,7 @@ responsive-box-title {
         <h1 class="page-title-teamDetails">RPL Team and Bidding Stage</h1>
     </div>
 
-    <div class="rowOfDiv-teamDetails">
-        
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails">
-                <span class="team-name-text-teamDetails">Pratapgad Warrior</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Pratapgad Warrior" data-owner="Atharva Jadhav">
-                <div class="team-owner-card-teamDetails">Owner: Atharva Jadhav</div>
-                <div class="team-baseprice-teamDetails">Owner Base Price: <span class="HighFontClass-teamDetails">₹4,00,000</span></div>
-                <div class="team-balance-teamDetails">Available Balance: <span class="HighFontClass-teamDetails">₹16,00,000</span></div>
-                <div class="team-balance-teamDetails">Bid Balance: <span class="HighFontClass-teamDetails">₹13,50,000 </span></div>
-                <div class="team-toselect-teamDetails">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-        
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Janjira Marines">
-                <span class="team-name-text-teamDetails">Janjira Marines</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Janjira Marines" data-owner="Sandesh Kadam">
-                <div class="team-owner-card-teamDetails" valueofdiv="Sandesh Kadam">Owner: Sandesh Kadam</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="250000">Owner Base Price: <span class="HighFontClass-teamDetails">₹2,50,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1750000">Available Balance: <span class="HighFontClass-teamDetails">₹17,50,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1500000">Bid Balance: <span class="HighFontClass-teamDetails">₹15,00,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-        
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Shivaneri Lions">
-                <span class="team-name-text-teamDetails">Shivaneri Lions</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Shivaneri Lions" data-owner="Yogesh Lalvani">
-                <div class="team-owner-card-teamDetails" valueofdiv="Yogesh Lalvani">Owner: Yogesh Lalvani</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="400000">Owner Base Price: <span class="HighFontClass-teamDetails">₹4,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1600000">Available Balance: <span class="HighFontClass-teamDetails">₹16,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1350000">Bid Balance: <span class="HighFontClass-teamDetails">₹13,50,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-        
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Rajgad Capital">
-                <span class="team-name-text-teamDetails">Rajgad Capital</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Rajgad Capital" data-owner="Umesh Jadhav">
-                <div class="team-owner-card-teamDetails" valueofdiv="Umesh Jadhav">Owner: Umesh Jadhav</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="700000">Owner Base Price: <span class="HighFontClass-teamDetails">₹7,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1300000">Available Balance: <span class="HighFontClass-teamDetails">₹13,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1050000">Bid Balance: <span class="HighFontClass-teamDetails">₹10,50,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Torana Thunder">
-                <span class="team-name-text-teamDetails">Torana Thunder</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Torana Thunder" data-owner="Priya Sharma">
-                <div class="team-owner-card-teamDetails" valueofdiv="Priya Sharma">Owner: Priya Sharma</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="550000">Owner Base Price: <span class="HighFontClass-teamDetails">₹5,50,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1450000">Available Balance: <span class="HighFontClass-teamDetails">₹14,50,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1100000">Bid Balance: <span class="HighFontClass-teamDetails">₹11,00,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Sindhudurg Falcons">
-                <span class="team-name-text-teamDetails">Sindhudurg Falcons</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Sindhudurg Falcons" data-owner="Rohit Singh">
-                <div class="team-owner-card-teamDetails" valueofdiv="Rohit Singh">Owner: Rohit Singh</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="300000">Owner Base Price: <span class="HighFontClass-teamDetails">₹3,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1700000">Available Balance: <span class="HighFontClass-teamDetails">₹17,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1450000">Bid Balance: <span class="HighFontClass-teamDetails">₹14,50,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-        
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Lohagad Defenders">
-                <span class="team-name-text-teamDetails">Lohagad Defenders</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Lohagad Defenders" data-owner="Kirti Patil">
-                <div class="team-owner-card-teamDetails" valueofdiv="Kirti Patil">Owner: Kirti Patil</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="600000">Owner Base Price: <span class="HighFontClass-teamDetails">₹6,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1400000">Available Balance: <span class="HighFontClass-teamDetails">₹14,00,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1200000">Bid Balance: <span class="HighFontClass-teamDetails">₹12,00,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
-        
-        <div id="teamCardsWrapper-teamDetails">
-            <div class="team-name-card-teamDetails" valueofdiv="Raigad Royals">
-                <span class="team-name-text-teamDetails">Raigad Royals</span>
-            </div>
-            <div class="team-card-teamDetails" data-name="Raigad Royals" data-owner="Arjun Deshmukh">
-                <div class="team-owner-card-teamDetails" valueofdiv="Arjun Deshmukh">Owner: Arjun Deshmukh</div>
-                <div class="team-baseprice-teamDetails" valueofdiv="450000">Owner Base Price: <span class="HighFontClass-teamDetails">₹4,50,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1550000">Available Balance: <span class="HighFontClass-teamDetails">₹15,50,000</span></div>
-                <div class="team-balance-teamDetails" valueofdiv="1300000">Bid Balance: <span class="HighFontClass-teamDetails">₹13,00,000 </span></div>
-                <div class="team-toselect-teamDetails" valueofdiv="6">Remaining Players: <span class="HighFontClass-teamDetails">6</span></div>
-            </div>
-        </div>
+    <div class="rowOfDiv-teamDetails" id="rowOfDiv-teamDetails-id">
         
     </div>
 
@@ -2046,9 +1910,11 @@ let currentPlayer = null; // raw object from sheet
 let currentBid = 0;       // numeric value in rupees, not formatted string
 let selectedTeam = null;
 
-let SOLD_INDEX = 5;
+let SOLD_INDEX = 6;
 let PLAYER_TYPE_INDEX = 1;
-let name_INDEX = 0;
+let PLAYER_Name_INDEX = 0;
+let BID_DETAILS_INDEX = SOLD_INDEX+1;
+
 const CONGRATE_MEG_ON_CONFIGURATION_UPLOAD = "Congratulations! Auction Configuration data is already loaded. Please proceed."
 const AUCTION_ACTION_PLACE_BID = "AUCTION_ACTION_PLACE_BID";
 const AUCTION_ACTION_UNSOLD_PLAYER = "AUCTION_ACTION_UNSOLD_PLAYER";
@@ -2334,6 +2200,7 @@ function renderPlayers(renderType){
   const tbody = document.querySelector('#playerTable tbody');
   tbody.innerHTML = '';
   var index = 1;
+  var playerDetailsFromData = null;
   data.forEach((p,i) => {
     const tr = document.createElement('tr');
 
@@ -2345,16 +2212,22 @@ function renderPlayers(renderType){
     const sold = p.Sold || '';
     const unavailibilty = p.Unavailibilty || '';
 	const PlayerType = p.PlayerType || '';
-
+	var bidDetails = "";
+	if(sold!=null && sold.trim()=="Yes"){
+		const bidPrice = "Sold at[" +formatINR(p.BasePrice)+ "]";
+		const teamDetails = "To Team[" +p.SoldToTeam+ "]";
+		const ownerName = "Team Owner[" +p.TeamOwnerName+ "]";
+		bidDetails = bidPrice +"<br><br>" + teamDetails + "<br><br>"+ownerName;
+	}
     tr.innerHTML = `
-      <td>${index}>&nbsp;&nbsp;&nbsp;${name}</td>
+      <td playerval="${name}">${index}>&nbsp;&nbsp;&nbsp;${name}</td>
 	  <td>${PlayerType}</td>
-	  td>${mobile}</td>
+	  <td>${mobile}</td>
       <td>${role}</td>
       <td>${formatINR(base)}</td>
 	  <td>${unavailibilty}</td>
       <td>${sold}</td>
-      
+      <td><span style="color:blue">${bidDetails}</span></td>
     `;
 	index = index+1;
 	
@@ -2885,11 +2758,14 @@ function submitAuction(){
 	
     data.forEach(p => {
       if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
-        // store plain number for Excel
+        p.Sold = 'Yes';
+		
         p.FinalBid = Number(currentBid);
         //p.SoldToTeam = `${selectedTeam.name} (Owner: ${selectedTeam.owner})`;
 		p.SoldToTeam = `${selectedTeam.name}`;
-        p.Sold = 'Yes';
+        p.TeamOwnerName = `${selectedTeam.owner}`;
+		p.TeamOwnerMobile = `${p.Mobile}`;
+		
 		//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
       }
     });
@@ -2979,6 +2855,7 @@ function setTeamParamsAfterSubmit(teamName, availableBalanceAfterSubmit, toBeBid
 	if(c.getAttribute('data-name') === teamName){
 	  c.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+
 	  formatINR(toBeBidBalance) + '</span>' + '<span class="large-money">📌</span>';
+	  c.querySelector('.team-balance').setAttribute('valueofdiv', availableBalanceAfterSubmit);
 	  c.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
 	  c.querySelector('.team-toselect').setAttribute('valueofdiv', remainingPlayers);
 		}
@@ -3121,9 +2998,34 @@ let currentHighlightedRow_ClickOfRowVar = null;
 function currentHighlightedRow_ClickOfRow(clickedRow) {
     const tbody = document.querySelector('#playerTable tbody');
  	const soldValueOfRow = clickedRow.cells[SOLD_INDEX].textContent;
-	
+	const playerNameTd = clickedRow.cells[PLAYER_Name_INDEX];
+	const playerNameval = playerNameTd.getAttribute('playerval');
+		
 	if(soldValueOfRow=="Yes") {
-		alert("This Player is already sold out, so can't open it again for Auction.");
+		var bidPriceVal = "";
+		var soldToTeamVal = "";
+		var teamOwnerNameVal = "";
+		var teamOwnerMobileVal = "";
+		const sheet = workbook.Sheets[mainSheetName];
+		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+		const data = sortData(rowData);
+		data.forEach(p => {
+		  if(p.Name === playerNameval){
+			bidPriceVal = p.FinalBid;
+			soldToTeamVal = p.SoldToTeam;
+			teamOwnerNameVal = p.TeamOwnerName;
+			teamOwnerMobileVal = p.TeamOwnerMobile;
+			return true;
+		  }
+		  return false;
+		});
+	
+		const bidPrice = "Sold at [" +formatINR(bidPriceVal)+ "]";
+		const teamDetails = "To Team [" +soldToTeamVal+ "]";
+		const ownerName = "Team Owner [" +teamOwnerNameVal+ "]";
+		const bidDetails = bidPrice +"\n\n" + teamDetails + "\n\n"+ownerName;
+		
+		alert("'"+playerNameval + "' is already sold out, Please find below Sold out details.\n\n" + bidDetails);
 		return;
 	}
 	
@@ -3309,19 +3211,7 @@ startSpinner();
 		currentHighlightedRow.style.backgroundColor = 'white';
 	  }
     }
-	
-	/**
-	var rowSize = rows.length;
-	
-	if(playerCategoryIndex!=null || goldPlayerCategoryIndex!=null){
-		if(playerCategoryIndex!=null){
-			rowSize = playerCategoryIndex;
-		}else if(goldPlayerCategoryIndex!=null){
-			rowSize = goldPlayerCategoryIndex;
-		}
-	}
-	**/
-	
+		
 	//alert("startIndex " + startIndex + " endIndex " + endIndex);
 	var selectedRow = null;
 	var soldValueOfSelectedRow = null;
@@ -3383,7 +3273,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	isSpinning = true;
 
     // 3. Stop the spinning after a random duration (e.g., 2 to 5 seconds)
-    const spinDuration = Math.random() * 3000 + 2000; // 2000ms to 5000ms
+	const spinDuration = Math.random() * 3000 + 1000;
+    //const spinDuration = Math.random() * 3000 + 2000; // 2000ms to 5000ms
     setTimeout(() => {
       stopSpinner();
     }, spinDuration);
@@ -3540,7 +3431,38 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		
 		collapseMenu();
     }
+		
+        function setTeamDetailsToFullTeamDetailsScreen() {
+			var aviBalanceId = "";
+			var bidBalanceId = "";
+			var remainingPlayerId = "";
+			var teamNameFromAuctionScreen =
+			document.querySelectorAll('#teamsList .team-card').forEach(card => {
+				teamNameFromAuctionScreen = card.getAttribute('data-name');
+				aviBalanceId = "aviBal_";
+				bidBalanceId = "bidBal_";
+				remainingPlayerId = "rimPlayers_";
+				const availableBalanceFromAuctionScreen = card.querySelector('.team-balance').getAttribute('valueofdiv');
+				const bidBalanceFromAuctionScreen = card.querySelector('.team-tobebid').getAttribute('valueofdiv');
+				const remainingPlayersFromAuctionScreen = card.querySelector('.team-toselect').getAttribute('valueofdiv');
+				aviBalanceId = aviBalanceId+teamNameFromAuctionScreen;
+				bidBalanceId = bidBalanceId+teamNameFromAuctionScreen;
+				remainingPlayerId = remainingPlayerId+teamNameFromAuctionScreen;
+				try{
+				
+				document.getElementById(aviBalanceId).innerHTML =  formatINR(availableBalanceFromAuctionScreen);
+				document.getElementById(bidBalanceId).innerHTML = formatINR(bidBalanceFromAuctionScreen);
+				document.getElementById(remainingPlayerId).innerHTML = remainingPlayersFromAuctionScreen;
+				}catch(err){
+					console.error('teamNameFromAuctionScreen-' + teamNameFromAuctionScreen +" aviBalanceId " + aviBalanceId +"");
+					console.error(err);
+					
+					alert('teamNameFromAuctionScreen-' + teamNameFromAuctionScreen +" aviBalanceId " + aviBalanceId +"" + "\n\n" + err);
+				}
+			});
 
+		}
+		
         function toggleMaximize() {
   			const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
 			teamDetailsToDisplayFullId.style.display = 'block';
@@ -3550,6 +3472,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 			
 			const secondRowID = document.getElementById('teamsListMainId');
 			secondRowID.style.display = 'none';
+			
+			setTeamDetailsToFullTeamDetailsScreen();
         }
 		
 		function toggleMinimize() {
@@ -3767,7 +3691,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 			}
                  
                 } catch (err) {
-                   alert('Error in loading configuration file ' + err);
+                   //alert('Error in loading configuration file ' + err);
+				   console.error(err);
                 }
             };
 
@@ -3790,9 +3715,11 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
                 output.innerHTML = '<p class="text-gray-500 italic">No valid data rows found after parsing.</p>';
                 return;
             }
-
+			
+			const htmlTeamFullScreenDetailsOutput = document.getElementById('rowOfDiv-teamDetails-id');
             // Start of the main card wrapper, styled as a responsive grid
             let html = ``;
+			let htmlTeamFullScreenDetails = ``;
            
 			const totalAllocatedAvailableBalance = document.getElementById('AUCTION_ALLOCATED_BALANCE').value;
 			
@@ -3840,8 +3767,20 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 					counter = counter+1;
 				 }
 				
+				htmlTeamFullScreenDetails += `
+						<div id="teamCardsWrapper-teamDetails">
+							<div class="team-name-card-teamDetails"><span class="team-name-text-teamDetails">${teamName}</span></div>
+							<div class="team-card-teamDetails" data-name="${teamName}" data-owner="${ownerName}"></div>
+							<div class="team-owner-card-teamDetails">Owner: ${ownerName}</div>
+							<div class="team-baseprice-teamDetails">Owner Base Price: <span class="HighFontClass-teamDetails">${formatINR(basePriceDisplay)}</span></div>
+							<div class="team-balance-teamDetails">Available Balance: <span class="HighFontClass-teamDetails" id="aviBal_${teamName}" >${formatINR(availableBalance)}</span></div>
+							<div class="team-balance-teamDetails">Bid Balance: <span class="HighFontClass-teamDetails" id="bidBal_${teamName}" >${formatINR(toBeBidBalanceAvailable)}</span></div>
+							<div class="team-toselect-teamDetails">Remaining Players: <span class="HighFontClass-teamDetails" id="rimPlayers_${teamName}" >${numberOfUnSoldPlayer}</span></div>
+						</div>
+                `;
 				
             });
+			htmlTeamFullScreenDetailsOutput.innerHTML = htmlTeamFullScreenDetails;
 		
 html += `		
 			<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
