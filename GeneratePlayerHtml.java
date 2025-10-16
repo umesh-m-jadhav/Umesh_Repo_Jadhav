@@ -12,9 +12,6 @@ public class GeneratePlayerHtml {
 
     public static void main(String[] args) {
         boolean IsAuctionData = false; // Change as needed
-        
-        //IsAuctionData = false means read data from Player_List.xlsx
-        //IsAuctionData = true means read data from latest AuctionResult from download folder
 
         String baseFolder = "F:\\social\\AuctionCode\\CrikAuction\\";
         String defaultExcelPath = baseFolder + "DataFile\\Player_List.xlsx";
@@ -35,7 +32,7 @@ public class GeneratePlayerHtml {
             System.out.println("Using default player list: " + excelPath);
         }
 
-        List<Player> players = readPlayersFromExcel(excelPath);
+        List<Player> players = readPlayersFromExcel(excelPath, IsAuctionData);
 
         // Read owner data from Owner sheet in both cases
         Map<String, OwnerData> ownerDataMap = readOwnerSheetsFromExcel(excelPath);
@@ -74,7 +71,7 @@ public class GeneratePlayerHtml {
         return null;
     }
 
-    private static List<Player> readPlayersFromExcel(String excelFilePath) {
+    private static List<Player> readPlayersFromExcel(String excelFilePath, boolean IsAuctionData) {
         List<Player> players = new ArrayList<>();
         DataFormatter formatter = new DataFormatter();
 
@@ -107,6 +104,9 @@ public class GeneratePlayerHtml {
                 p.toOwner = getValue(formatter, row, colMap.get("TeamOwnerName"));
                 p.ownerMobile = getValue(formatter, row, colMap.get("TeamOwnerMobile"));
                 p.bidAmount = getValue(formatter, row, colMap.get("BidAmount"));
+                if (!IsAuctionData) {
+                    p.basePrice = getValue(formatter, row, colMap.get("BasePrice"));
+                }
 
                 if (p.name != null && !p.name.trim().isEmpty()) {
                     players.add(p);
@@ -148,6 +148,7 @@ public class GeneratePlayerHtml {
             Integer nameCol = colMap.get("Name");
             Integer teamCol = colMap.get("TeamName");
             Integer photoCol = colMap.get("PhotoURL");
+            Integer basePriceCol = colMap.get("BasePrice"); // new
             if (nameCol == null || teamCol == null) return ownerDataMap;
 
             while (iterator.hasNext()) {
@@ -155,10 +156,13 @@ public class GeneratePlayerHtml {
                 String ownerName = getValue(formatter, row, nameCol);
                 String teamName = getValue(formatter, row, teamCol);
                 String photoURL = getValue(formatter, row, photoCol);
+                String basePrice = getValue(formatter, row, basePriceCol); // new
+
                 if (ownerName != null && !ownerName.trim().isEmpty()) {
                     OwnerData od = new OwnerData();
                     od.teamName = teamName;
                     od.photoURL = (photoURL != null && !photoURL.trim().isEmpty()) ? photoURL : "Image_Not_Given.png";
+                    od.basePrice = basePrice; // assign
 
                     Sheet teamSheet = workbook.getSheet(teamName);
                     if (teamSheet != null) {
@@ -230,17 +234,13 @@ public class GeneratePlayerHtml {
             out.println("  <div class='container'>");
             out.println("    <div class='header'>");
             out.println("      <h2>RPL (R21 Premium League) Catalogue</h2>");
-            out.println("      <p>This portal provides your registered profile details along with your auction bidding information (post-auction).<br><strong>Note:</strong> The auction schedule, tournament schedule, winner list, and other updates will be shared in the official WhatsApp group.</p>");
             out.println("    </div>");
 
             // Owner dropdown
             out.println("    <select id='ownerSelect' onchange='showOwnerDetails()'>");
             out.println("      <option value=''>-- Select Owner --</option>");
-            for (String owner : ownerDataMap.keySet()) {
-                if (owner != null && !owner.trim().isEmpty()) {
-                    out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(owner), escapeHtml(owner));
-                }
-            }
+            ownerDataMap.keySet().stream().sorted(String.CASE_INSENSITIVE_ORDER)
+                    .forEach(owner -> out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(owner), escapeHtml(owner)));
             out.println("    </select>");
             out.println("    <div id='ownerArea'></div>");
 
@@ -257,30 +257,29 @@ public class GeneratePlayerHtml {
 
             // JS
             out.println("  <script>");
-            out.println("    const IsAuctionData = " + IsAuctionData + ";"); // pass flag to JS
-
-            // --- Player JS Data ---
+            out.println("    const IsAuctionData = " + IsAuctionData + ";");
+            // --- Players data ---
             out.println("    const players = {");
             for (Player p : players) {
-                out.printf("      \"%s\": { name: \"%s\", towerFlat: \"%s\", mobile: \"%s\", unavailability: \"%s\", role: \"%s\", photo: \"%s\", soldAt: \"%s\", toTeam: \"%s\", toOwner: \"%s\", ownerMobile: \"%s\" },%n",
+                out.printf("      \"%s\": { name: \"%s\", towerFlat: \"%s\", mobile: \"%s\", unavailability: \"%s\", role: \"%s\", photo: \"%s\", soldAt: \"%s\", toTeam: \"%s\", toOwner: \"%s\", ownerMobile: \"%s\", basePrice: \"%s\" },%n",
                         escapeJsKey(p.name), escapeJs(p.name), escapeJs(p.towerFlat), escapeJs(p.mobile),
                         escapeJs(p.unavailability), escapeJs(p.role), escapeJs(p.photoURL),
-                        escapeJs(p.soldAt), escapeJs(p.toTeam), escapeJs(p.toOwner), escapeJs(p.ownerMobile));
+                        escapeJs(p.soldAt), escapeJs(p.toTeam), escapeJs(p.toOwner), escapeJs(p.ownerMobile),
+                        escapeJs(p.basePrice));
             }
             out.println("    };");
 
-            // --- Owner JS Data ---
+            // --- Owners data ---
             out.println("    const owners = {");
             for (Map.Entry<String, OwnerData> entry : ownerDataMap.entrySet()) {
-                out.printf("      \"%s\": { teamName: \"%s\", photoURL: \"%s\", sheetData: %s },%n",
-                        escapeJsKey(entry.getKey()),
-                        escapeJs(entry.getValue().teamName),
-                        escapeJs(entry.getValue().photoURL),
+                out.printf("      \"%s\": { teamName: \"%s\", photoURL: \"%s\", basePrice: \"%s\", sheetData: %s },%n",
+                        escapeJsKey(entry.getKey()), escapeJs(entry.getValue().teamName),
+                        escapeJs(entry.getValue().photoURL), escapeJs(entry.getValue().basePrice),
                         toJsonArray(entry.getValue().sheetData));
             }
             out.println("    };");
 
-            // --- JS Functions (Player & Owner) ---
+            // --- JS Functions ---
             out.println("function showDetails() {");
             out.println("    const name = document.getElementById('playerSelect').value;");
             out.println("    const content = document.getElementById('contentArea');");
@@ -288,23 +287,27 @@ public class GeneratePlayerHtml {
             out.println("    const p = players[name] || {};");
             out.println("    let profileHtml = '';");
 
-            // SOLD OUT for players with valid Final Bid
-            out.println("    if(IsAuctionData && p.soldAt && p.soldAt.trim() !== '') {");
-            out.println("        profileHtml += `<div class='soldout'>SOLD OUT</div>`;");
-            out.println("    }");
-
+            out.println("    if(IsAuctionData && p.soldAt && p.soldAt.trim() !== '') { profileHtml += `<div class='soldout'>SOLD OUT</div>`; }");
             out.println("    if (p.photo && p.photo.trim() !== '') {");
-            out.println("        profileHtml += `<div style='position: relative; display: inline-block;'>`;"); 
+            out.println("        profileHtml += `<div style='position: relative; display: inline-block;'>`;");
             out.println("        profileHtml += `<span id='photoLoading' style='color: #ff5722; font-weight: bold;'>Please wait, your photo is coming...</span>`;");
             out.println("        profileHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}' style='display:block; max-width:180px; border-radius:12px; border:3px solid #fff; box-shadow:0 6px 14px rgba(0,0,0,0.12); margin-bottom:16px;' onload='document.getElementById(\"photoLoading\").style.display=\"none\";' onerror='document.getElementById(\"photoLoading\").innerText=\"Photo not available\";'>`;");
             out.println("        profileHtml += `</div>`;");
             out.println("    } else { profileHtml += `<img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available'>`; }");
+
             out.println("    profileHtml += `<h3>Your Profile Info</h3>`;");
             out.println("    profileHtml += `<p><b>Name:</b> ${p.name || ''}</p>`;");
             out.println("    profileHtml += `<p><b>Tower/Flat:</b> ${p.towerFlat || ''}</p>`;");
             out.println("    profileHtml += `<p><b>Mobile:</b> ${p.mobile || ''}</p>`;");
             out.println("    profileHtml += `<p><b>Unavailability:</b> ${p.unavailability || ''}</p>`;");
             out.println("    profileHtml += `<p><b>Role:</b> ${p.role || ''}</p>`;");
+
+            // BasePrice for players
+            out.println("    if(!IsAuctionData && p.basePrice && p.basePrice.trim() !== '') {");
+            out.println("        let base = Number(p.basePrice.replace(/,/g,''));");
+            out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
+            out.println("        profileHtml += `<p><b>Base Price:</b> ${formattedBase}</p>`;");
+            out.println("    }");
 
             out.println("    let biddingHtml = '<h3>Your Bidding Details</h3>';"); 
             out.println("    if (!p.soldAt || p.soldAt.trim() === '') {");
@@ -320,7 +323,7 @@ public class GeneratePlayerHtml {
             out.println("    content.innerHTML = `<div id='profileSection' class='profile-section'>${profileHtml}</div><div class='separator'></div><div id='biddingSection' class='bidding-section'>${biddingHtml}</div>`;");
             out.println("}");
 
-            // --- Owner Function ---
+            // --- Owner JS Function ---
             out.println("function showOwnerDetails() {");
             out.println("    const ownerName = document.getElementById('ownerSelect').value;");
             out.println("    const ownerArea = document.getElementById('ownerArea');");
@@ -331,8 +334,16 @@ public class GeneratePlayerHtml {
             out.println("    html += `<img src='PlayersPhoto/${o.photoURL}' alt='Owner Photo' style='max-width:120px; border-radius:12px; margin-bottom:8px;'>`;");
             out.println("    html += `<h3>Owner: ${ownerName}</h3>`;");
             out.println("    html += `<p>Team: ${o.teamName || ''}</p>`;");
+
+            // BasePrice for owner
+            out.println("    if(!IsAuctionData && o.basePrice && o.basePrice.trim() !== '') {");
+            out.println("        let base = Number(o.basePrice.replace(/,/g,''));");
+            out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
+            out.println("        html += `<p><b>Base Price:</b> ${formattedBase}</p>`;");
+            out.println("    }");
+
             out.println("    if(o.sheetData && o.sheetData.length > 0){");
-            out.println("        html += `<table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th></tr>`;");
+            out.println("        html += `<table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th>` + (!IsAuctionData ? `<th>Base Price</th>` : '') + `</tr>`;");
             out.println("        o.sheetData.forEach((r, index) => {");
             out.println("            html += `<tr>`;");
             out.println("            html += `<td>${index+1}</td>`;");
@@ -341,6 +352,11 @@ public class GeneratePlayerHtml {
             out.println("            let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;");
             out.println("            let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';");
             out.println("            html += `<td>${formattedBid}</td>`;");
+            out.println("            if(!IsAuctionData){");
+            out.println("                let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;");
+            out.println("                let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';");
+            out.println("                html += `<td>${formattedBase}</td>`;");
+            out.println("            }");
             out.println("            html += `</tr>`;");
             out.println("        });");
             out.println("        html += `</table>`;");
@@ -361,26 +377,17 @@ public class GeneratePlayerHtml {
     // --- Escape Methods & JSON Helper ---
     private static String escapeHtml(String s) {
         if (s == null) return "";
-        return s.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;");
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
     }
 
     private static String escapeHtmlAttr(String s) {
         if (s == null) return "";
-        return s.replace("&", "&amp;")
-                .replace("\"", "&quot;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;");
+        return s.replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     private static String escapeJs(String s) {
         if (s == null) return "";
-        return s.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 
     private static String escapeJsKey(String s) {
@@ -415,11 +422,13 @@ public class GeneratePlayerHtml {
         String toOwner = "";
         String ownerMobile = "";
         String bidAmount = "";
+        String basePrice = ""; // new
     }
 
     static class OwnerData {
         String teamName = "";
         String photoURL = "Image_Not_Given.png";
+        String basePrice = ""; // new
         List<Map<String, String>> sheetData = new ArrayList<>();
     }
 }
