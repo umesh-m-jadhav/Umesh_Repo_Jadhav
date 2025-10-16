@@ -9,16 +9,16 @@
     .container { max-width: 820px; margin: auto; }
     .header { text-align: center; background: linear-gradient(135deg, #283c86, #45a247); color: white; padding: 28px; border-radius: 14px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
     .header h2 { margin: 0; font-size: 28px; letter-spacing: 0.4px; }
-    .header p { font-size: 15px; margin-top: 10px; color: #eef6ea; max-width: 760px; margin-left: auto; margin-right: auto; }
-    select { width: 100%; padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #cfd8dc; margin-top: 26px; margin-bottom: 28px; background: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
-    .profile-section { padding: 22px; border-radius: 12px; text-align: center; margin-bottom: 18px; background: linear-gradient(135deg, #e6f7ec, #a8e6cf); border: 1px solid #7ac785; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
-    .profile-section img { max-width: 180px; border-radius: 12px; border: 3px solid #fff; box-shadow: 0 6px 14px rgba(0,0,0,0.12); margin-bottom: 16px; }
-    .profile-section h3 { margin: 6px 0 12px 0; color: #1b5e20; }
-    .profile-section p { margin: 6px 0; font-weight: 600; color: #2e7d32; }
+    .header p { font-size: 15px; margin-top: 10px; color: #eef6ea; }
+    select { width: 100%; padding: 12px; font-size: 16px; border-radius: 10px; border: 1px solid #cfd8dc; margin-top: 20px; margin-bottom: 20px; background: #fff; box-shadow: 0 3px 10px rgba(0,0,0,0.06); }
+    .profile-section, .bidding-section { padding: 22px; border-radius: 12px; text-align: center; margin-bottom: 18px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+    .profile-section { background: linear-gradient(135deg, #e6f7ec, #a8e6cf); border: 1px solid #7ac785; }
+    .bidding-section { background: linear-gradient(135deg, #fff7e6, #ffe082); border: 1px solid #ffb74d; }
     .separator { height: 6px; background: linear-gradient(90deg, #2193b0, #6dd5ed); border-radius: 6px; margin: 20px 0; }
-    .bidding-section { padding: 20px; border-radius: 12px; text-align: center; background: linear-gradient(135deg, #fff7e6, #ffe082); border: 1px solid #ffb74d; box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
-    .bidding-section h3 { margin: 6px 0 12px 0; color: #bf360c; }
-    .bidding-section p { margin: 6px 0; font-weight: 600; color: #bf360c; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+    th { background: #f0f0f0; }
+    .soldout { color:red; font-weight:bold; background: #fff3f3; padding:8px; border-radius:6px; margin-bottom:10px; display:inline-block; }
   </style>
 </head>
 <body>
@@ -27,9 +27,20 @@
       <h2>RPL (R21 Premium League) Catalogue</h2>
       <p>This portal provides your registered profile details along with your auction bidding information (post-auction).<br><strong>Note:</strong> The auction schedule, tournament schedule, winner list, and other updates will be shared in the official WhatsApp group.</p>
     </div>
+    <select id='ownerSelect' onchange='showOwnerDetails()'>
+      <option value=''>-- Select Owner --</option>
+      <option value="Atharva Kunjir">Atharva Kunjir</option>
+      <option value="Atul Gupta">Atul Gupta</option>
+      <option value="Sandesh Kadam">Sandesh Kadam</option>
+      <option value="Manish Kadu">Manish Kadu</option>
+      <option value="Swapnil Chafale">Swapnil Chafale</option>
+      <option value="Yogesh Lalwani">Yogesh Lalwani</option>
+      <option value="Atharva jadhav">Atharva jadhav</option>
+      <option value="Umesh Jadhav">Umesh Jadhav</option>
+    </select>
+    <div id='ownerArea'></div>
     <select id='playerSelect' onchange='showDetails()'>
       <option value=''>-- Select Player --</option>
-      <option value=""></option>
       <option value="Aadhyaraj Dhawade">Aadhyaraj Dhawade</option>
       <option value="Aarit Vijay Phalke">Aarit Vijay Phalke</option>
       <option value="Akshay Zolekar">Akshay Zolekar</option>
@@ -79,13 +90,10 @@
       <option value="Tushar pund">Tushar pund</option>
       <option value="Vedant Kunjir">Vedant Kunjir</option>
     </select>
-    <div id='profileSection' class='profile-section'></div>
-    <div id='separatorDiv' class='separator'></div>
-    <div id='biddingSection' class='bidding-section'></div>
-  </div>
+    <div id='contentArea'></div>
   <script>
+    const IsAuctionData = false;
     const players = {
-      "": { name: "", towerFlat: "", mobile: "", unavailability: "", role: "", photo: "", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Aadhyaraj Dhawade": { name: "Aadhyaraj Dhawade", towerFlat: "T33-108", mobile: "8669204534", unavailability: "", role: "All Rounder", photo: "IMG-20250930-WA0014 - Dnyanada Dhawade.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Aarit Vijay Phalke": { name: "Aarit Vijay Phalke", towerFlat: "T31-2108", mobile: "8605451999", unavailability: "", role: "All Rounder", photo: "IMG20250914175258 - Vijay Phalke.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Akshay Zolekar": { name: "Akshay Zolekar", towerFlat: "32-1403", mobile: "7620098286", unavailability: "", role: "All Rounder", photo: "IMG_0654 - Akshay Zolekar.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
@@ -113,9 +121,9 @@
       "Madane Saheb": { name: "Madane Saheb", towerFlat: "32-202", mobile: "9881370501", unavailability: "", role: "All Rounder", photo: "Madane_saheb.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Mahendra": { name: "Mahendra", towerFlat: "33-1707", mobile: "7058160483", unavailability: "", role: "All Rounder", photo: "IMG_20251002_001200 - Mahendra Dabhekar.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Mangesh Rane": { name: "Mangesh Rane", towerFlat: "33-607", mobile: "7030427755", unavailability: "", role: "Bowler", photo: "IMG-20241206-WA0021 - mangesh rane.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
-      "Manish Hemnani": { name: "Manish Hemnani", towerFlat: "32-1607", mobile: "9527700486", unavailability: "Nov 9th ( tentative)", role: "Batsman", photo: "", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
+      "Manish Hemnani": { name: "Manish Hemnani", towerFlat: "32-1607", mobile: "9527700486", unavailability: "Nov 9th ( tentative)", role: "Batsman", photo: "Manish_Hemangi.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Mayank Devgan": { name: "Mayank Devgan", towerFlat: "T32-1002", mobile: "8888899586", unavailability: "", role: "All Rounder", photo: "Mayank Devgan.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
-      "Mayur Paithankar": { name: "Mayur Paithankar", towerFlat: "T36-0703", mobile: "9766205604", unavailability: "", role: "All Rounder", photo: "", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
+      "Mayur Paithankar": { name: "Mayur Paithankar", towerFlat: "T36-0703", mobile: "9766205604", unavailability: "", role: "All Rounder", photo: "Mayur_Phot_cp.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Mitanshu Sharma": { name: "Mitanshu Sharma", towerFlat: "T33-0508", mobile: "9724496391", unavailability: "", role: "All Rounder", photo: "IMG_20170813_202640 - The wanderers.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Neeraj Vishwakarma": { name: "Neeraj Vishwakarma", towerFlat: "T30-0305", mobile: "9049831155", unavailability: "Yes", role: "All Rounder", photo: "IMG_9618 - Neeraj Vishwakarma.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Piyush Mane": { name: "Piyush Mane", towerFlat: "T36-1307", mobile: "8767983156", unavailability: "", role: "Batsman", photo: "IMG_20250930_070252 - Mane Piyush7707.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
@@ -135,41 +143,77 @@
       "Tushar pund": { name: "Tushar pund", towerFlat: "T31-0201", mobile: "9595853245", unavailability: "", role: "All Rounder", photo: "77201571-C4E5-425E-83A3-493FE2026B8C - Tushar Pund.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
       "Vedant Kunjir": { name: "Vedant Kunjir", towerFlat: "T36-407", mobile: "7028392345", unavailability: "", role: "Batsman", photo: "IMG_20240513_202645 - Vedant Kunjir.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "" },
     };
-    function showDetails() {
-      const name = document.getElementById('playerSelect').value;
-      const profileDiv = document.getElementById('profileSection');
-      const biddingDiv = document.getElementById('biddingSection');
-      if (!name) { profileDiv.innerHTML = ''; biddingDiv.innerHTML = ''; return; }
-      const p = players[name] || {};
-      let profileHtml = '';
-      if (p.photo && p.photo.trim() !== '') {
-          profileHtml += `<div style='position: relative; display: inline-block;'>`;
-          profileHtml += `<span id='photoLoading' style='color: #ff5722; font-weight: bold;'>Please wait, your photo is coming...</span>`;
-          profileHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}' style='display:block; max-width:180px; border-radius:12px; border:3px solid #fff; box-shadow:0 6px 14px rgba(0,0,0,0.12); margin-bottom:16px;' onload='document.getElementById("photoLoading").style.display="none";' onerror='document.getElementById("photoLoading").innerText="Photo not available";'>`;
-          profileHtml += `</div>`;
-      } else {
-          profileHtml += `<img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available'>`;
-      }
-      profileHtml += `<h3>Your Profile Info</h3>`;
-      profileHtml += `<p><b>Name:</b> ${p.name || ''}</p>`;
-      profileHtml += `<p><b>Tower/Flat:</b> ${p.towerFlat || ''}</p>`;
-      profileHtml += `<p><b>Mobile:</b> ${p.mobile || ''}</p>`;
-      profileHtml += `<p><b>Unavailability:</b> ${p.unavailability || ''}</p>`;
-      profileHtml += `<p><b>Role:</b> ${p.role || ''}</p>`;
-      profileDiv.innerHTML = profileHtml;
-      let biddingHtml = '<h3>Your Bidding Details</h3>';
-      if (!p.soldAt || p.soldAt.trim() === '') {
-          biddingHtml += `<p><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;
-      } else {
-          let bidNumber = Number(p.soldAt.replace(/,/g, ''));
-          let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);
-          biddingHtml += `<p><b>Final Bid:</b> ${formattedBid}</p>`;
-      }
-      biddingHtml += `<p><b>Sold To Team:</b> ${p.toTeam || ''}</p>`;
-      biddingHtml += `<p><b>Team Owner Name:</b> ${p.toOwner || ''}</p>`;
-      biddingHtml += `<p><b>Team Owner Mobile:</b> ${p.ownerMobile || ''}</p>`;
-      biddingDiv.innerHTML = biddingHtml;
+    const owners = {
+      "Atharva Kunjir": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", sheetData: [] },
+      "Atul Gupta": { teamName: "Rajmachi Lions", photoURL: "Atul_gupta.JPG", sheetData: [] },
+      "Sandesh Kadam": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", sheetData: [] },
+      "Manish Kadu": { teamName: "Suvarnadurg Chams", photoURL: "IMG_1293 - manishb kadu.JPG", sheetData: [] },
+      "Swapnil Chafale": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", sheetData: [] },
+      "Yogesh Lalwani": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", sheetData: [] },
+      "Atharva jadhav": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", sheetData: [] },
+      "Umesh Jadhav": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", sheetData: [] },
+    };
+function showDetails() {
+    const name = document.getElementById('playerSelect').value;
+    const content = document.getElementById('contentArea');
+    if (!name) { content.innerHTML = ''; return; }
+    const p = players[name] || {};
+    let profileHtml = '';
+    if(IsAuctionData && p.soldAt && p.soldAt.trim() !== '') {
+        profileHtml += `<div class='soldout'>SOLD OUT</div>`;
     }
+    if (p.photo && p.photo.trim() !== '') {
+        profileHtml += `<div style='position: relative; display: inline-block;'>`;
+        profileHtml += `<span id='photoLoading' style='color: #ff5722; font-weight: bold;'>Please wait, your photo is coming...</span>`;
+        profileHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}' style='display:block; max-width:180px; border-radius:12px; border:3px solid #fff; box-shadow:0 6px 14px rgba(0,0,0,0.12); margin-bottom:16px;' onload='document.getElementById("photoLoading").style.display="none";' onerror='document.getElementById("photoLoading").innerText="Photo not available";'>`;
+        profileHtml += `</div>`;
+    } else { profileHtml += `<img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available'>`; }
+    profileHtml += `<h3>Your Profile Info</h3>`;
+    profileHtml += `<p><b>Name:</b> ${p.name || ''}</p>`;
+    profileHtml += `<p><b>Tower/Flat:</b> ${p.towerFlat || ''}</p>`;
+    profileHtml += `<p><b>Mobile:</b> ${p.mobile || ''}</p>`;
+    profileHtml += `<p><b>Unavailability:</b> ${p.unavailability || ''}</p>`;
+    profileHtml += `<p><b>Role:</b> ${p.role || ''}</p>`;
+    let biddingHtml = '<h3>Your Bidding Details</h3>';
+    if (!p.soldAt || p.soldAt.trim() === '') {
+        biddingHtml += `<p><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;
+    } else {
+        let bidNumber = Number(p.soldAt.replace(/,/g, ''));
+        let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);
+        biddingHtml += `<p><b>Final Bid:</b> ${formattedBid}</p>`;
+    }
+    biddingHtml += `<p><b>Sold To Team:</b> ${p.toTeam || ''}</p>`;
+    biddingHtml += `<p><b>Team Owner Name:</b> ${p.toOwner || ''}</p>`;
+    biddingHtml += `<p><b>Team Owner Mobile:</b> ${p.ownerMobile || ''}</p>`;
+    content.innerHTML = `<div id='profileSection' class='profile-section'>${profileHtml}</div><div class='separator'></div><div id='biddingSection' class='bidding-section'>${biddingHtml}</div>`;
+}
+function showOwnerDetails() {
+    const ownerName = document.getElementById('ownerSelect').value;
+    const ownerArea = document.getElementById('ownerArea');
+    if (!ownerName) { ownerArea.innerHTML = ''; return; }
+    const o = owners[ownerName] || {};
+    let html = '';
+    html += `<div class='profile-section'>`;
+    html += `<img src='PlayersPhoto/${o.photoURL}' alt='Owner Photo' style='max-width:120px; border-radius:12px; margin-bottom:8px;'>`;
+    html += `<h3>Owner: ${ownerName}</h3>`;
+    html += `<p>Team: ${o.teamName || ''}</p>`;
+    if(o.sheetData && o.sheetData.length > 0){
+        html += `<table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th></tr>`;
+        o.sheetData.forEach((r, index) => {
+            html += `<tr>`;
+            html += `<td>${index+1}</td>`;
+            html += `<td>${r['Name'] || ''}</td>`;
+            html += `<td>${r['Mobile'] || ''}</td>`;
+            let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;
+            let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';
+            html += `<td>${formattedBid}</td>`;
+            html += `</tr>`;
+        });
+        html += `</table>`;
+    } else { if(IsAuctionData){ html += `<p>No data available for this owner.</p>`; } }
+    html += `</div>`;
+    ownerArea.innerHTML = html;
+}
   </script>
 </body>
 </html>
