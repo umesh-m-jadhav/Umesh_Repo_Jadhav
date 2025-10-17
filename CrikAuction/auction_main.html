@@ -1631,12 +1631,13 @@ responsive-box-title {
                     </a>
                 </div>
 				
+				<!--
 				 <div class="menu-item">
                     <a href="#" onclick="uploadConfiguration('startSpinId', 'playerListDiv'); return false;">
                         Upload Configuration
                     </a>
                 </div>
-				<!--
+				
 				 <div class="menu-item">
                     <a href="#" onclick="uploadLatestAuctionFile('startSpinId', 'playerListDiv'); return false;">
                         Upload Latest Auction
@@ -1697,7 +1698,7 @@ responsive-box-title {
 <div style="display: none;padding: 20px;" id = "playerListDiv">
 	<div id="FreshPlayerListId" style="border: 3px solid black;padding: 30px;">
 		<span style="margin-bottom: 20px;font-weight: bold;color: blue;font-size: clamp(1rem, 1.5vw, 4.8rem); ">Upload Fresh Player List </span><BR><BR>
-		<input type="file" id="excelFile" accept=".xlsx,.xls,.csv"/>
+		<input type="file" id="playerListExcelFile" accept=".xlsx,.xls,.csv"/>
 	  </div>
   
 	  <div class="dotted-text-break-separator">
@@ -1751,6 +1752,7 @@ responsive-box-title {
 	  
   </div> 		
   
+  <!--
   <div style="display: none;padding: 20px;" id = "AuctionConfigID">
  	  <label for="excel-file">
 				  <span>
@@ -1770,9 +1772,9 @@ responsive-box-title {
 	  
 	  </BR>		</BR>
 	   <div id="congrats-message" style="display: block;">
-        <!-- Message set from function displayData() -->
     </div>
-  </div> 
+  </div> -->
+  
  </div>
  
   
@@ -1914,6 +1916,7 @@ let SOLD_INDEX = 6;
 let PLAYER_TYPE_INDEX = 1;
 let PLAYER_Name_INDEX = 0;
 let BID_DETAILS_INDEX = SOLD_INDEX+1;
+let SORT_INDEX_TEAM_NAME = 1;
 
 const CONGRATE_MEG_ON_CONFIGURATION_UPLOAD = "Congratulations! Auction Configuration data is already loaded. Please proceed."
 const AUCTION_ACTION_PLACE_BID = "AUCTION_ACTION_PLACE_BID";
@@ -2016,16 +2019,19 @@ function validateIfTeamHasBalanceToBid(teamName){
    ------------------------ */
 function initTeamCardsFormatting(){
 	
+	/**
 	const congratsMessageDiv = document.getElementById('congrats-message');
 	congratsMessageDiv.textContent="";
 	congratsMessageDiv.style.display = 'none';
 	
+
 	const fileInput = document.getElementById('excel-file');
             
 	if (fileInput) {
 		fileInput.addEventListener('change', handleFileSelect, false);
 	}
-     
+    **/
+	 
   document.querySelectorAll('#teamsList .team-card').forEach(card => {
     const name = card.getAttribute('data-name');
 	const base = getTeamParticularDetails(name,'.team-baseprice');
@@ -2087,7 +2093,7 @@ function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
 /* ------------------------
    Excel upload & render players
    ------------------------ */
-document.getElementById('excelFile').addEventListener('change', event=>{
+document.getElementById('playerListExcelFile').addEventListener('change', event=>{
   const file = event.target.files[0];
   if(!file) return;
   
@@ -2097,6 +2103,7 @@ document.getElementById('excelFile').addEventListener('change', event=>{
 		return;
   }
   
+  /**
   const congratsMessageDiv = document.getElementById('congrats-message');
   const congratsMessageDivValue = congratsMessageDiv.textContent;
   if (!congratsMessageDivValue.includes(CONGRATE_MEG_ON_CONFIGURATION_UPLOAD)) {
@@ -2108,20 +2115,29 @@ document.getElementById('excelFile').addEventListener('change', event=>{
 		const invalidFileMsg =msg1;
 		alert(invalidFileMsg);
 		//return;
-  }
+  }**/
   
-  const PlayerListDataTitleIdDiv = document.getElementById('PlayerListDataTitleId');
-  PlayerListDataTitleIdDiv.textContent = Fresh_Player_List_Title;
-  
-  const reader = new FileReader();
-  reader.onload = function(e){
-    const data = new Uint8Array(e.target.result);
-    workbook = XLSX.read(data, { type: 'array' });
-    mainSheetName = workbook.SheetNames[0];
-    renderPlayers("From_Fresh_Player_File");
-  };
-  reader.readAsArrayBuffer(file);
-});
+	  const PlayerListDataTitleIdDiv = document.getElementById('PlayerListDataTitleId');
+	  PlayerListDataTitleIdDiv.textContent = Fresh_Player_List_Title;
+	  
+	  const reader = new FileReader();
+	  reader.onload = function(e){
+		const data = new Uint8Array(e.target.result);
+		workbook = XLSX.read(data, { type: 'array' });
+		
+		const configurationSheetName = workbook.SheetNames[2];
+		const configurationWorksheet = workbook.Sheets[configurationSheetName];
+		handleFileSelect(configurationWorksheet, configurationSheetName);
+		
+		const ownerSheetName = workbook.SheetNames[1];
+		const ownerWorksheet = workbook.Sheets[ownerSheetName];
+		handleFileSelect(ownerWorksheet, ownerSheetName);
+		
+		mainSheetName = workbook.SheetNames[0];
+		renderPlayers("From_Fresh_Player_File");
+	  };
+	  reader.readAsArrayBuffer(file);
+	});
 
 document.getElementById('auction-file-id').addEventListener('change', event=>{
   const file = event.target.files[0];
@@ -2159,7 +2175,7 @@ document.getElementById('auction-file-id').addEventListener('change', event=>{
   reader.readAsArrayBuffer(file);
 });
 
-function sortData(dataArray){
+function sortDataByPlayerType(dataArray){
 	dataArray.sort((a, b) => {
 		const PlayerTypeA = a.PlayerType.toLowerCase();
 		const PlayerTypeB = b.PlayerType.toLowerCase();
@@ -2172,17 +2188,49 @@ function sortData(dataArray){
 			return 0; // Both are empty/null, keep original relative order
 		}
 		if (isEmptyA) {
-			return 1; // PlayerTypeA is empty, place it after nameB (at the end)
+			return 1; // PlayerTypeA is empty, place it after PlayerTypeB (at the end)
+		}
+		if (isEmptyB) {
+			return -1; // PlayerTypeB is empty, place it after PlayerTypeA (PlayerTypeA comes before)
+		}
+
+		// --- 2. Handle Ascending String Sort ---
+		if (PlayerTypeA < PlayerTypeB) {
+			return -1; // PlayerTypeA comes before nameB
+		}
+		if (PlayerTypeA > PlayerTypeB) {
+			return 1; // PlayerTypeA comes after nameB
+		}
+		return 0; // PlayerType are equal
+	});
+
+	return dataArray;
+}
+
+function sortDataByParam(dataArray, sortIndex){
+	dataArray.sort((a, b) => {
+		const nameA = a[sortIndex].toLowerCase();
+		const nameB = b[sortIndex].toLowerCase();
+
+		// --- 1. Handle Empty/Null Values ---
+		const isEmptyA = nameA === '' || nameA === null;
+		const isEmptyB = nameB === '' || nameB === null;
+
+		if (isEmptyA && isEmptyB) {
+			return 0; // Both are empty/null, keep original relative order
+		}
+		if (isEmptyA) {
+			return 1; // nameA is empty, place it after nameB (at the end)
 		}
 		if (isEmptyB) {
 			return -1; // nameB is empty, place it after nameA (nameA comes before)
 		}
 
 		// --- 2. Handle Ascending String Sort ---
-		if (PlayerTypeA < PlayerTypeB) {
+		if (nameA < nameB) {
 			return -1; // nameA comes before nameB
 		}
-		if (PlayerTypeA > PlayerTypeB) {
+		if (nameA > nameB) {
 			return 1; // nameA comes after nameB
 		}
 		return 0; // names are equal
@@ -2195,7 +2243,7 @@ function renderPlayers(renderType){
   if(!workbook || !mainSheetName) return;
   const sheet = workbook.Sheets[mainSheetName];
   const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-  const data = sortData(rowData);
+  const data = sortDataByPlayerType(rowData);
   
   const tbody = document.querySelector('#playerTable tbody');
   tbody.innerHTML = '';
@@ -2452,7 +2500,7 @@ function UnsoldtoSold(){
 	if(workbook && mainSheetName){
 		const sheet = workbook.Sheets[mainSheetName];
 		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-		const data = sortData(rowData);
+		const data = sortDataByPlayerType(rowData);
 		
 		data.forEach(p => {
 		  if(p.Sold === 'Unsold'){
@@ -2504,7 +2552,7 @@ function markUnsold_Yes(){
 	if(workbook && mainSheetName){
 		const sheet = workbook.Sheets[mainSheetName];
 		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-		const data = sortData(rowData);
+		const data = sortDataByPlayerType(rowData);
 		data.forEach(p => {
 		  if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
 			p.Sold = 'Unsold';
@@ -2759,7 +2807,7 @@ function submitAuction(){
   if(workbook && mainSheetName){
     const sheet = workbook.Sheets[mainSheetName];
     const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-    const data = sortData(rowData);
+    const data = sortDataByPlayerType(rowData);
 	
     data.forEach(p => {
       if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
@@ -2962,7 +3010,7 @@ function rgbToHex(rgb) {
 		  
 		 const sheet = workbook.Sheets[mainSheetName];
 		 const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-		 const data = sortData(rowData);
+		 const data = sortDataByPlayerType(rowData);
 		 
 		 const rowIndex = selectedRow.sectionRowIndex; 
 		 data.forEach((p,i) => {
@@ -3014,7 +3062,7 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 		var teamOwnerMobileVal = "";
 		const sheet = workbook.Sheets[mainSheetName];
 		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-		const data = sortData(rowData);
+		const data = sortDataByPlayerType(rowData);
 		data.forEach(p => {
 		  if(p.Name === playerNameval){
 			bidPriceVal = p.FinalBid;
@@ -3025,13 +3073,16 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 		  }
 		  return false;
 		});
-	
-		const bidPrice = "Sold at [" +formatINR(bidPriceVal)+ "]";
-		const teamDetails = "To Team [" +soldToTeamVal+ "]";
-		const ownerName = "Team Owner [" +teamOwnerNameVal+ "]";
-		const bidDetails = bidPrice +"\n\n" + teamDetails + "\n\n"+ownerName;
 		
-		alert("'"+playerNameval + "' is already sold out, Please find below Sold out details.\n\n" + bidDetails);
+		if(soldToTeamVal!=null && soldToTeamVal.trim()!=""){
+			const bidPrice = "Sold at [" +formatINR(bidPriceVal)+ "]";
+			const teamDetails = "To Team [" +soldToTeamVal+ "]";
+			const ownerName = "Team Owner [" +teamOwnerNameVal+ "]";
+			const bidDetails = bidPrice +"\n\n" + teamDetails + "\n\n"+ownerName;
+			
+			alert("'"+playerNameval + "' is already sold out, Please find below Sold out details.\n\n" + bidDetails);
+		}
+		
 		return;
 	}
 	
@@ -3356,8 +3407,11 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 			batContainer.style.display = 'none';
 		}
 		
+		/**
 		const AuctionConfigIDDiv = document.getElementById('AuctionConfigID');
 		AuctionConfigIDDiv.style.display = 'none';
+		**/
+		
 		const rightMainIdDiv = document.getElementById('right');
 		rightMainIdDiv.style.display = 'none';
 		
@@ -3372,6 +3426,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		collapseMenu();
     }
 	
+	/**
 	  function uploadConfiguration(showId, hideId) {
         // Get the elements
         const showDiv = document.getElementById(showId);
@@ -3406,6 +3461,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		applyAuctionOverColorToAllTeam_FromMenu();
 		collapseMenu();
     }
+	**/ 
 	
 	function uploadLatestAuctionFile(showId, hideId) {
         // Get the elements
@@ -3551,8 +3607,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
         window.onresize = updateContentMargin;
         
 		 // The required sheets name
-        const OWNER_LIST_SHEET_NAME = 'Owner_List';
-		const GENERAL_SHEET_NAME = 'General';
+        const OWNER_LIST_SHEET_NAME = 'Owner';
+		const CONFIGURATION_SHEET_NAME = 'Configuration';
 		
         // The required file name for validation
         const REQUIRED_FILENAME = 'Auction_Configuration.xlsx';
@@ -3563,9 +3619,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
          */
         function normalizeHeader(header) {
             const key = header.trim().toLowerCase().replace(/\s/g, '');
-            if (key.includes('ownername')) return 'OwnerName';
-            if (key.includes('teamname')) return 'TeamName';
-            if (key.includes('baseprice')) return 'BasePrice';
+            if (key=='name') return 'OwnerName';
+            if (key=='teamname') return 'TeamName';
+            if (key=='baseprice') return 'BasePrice';
             return header; 
         }
 
@@ -3574,101 +3630,64 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
          * This function is called when the file input changes.
          * @param {Event} evt The file selection event.
          */
-        function handleFileSelect(evt) {
-            const output = document.getElementById('data-output');
-            const error = document.getElementById('error-output');
-            const status = document.getElementById('file-status');
-            const files = evt.target.files;
-			teamSoldPlayers = {};
-			
-            if (files.length === 0) {
-                const invalidFileMsg ='Invalid file selected. Please upload configuration file.i.e Auction_Configuration.xlsx';
-                alert(invalidFileMsg);
-                return;
-            }
-            
-            const file = files[0];
+        function handleFileSelect(worksheet, sheetName) {
+			if (sheetName === OWNER_LIST_SHEET_NAME) {
+				const worksheet = workbook.Sheets[OWNER_LIST_SHEET_NAME];
+				
+				// 5. Convert the sheet data to a JSON array (array of arrays)
+				const jsonOptions = { header: 1 };
+				const sheetData = XLSX.utils.sheet_to_json(worksheet, jsonOptions);
 
-            // 1. File Name Validation Check
-            if (file.name !== REQUIRED_FILENAME) {
-                const invalidFileMsg ='Invalid file selected. Please upload configuration file.i.e Auction_Configuration.xlsx';
-                alert(invalidFileMsg);
-                return;
-            }
-            
-            const reader = new FileReader();
-
-            // Setup the onload handler to process the data once the file is read
-            reader.onload = (e) => {
-                try {
-                    const data = new Uint8Array(e.target.result);
-
-                    // 3. Read the workbook using SheetJS
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    
-                    // 4. Check if the required sheet exists
-                    if (! (workbook.SheetNames.includes(OWNER_LIST_SHEET_NAME) || workbook.SheetNames.includes(GENERAL_SHEET_NAME))) {
-                        status.textContent = 'Processing failed.';
-                        throw new Error(`Sheet "${OWNER_LIST_SHEET_NAME} OR ${GENERAL_SHEET_NAME} " not found in the workbook. Found sheets: ${workbook.SheetNames.join(', ')}`);
-                    }
-					const sheetNames = workbook.SheetNames;
-		 for (const sheetName of sheetNames) {
-					if (sheetName === OWNER_LIST_SHEET_NAME) {
-						const worksheet = workbook.Sheets[OWNER_LIST_SHEET_NAME];
-						
-						// 5. Convert the sheet data to a JSON array (array of arrays)
-						const jsonOptions = { header: 1 };
-						const sheetData = XLSX.utils.sheet_to_json(worksheet, jsonOptions);
-		
-						if (sheetData.length <= 1) { // 1 row is just the header
-							output.innerHTML = '<p class="text-gray-500 italic">The selected sheet is empty or contains only headers.</p>';
-							status.textContent = 'Successfully processed file (0 records).';
-							return;
-						}
-						
-						// The first row is the header row
-						const headers = sheetData[0];
-						const dataRows = sheetData.slice(1);
-						
-						// 6. Map the data rows to objects using normalized keys
-						const result = dataRows.map(row => {
-							const rowObject = {};
-							headers.forEach((header, index) => {
-								const key = normalizeHeader(header);
-								if (['OwnerName', 'TeamName', 'BasePrice'].includes(key)) {
-									// Clean up the value
-									let value = row[index];
-									if (key === 'BasePrice') {
-										// Attempt to parse number, handling strings with currency/commas
-										if (typeof value === 'string') {
-											value = parseFloat(value.replace(/[^0-9.-]+/g,""));
-										}
-										value = isNaN(value) ? 0 : value; // Default to 0 if invalid
-									} else {
-										// Ensure OwnerName/TeamName are treated as strings
-										value = String(value || '');
-									}
-									rowObject[key] = value;
+				if (sheetData.length <= 1) { // 1 row is just the header
+					output.innerHTML = '<p class="text-gray-500 italic">The selected sheet is empty or contains only headers.</p>';
+					status.textContent = 'Successfully processed file (0 records).';
+					return;
+				}
+				
+				// The first row is the header row
+				const headers = sheetData[0];
+				const rowData = sheetData.slice(1);
+				const dataRows = sortDataByParam(rowData, SORT_INDEX_TEAM_NAME);
+				
+				// 6. Map the data rows to objects using normalized keys
+				const result = dataRows.map(row => {
+					const rowObject = {};
+					headers.forEach((header, index) => {
+						const key = normalizeHeader(header);
+						if (['OwnerName', 'TeamName', 'BasePrice'].includes(key)) {
+							// Clean up the value
+							let value = row[index];
+							if (key === 'BasePrice') {
+								// Attempt to parse number, handling strings with currency/commas
+								if (typeof value === 'string') {
+									value = parseFloat(value.replace(/[^0-9.-]+/g,""));
 								}
-							});
-							return rowObject;
-						});
-						
-						// NEW: Dynamically create the teamSoldPlayers object using the unique TeamNames
-                        teamSoldPlayers = result.reduce((acc, owner) => {
-                            const teamName = owner.TeamName;
-                            // Ensure the teamName is valid and not already a key
-                            if (teamName && teamName.trim() !== '' && !acc.hasOwnProperty(teamName)) {
-                                acc[teamName] = []; // Initialize with an empty array for sold players
-                            }
-                            return acc;
-                        }, {});
-						
-						//alert(result);
-						// 7. Display the structured data as cards
-					   displayData(result);
-				} else if(sheetName === (GENERAL_SHEET_NAME)){
-					const worksheet = workbook.Sheets[GENERAL_SHEET_NAME];
+								value = isNaN(value) ? 0 : value; // Default to 0 if invalid
+							} else {
+								// Ensure OwnerName/TeamName are treated as strings
+								value = String(value || '');
+							}
+							rowObject[key] = value;
+						}
+					});
+					return rowObject;
+				});
+				
+				// NEW: Dynamically create the teamSoldPlayers object using the unique TeamNames
+				teamSoldPlayers = result.reduce((acc, owner) => {
+					const teamName = owner.TeamName;
+					// Ensure the teamName is valid and not already a key
+					if (teamName && teamName.trim() !== '' && !acc.hasOwnProperty(teamName)) {
+						acc[teamName] = []; // Initialize with an empty array for sold players
+					}
+					return acc;
+				}, {});
+				
+				//alert(result);
+				// 7. Display the structured data as cards
+			   displayData(result);
+		} else if(sheetName === (CONFIGURATION_SHEET_NAME)){
+					const worksheet = workbook.Sheets[CONFIGURATION_SHEET_NAME];
 					const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 					
 					if (sheetData.length > 1) {
@@ -3693,27 +3712,11 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 						document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value = totalTeamCount * totalPlayersPerTeam;
 						document.getElementById('Increase_Bid_value').textContent=formatINR(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
 						document.getElementById('Decrease_Bid_value').textContent=formatINR(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
-						
-						
 					} else {
 						 console.warn(`Sheet "${sheetName}" is empty or contains only headers. Skipping data extraction.`);
 					}
 				}
-			}
-                 
-                } catch (err) {
-                   //alert('Error in loading configuration file ' + err);
-				   console.error(err);
-                }
-            };
-
-            // Setup the onerror handler
-            reader.onerror = (e) => {
-                alert(e);
-            };
-
-            // Start reading the file as an ArrayBuffer
-            reader.readAsArrayBuffer(file);
+			
         }
 
         /**
@@ -3815,10 +3818,11 @@ html += `
             html += `</div>`; // Close teamCardsWrapper
          
             output.innerHTML = html;
-			
+	
+	/**
 	const congratsMessageDiv = document.getElementById('congrats-message');
 	congratsMessageDiv.textContent=CONGRATE_MEG_ON_CONFIGURATION_UPLOAD;
-	congratsMessageDiv.style.display = 'block';
+	congratsMessageDiv.style.display = 'block'; **/
 		
 	document.getElementById('toggleButtonMsg1').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR></BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
 	
@@ -3890,7 +3894,7 @@ teamCards.forEach(card => {
 			if(confirm(confirmMsg)){
 				const sheet = workbook.Sheets[mainSheetName];
 				const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-				const data = sortData(rowData);
+				const data = sortDataByPlayerType(rowData);
 				
 				data.forEach(p => {
 				  if(p.Name === playerToBeRemove){
