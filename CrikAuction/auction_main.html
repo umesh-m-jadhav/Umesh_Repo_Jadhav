@@ -1208,11 +1208,13 @@ display: flex;
         @keyframes pulse-clap { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
 		
 		 .responsive-div {
-            /* KEY CHANGE: Div occupies 50% of the viewport width */
+             //position: relative;
+			 //overflow: hidden;
+			/* KEY CHANGE: Div occupies 50% of the viewport width */
             width: 100vw; 
-            /* KEY CHANGE: Div occupies 50% of the viewport height (50vh + 50vh = 100vh total) */
             height: 40vh; 
-            
+            //min-height: 40vh; 
+			
             /* Center the text vertically and horizontally inside the div */
             //display: flex;
             justify-content: center;
@@ -1225,21 +1227,13 @@ display: flex;
         }
 		
 		.split-ball {
-            //position: relative; 
-            //overflow: hidden; 
-            //margin-top: 10px;
-			//margin-bottom: 10px;
-			
-			position: fixed;
+             position: relative;
+			 overflow: hidden;
+            
 			top: 20px;        /* 💥 Updated to 30px from the top edge */
 			left: 40%;        /* Move to the right edge */
-			//width: 200px;
-			//height: 300px;
-			//filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
-			//z-index: 1000; 
 			
-            /* --- Consolidated Variables (formerly in :root) --- */
-            --ball-size: 350px;
+            --ball-size: 300px;
             --tennis-green-light: #dfff00;
             --tennis-green-dark: #a0cc00;
             --cricket-red-light: #cc0000;
@@ -1251,12 +1245,10 @@ display: flex;
             --outer-ring-glow: 15px; 
             --text-color: #ffffff; 
             
-            /* --- Main Ball Properties --- */
             width: var(--ball-size);
             height: var(--ball-size);
             border-radius: 50%;
-            
-            /* 1. Steady, Split Background with 3D Shading */
+                        
             background-image: 
                 radial-gradient(circle at 30% 30%, var(--tennis-green-light), var(--tennis-green-dark)),
                 radial-gradient(circle at 70% 30%, var(--cricket-red-light), var(--cricket-red-dark));
@@ -1264,23 +1256,17 @@ display: flex;
             background-size: 50% 100%, 50% 100%;
             background-position: left top, right top;
             background-repeat: no-repeat;
-            
-            /* 2. Central Split Line & Outer Ring (White) */
+                        
             box-shadow: 
-                /* Central Split Glow (Inner shadows) */
                 -2px 0 var(--split-glow-strength) rgba(255, 255, 255, 0.4) inset, 
                 2px 0 var(--split-glow-strength) rgba(255, 255, 255, 0.4) inset,
                 
-                /* Outer Ring (Solid white frame) */
                 0 0 0 var(--outer-ring-thickness) var(--outer-ring-color), 
                 
-                /* Outer Ring Glow (White glow behind the solid ring) */
                 0 0 var(--outer-ring-glow) rgba(255, 255, 255, 0.6), 
                 
-                /* General Ball Shadow (for depth) */
                 0 10px 20px rgba(0, 0, 0, 0.7); 
             
-            /* Ensure the ball remains steady */
             transform: none !important;
             animation: none !important;
         }
@@ -1291,7 +1277,7 @@ display: flex;
             //top: 20%;          
             //left: 70%;         
             //transform: translate(-50%, -50%);
-			padding-top: 130px;
+			padding-top: 70px;
             
             font-family: 'Arial Black', Gadget, sans-serif; 
             font-size: 1.5em; 
@@ -1342,10 +1328,24 @@ display: flex;
 		
 .bat-container {
     position: fixed;
+	//position: absolute;
+	//overflow: hidden;
     top: 20px;        /* 💥 Updated to 30px from the top edge */
     right: 200px;        /* Move to the right edge */
+    width: 100px;
+    height: 100px;
+    filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
+    z-index: 1000; 
+}
+
+.bat-container1 {
+    position: fixed;
+	//position: absolute;
+	//overflow: hidden;
+    top: 20px;        /* 💥 Updated to 30px from the top edge */
+    left: 200px;        /* Move to the right edge */
     width: 200px;
-    height: 300px;
+   height: 200px;
     filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
     z-index: 1000; 
 }
@@ -1354,7 +1354,7 @@ display: flex;
     position: absolute;
     top: 70px;
     width: 200px; 
-    height: 300px;
+    height: 200px;
     
     background: linear-gradient(to right, #B8860B 0%, #D8A54B 50%, #B8860B 100%);
     
@@ -1469,6 +1469,15 @@ responsive-box-title {
         .responsive-text {
             /* Key: Use 'vw' (viewport width) for responsive font size. */
             font-size: 7vw; 
+            font-weight: 900;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+			color: #000000; */
+        }
+		
+		.responsive-text-tournamentTitleId {
+            /* Key: Use 'vw' (viewport width) for responsive font size. */
+            font-size: 5vw; 
             font-weight: 900;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
@@ -1675,7 +1684,7 @@ responsive-box-title {
  
  <!-- 1st Row -->
  <div id="top-div-id" class="responsive-div">
-<div id="left" >
+<div id="left">
 
   <nav class="left-menu" id="rplNavMenu">
             <div class="menu-header" onclick="toggleMenu(event)">
@@ -1721,8 +1730,8 @@ responsive-box-title {
 		
 		 <div class="split-ball" onclick="highlightRandomRow()" id = "startSpinId" style=" display: block;">
 		 <Div id="toggleButton1" class="ball-text">
-				<span id="toggleButtonMsg1"> </span>
-				
+				<span class="responsive-text-tournamentTitleId" id="tournamentTitleId"> </span>
+				<span id="tournamentTitleDescription"> </span>
 		 </Div>
 		</div>
 
@@ -1849,8 +1858,7 @@ responsive-box-title {
   
  </div>
  
-  
-  <div class="bat-container" id="bat-container-id" style="display: block;">
+ <div class="bat-container1" id="left-bat-container-id" style="display: block;">
     <div class="handle">
         <div class="handle-cap"></div>
         <div class="grip"></div>
@@ -1862,6 +1870,18 @@ responsive-box-title {
 			Players per Team = <span id="playerPerTeamCountId"></span><br>
             Total players = <span id="totalTournamentPlayerCountId"> </span><br><br>
 			
+        </div>
+    </div>
+</div>
+  
+  <div class="bat-container" id="right-bat-container-id" style="display: block;">
+    <div class="handle">
+        <div class="handle-cap"></div>
+        <div class="grip"></div>
+    </div>
+    <div class="shoulder"></div>
+    <div class="bat-blade">
+        <div class="bat-message">
 			Players to Bid= <span id="playersToBidCount"> </span><br><br>
 			Sold Player = <span  id="soldPlayerCountId"></span><br>
             UnSold Player = <span  id="unsoldPlayerCountId"> </span><br>
@@ -2519,7 +2539,7 @@ function UnsoldtoSold(){
 	const startSpinIdDivIdVar = document.getElementById('startSpinId');
 	startSpinIdDivIdVar.style.display = 'none';
 	
-	const batContainer = document.getElementById('bat-container-id');
+	const batContainer = document.getElementById('left-bat-container-id');
 	batContainer.style.display = 'none';
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
@@ -2604,7 +2624,7 @@ function markUnsold_Yes(){
 	  const startSpinIdVar = document.getElementById('startSpinId');
 	  startSpinIdVar.style.display = 'block';
 	  
-	  const batContainer = document.getElementById('bat-container-id');
+	  const batContainer = document.getElementById('left-bat-container-id');
 	  batContainer.style.display = 'block';
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
@@ -3165,7 +3185,7 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	const startSpinIdVar = document.getElementById('startSpinId');
 	startSpinIdVar.style.display = 'none';
 	
-	const batContainer = document.getElementById('bat-container-id');
+	const batContainer = document.getElementById('left-bat-container-id');
 	batContainer.style.display = 'none';
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
@@ -3308,7 +3328,7 @@ function highlightRandomRow() {
 	
 const playerListDivVar = document.getElementById('playerListDiv');
 const startSpinIdVar = document.getElementById('startSpinId');
-const batContainer = document.getElementById('bat-container-id');
+const batContainer = document.getElementById('left-bat-container-id');
 const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 const teamsListMainIdVar = document.getElementById('teamsListMainId');
 const rightPlayerIDVar = document.getElementById('rightPlayer');
@@ -3428,7 +3448,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 	rightPlayerDiv.style.display = 'block';
 	teamsListMainIdDiv.style.display = 'block';
 	
-	const batContainer = document.getElementById('bat-container-id');
+	const batContainer = document.getElementById('left-bat-container-id');
 	batContainer.style.display = 'none';
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
@@ -3470,17 +3490,20 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
         }
 		
 		const teamsListMainIdVar = document.getElementById('teamsListMainId');
-		const batContainer = document.getElementById('bat-container-id');
+		const batContainer = document.getElementById('left-bat-container-id');
+		const rightBatContainer = document.getElementById('right-bat-container-id');
 		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 		
 		if(showId=="startSpinId"){
 			batContainer.style.display = 'block';
+			rightBatContainer.style.display = 'block';
 			auctionTitleDivID.style.display = 'none';
 			teamsListMainIdVar.style.display = 'block';
 		} else {
 			teamsListMainIdVar.style.display = 'none';
 			auctionTitleDivID.style.display = 'none';
 			batContainer.style.display = 'none';
+			rightBatContainer.style.display = 'none';
 		}
 		
 		/**
@@ -3530,7 +3553,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		
-		const batContainer = document.getElementById('bat-container-id');
+		const batContainer = document.getElementById('left-bat-container-id');
 		batContainer.style.display = 'none';
 		
 		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
@@ -3570,8 +3593,11 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 		confirmationBoxDiv.style.display = 'none';
 		
-		const batContainer = document.getElementById('bat-container-id');
+		const batContainer = document.getElementById('left-bat-container-id');
 		batContainer.style.display = 'none';
+		
+		const rightBatContainer = document.getElementById('right-bat-container-id');
+		rightBatContainer.style.display = 'none';
 		
 		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 		auctionTitleDivID.style.display = 'none';
@@ -3902,7 +3928,8 @@ html += `
          
             output.innerHTML = html;
 			
-	document.getElementById('toggleButtonMsg1').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR></BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
+	document.getElementById('tournamentTitleId').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR>";
+	document.getElementById('tournamentTitleDescription').innerHTML = document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
 	
 	document.getElementById('totalTournamentPlayerCountId').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_TOURNAMENT').value;
 	document.getElementById('playersToBidCount').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
@@ -4030,7 +4057,7 @@ teamCards.forEach(card => {
   			const startSpinIdDiv = document.getElementById('startSpinId');
 			startSpinIdDiv.style.display = 'block';
 			
-			const batContainer = document.getElementById('bat-container-id');
+			const batContainer = document.getElementById('left-bat-container-id');
 			batContainer.style.display = 'block';
 			
 			const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
