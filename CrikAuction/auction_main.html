@@ -108,7 +108,7 @@
     border-radius:8px; 
     box-shadow:0 2px 6px rgba(0,0,0,0.1); 
     height: calc(100% - 40px); /* Fill the remaining height of the wrapper (100% of row 2) minus the 20px top/bottom padding */
-    overflow-y: auto; /* Allows scrolling of team cards if they overflow */
+    //overflow-y: auto; /* Allows scrolling of team cards if they overflow */
 	//background-image: url('BG2.png');
 	//background-size: cover;
     //background-position: center;
@@ -219,20 +219,53 @@
 	padding-bottom: 0; */
 }
 
-  .player-info { display: flex; align-items: flex-start; gap: 30px; }
-  .player-info img 
-  { width:270px; height:100%; 
-  margin-top: px; 
-            display: block; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: 5px solid #1abc9c; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+  .player-info { 
+		display: flex; 
+		align-items: 
+		flex-start; 
+		gap: 30px; 
+  }
+  
+  .player-info img123 { 
+		width:270px; 
+		height:100%; 
+		margin-top: px; 
+		display: block; 
+		border-radius: 50%; 
+		object-fit: cover; 
+		border: 5px solid #1abc9c; 
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+   }
+			
+.image-box {
+  width: 270px;     /* desired width */
+  height: 270px;    /* desired height */
+  overflow: hidden; /* hide any overflow */
+  border-radius: 10px;
+  //border: 1px solid #ccc;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  
+}
+
+.image-box img {
+	width:100%; 
+	height:100%; 
+	margin-top: px; 
+	//display: block; 
+	border-radius: 50%; 
+	object-fit: cover; 
+	object-position: top center;
+	border: 5px solid #1abc9c; 
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+}
+
   .player-details { flex:1;  
 	//padding-top: 40px;
 	}
   .team-name { font-size:18px; font-weight:bold; color:#28a745; margin:10px 0; }
-  .bid-section { margin-top:15px;text-align: left;}
+  .bid-section { margin-top:5px;text-align: left;}
   .bid-section input { 
 		padding:6px; 
 		font-size:16px; width:200px; 
@@ -264,7 +297,7 @@ text-align:right; }
   .bid-section button:hover { background:#0056b3; }
   
   .team-card { 
-  font-size:20px;width: 250px; 
+  font-size:20px;width: 95%; 
   padding: 15px; background:#f0f0f0; 
   border-radius:8px; text-align:center; 
   cursor:pointer; transition:0.3s; 
@@ -273,17 +306,30 @@ text-align:right; }
   
   .team-card:hover { transform: translateY(-3px); box-shadow:0 4px 8px rgba(0,0,0,0.2); }
   .team-card.selected { background-color:#28a745; color:#fff; }
-  .team-name-card { font-weight:bold; margin-bottom:5px;
+  .team-name-card { font-weight:bold; 
+	margin-bottom:5px;
+	margin-top:-10px;
 	color: #8b4513; /* Brown text */
     font-family: 'Verdana', sans-serif;
     font-size: 1.0em;
 	}
-  .team-owner-card { font-size:13px; color:#555; font-weight:bold;border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
-  .team-baseprice { font-size:13px; margin-top:4px; color:#333;font-weight:bold; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
+	
+  .team-owner-card { 
+  font-size:13px; color:#333; font-weight:bold;
+  border-left: 3px solid #f1c40f;display: flex;
+  justify-content: left;align-items: left;padding-left: 5px;}
+  
+  .players-overview-type { 
+  font-size:13px; color:#333; font-weight:bold;
+  border-left: 3px solid #f1c40f;
+  //display: flex;
+  justify-content: left;align-items: left;padding-left: 5px;}
+  
+  .team-baseprice { font-size:13px; margin-top:0px; color:#333;font-weight:bold; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;padding-right: 5px;}
   .team-total { font-size:13px; margin-top:6px; color:#111; font-weight:bold; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
   .team-tobebid { font-size:13px; margin-top:6px; font-weight:bold; color:black; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
   .team-balance { font-size:13px; margin-top:6px; font-weight:bold; color:black; border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;}
-  .team-toselect { font-size:13px; color:#555; font-weight:bold;border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;margin-top:4px;}
+  .team-toselect { font-size:13px; color:#333; font-weight:bold;border-left: 3px solid #f1c40f;display: flex;justify-content: left;align-items: left;padding-left: 5px;margin-top:4px;}
   .low-balance { color:red !important; }
   .HighFontClass { color:#8b4513 !important;font-size: clamp(1rem, 1.0vw, 2.8rem);}
   .team-details { font-size:13px; 
@@ -502,7 +548,7 @@ display: flex;
 		/* --- Nested Section & Wrapper Styles --- */
         
         #teamCardsWrapper {
-			width: 20%; 
+			width: 22%; 
             display: flex;
             flex-direction: column; /* Stack cards vertically in min mode */
             gap: 8px;
@@ -603,11 +649,11 @@ display: flex;
 		
 		/* 2. CSS Styles: Soft & Professional Color Scheme */
         .place-bid-btn {
-             background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
+            background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
             color: #ecf0f1; /* Off-white text */
             border: 2px solid #e74c3c; /* Red border to signify the 'Unsold' status */
             padding: 12px 25px;
-			margin: 0px 25px;
+			margin-left: 25px;
             border-radius: 8px; /* Slightly rounded corners */
             cursor: pointer;
             font-family: 'Arial', sans-serif; 
@@ -696,7 +742,7 @@ display: flex;
             
             /* 3. The Stylish Border (Key Feature) */
             /* Add padding around the whole note for the border to sit in */
-            padding: 15px;            /* Inner border property - using background for a pseudo-border effect */
+            padding: 10px;            /* Inner border property - using background for a pseudo-border effect */
             //border: 1px solid transparent; 
             
             /* 4. Layout (Flexbox for icon and text) */
@@ -1123,7 +1169,7 @@ display: flex;
         }
         
         .messageSoldOut-image {
-            width: 200px; 
+            //width: 200px; 
             height: 200px; 
             //margin-top: 15px; 
             //display: block; 
@@ -1164,7 +1210,7 @@ display: flex;
             /* KEY CHANGE: Div occupies 50% of the viewport width */
             width: 100vw; 
             /* KEY CHANGE: Div occupies 50% of the viewport height (50vh + 50vh = 100vh total) */
-            height: 45vh; 
+            height: 40vh; 
             
             /* Center the text vertically and horizontally inside the div */
             //display: flex;
@@ -1179,9 +1225,17 @@ display: flex;
 		
 		.split-ball {
             //position: relative; 
-            overflow: hidden; 
-            margin-top: 10px;
-			margin-bottom: 10px;
+            //overflow: hidden; 
+            //margin-top: 10px;
+			//margin-bottom: 10px;
+			
+			position: fixed;
+			top: 20px;        /* 💥 Updated to 30px from the top edge */
+			left: 40%;        /* Move to the right edge */
+			//width: 200px;
+			//height: 300px;
+			//filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
+			//z-index: 1000; 
 			
             /* --- Consolidated Variables (formerly in :root) --- */
             --ball-size: 350px;
@@ -1297,14 +1351,14 @@ display: flex;
 
 .bat-blade {
     position: absolute;
-    top: 100px;
+    top: 70px;
     width: 200px; 
     height: 300px;
     
     background: linear-gradient(to right, #B8860B 0%, #D8A54B 50%, #B8860B 100%);
     
     border-bottom-left-radius: 100px; 
-    border-bottom-right-radius: 100px; 
+    border-bottom-right-radius: 100px; 		
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     
@@ -1314,7 +1368,7 @@ display: flex;
 
 .bat-message {
     position: absolute;
-    top: 80px; 
+    top: 30px; 
     width: 100%;
     text-align: center;
     color: #2F4F4F; /* DarkSlateGray */
@@ -1333,7 +1387,8 @@ display: flex;
     top: 0;
     left: 85px; 
     width: 30px;
-    height: 120px;
+    //height: 120px;
+	height: 80px;
     background-color: #704214; 
     border-radius: 5px;
     z-index: 2;
@@ -1375,7 +1430,7 @@ display: flex;
 
 .shoulder {
     position: absolute;
-    top: 90px;
+    top: 70px;
     left: 70px; 
     width: 60px;
     height: 20px;
@@ -1587,10 +1642,26 @@ responsive-box-title {
             font-size: 1.1rem; 
             letter-spacing: 0.5px;
         }
+	
+    .team-toselect ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .team-toselect li {
+      background: #f8fafc;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
 		
 </style>
 </head>
 <body>
+<input type="hidden" id="TOTAL_NUMBER_OF_PLAYER_FOR_TOURNAMENT" value="">
 <input type="hidden" id="TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION" value="">
 <input type="hidden" id="AUCTION_ALLOCATED_BALANCE" value="">
 <input type="hidden" id="NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER" value="">
@@ -1627,7 +1698,7 @@ responsive-box-title {
 
                 <div class="menu-item">
                     <a href="#" onclick="UnsoldtoSold(); return false;">
-                        Unsold to Sold
+                        Skipped to Sold
                     </a>
                 </div>
 				
@@ -1727,7 +1798,7 @@ responsive-box-title {
 		  
 		  </BR>		</BR>
 		   <div id="congrats-message1" style="display: none;">
-			<!-- Message set from function displayData() -->
+			<!-- Message set from function displayTeamData() -->
 		   </div>
   </div> 
   
@@ -1786,12 +1857,14 @@ responsive-box-title {
     <div class="shoulder"></div>
     <div class="bat-blade">
         <div class="bat-message">
-            Total Team = <span id="toggleButtonMsg5"></span><br>
-			Players per Team = <span id="toggleButtonMsg6"></span><br>
-            Total players = <span id="toggleButtonMsg2"> </span><br><br>
+            Total Team = <span id="totalTeamCountId"></span><br>
+			Players per Team = <span id="playerPerTeamCountId"></span><br>
+            Total players = <span id="totalTournamentPlayerCountId"> </span><br><br>
 			
-			Sold Player = <span  id="toggleButtonMsg3"></span><br>
-            UnSold Player = <span  id="toggleButtonMsg4"> </span>
+			Players to Bid= <span id="playersToBidCount"> </span><br><br>
+			Sold Player = <span  id="soldPlayerCountId"></span><br>
+            UnSold Player = <span  id="unsoldPlayerCountId"> </span><br>
+			Skipped Player = <span  id="SkippedPlayerCountId"> </span>
         </div>
     </div>
 </div>
@@ -1808,7 +1881,9 @@ responsive-box-title {
   
   <div id="rightPlayer" class="auction-section" style=" display: none; ">
     <div class="player-info">
+	<div class="image-box">
       <img id="playerPhoto" src="#" alt="👤"/>
+	</div>
       <div class="player-details">
  		<div class="modern-note">
 			<div class="user-icon" aria-hidden="true">👤🏏</div>
@@ -1871,7 +1946,7 @@ responsive-box-title {
   <div class="teams-section" id="teams-section-id" style="margin-top: 0px;">
    
     <div id="teamsList" style="">
-	<!-- Data will set to teamsList from function displayData() -->
+	<!-- Data will set to teamsList from function displayTeamData() -->
   </div>
 
 </div>
@@ -2102,22 +2177,7 @@ document.getElementById('playerListExcelFile').addEventListener('change', event=
 		alert(invalidFileMsg);
 		return;
   }
-  
-  /**
-  const congratsMessageDiv = document.getElementById('congrats-message');
-  const congratsMessageDivValue = congratsMessageDiv.textContent;
-  if (!congratsMessageDivValue.includes(CONGRATE_MEG_ON_CONFIGURATION_UPLOAD)) {
-	 const msg1 = 'Auction Configuration data is not found, Please upload it before uploading players list.\n\n Please follow below steps\n'+
-		'1> Expand Left Menu\n'+ 
-		'2> Click on "Upload Configuration"\n'+
-		'3> Please "Auction_Configuration.xlsx"\n'+
-		'4> Only "Auction_Configuration.xlsx" is allowed to upload\n';
-		const invalidFileMsg =msg1;
-		alert(invalidFileMsg);
-		//return;
-  }**/
-  
-	  const PlayerListDataTitleIdDiv = document.getElementById('PlayerListDataTitleId');
+  	  const PlayerListDataTitleIdDiv = document.getElementById('PlayerListDataTitleId');
 	  PlayerListDataTitleIdDiv.textContent = Fresh_Player_List_Title;
 	  
 	  const reader = new FileReader();
@@ -2148,26 +2208,22 @@ document.getElementById('auction-file-id').addEventListener('change', event=>{
 		alert(invalidFileMsg);
 		return;
   }
-  
-  const congratsMessageDiv = document.getElementById('congrats-message');
-  const congratsMessageDivValue = congratsMessageDiv.textContent;
-  if (!congratsMessageDivValue.includes(CONGRATE_MEG_ON_CONFIGURATION_UPLOAD)) {
-	 const msg1 = 'Auction Configuration data is not found, Please upload it before uploading players list.\n\n Please follow below steps\n'+
-		'1> Expand Left Menu\n'+ 
-		'2> Click on "Upload Configuration"\n'+
-		'3> Please "Auction_Configuration.xlsx"\n'+
-		'4> Only "Auction_Configuration.xlsx" is allowed to upload\n';
-		const invalidFileMsg =msg1;
-		alert(invalidFileMsg);
-		//return;
-  }
-  
+   
   const PlayerListDataTitleIdDiv = document.getElementById('PlayerListDataTitleId');
   PlayerListDataTitleIdDiv.textContent = Player_List_from_Auctioned_File_Title;
   const reader = new FileReader();
   reader.onload = function(e){
     const data = new Uint8Array(e.target.result);
     workbook = XLSX.read(data, { type: 'array' });
+	
+	const configurationSheetName = workbook.SheetNames[2];
+	const configurationWorksheet = workbook.Sheets[configurationSheetName];
+	handleFileSelect(configurationWorksheet, configurationSheetName);
+	
+	const ownerSheetName = workbook.SheetNames[1];
+	const ownerWorksheet = workbook.Sheets[ownerSheetName];
+	handleFileSelect(ownerWorksheet, ownerSheetName);
+		
     mainSheetName = workbook.SheetNames[0];
     renderPlayers("From_Auction_File");
 	setTeamDataFromAuctionFile();
@@ -2249,6 +2305,9 @@ function renderPlayers(renderType){
   tbody.innerHTML = '';
   var index = 1;
   var playerDetailsFromData = null;
+  var soldPlayerCount = 0;
+  var unSoldPlayerCount = 0;
+  var skippedPlayerCount = 0;
   data.forEach((p,i) => {
     const tr = document.createElement('tr');
 
@@ -2272,8 +2331,17 @@ function renderPlayers(renderType){
 		const ownerName = "Team Owner[" +p.TeamOwnerName+ "]";
 		bidDetails = bidPrice +"<br><br>" + teamDetails + "<br><br>"+ownerName;
 		soldVal = sold + "<br><br>" + "<span onclick=\"removeSold('"+name+"','" + SoldToTeam +"','" + TeamOwnerName+"');\" style=\"color: blue; text-decoration: underline;\"> Remove Sold? </Span>"
+		soldPlayerCount = soldPlayerCount+1;
 	} else {
 		soldVal = sold;
+	}
+	
+	if(sold!=null && sold.trim()=="Skipped"){
+		skippedPlayerCount = skippedPlayerCount+1;
+	}
+	
+	if(sold==null || sold.trim()==""){
+		unSoldPlayerCount = unSoldPlayerCount+1;
 	}
 	
 	var playerNameToDisplay = name;
@@ -2297,17 +2365,24 @@ function renderPlayers(renderType){
 	index = index+1;
 	
 	if(renderType=="From_Auction_File"){
-		const playerSoldToTeamName = p.SoldToTeam
+		const playerSoldToTeamName = p.SoldToTeam;
 		if(playerSoldToTeamName!=null && playerSoldToTeamName.trim()!=""){
 			const FinalBid = p.FinalBid;
 			teamSoldPlayers[playerSoldToTeamName].push({
-			name: name,
-			mobile: mobile,
-			bid: Number(FinalBid)
-    });
-
+				name: name,
+				mobile: mobile,
+				bid: Number(FinalBid)
+			});
 		}
+	} else if(renderType=="From_Fresh_Player_File"){
+		unSoldPlayerCount = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
+		soldPlayerCount = 0;
+		skippedPlayerCount = 0;
 	}
+	
+	document.getElementById('soldPlayerCountId').innerHTML = soldPlayerCount; 
+	document.getElementById('unsoldPlayerCountId').innerHTML = unSoldPlayerCount;
+	document.getElementById('SkippedPlayerCountId').innerHTML = skippedPlayerCount;
 	
     // clicking the row selects player (but clicking Details link opens popup)
     tr.addEventListener('click', () => {
@@ -2395,12 +2470,12 @@ function isAllPlayersSoldOut(teamName) {
 }
 
 function getTotalRemainingPlayers() {
-var totalRemainingPlayers = 0;
-document.querySelectorAll('#teamsList .team-card').forEach(card => {
-       const playersToBeSelected = getPlayersToBeSelected(card.getAttribute('data-name'));
-	   totalRemainingPlayers = totalRemainingPlayers + playersToBeSelected;
-   });
-  return totalRemainingPlayers;
+	var totalRemainingPlayers = 0;
+	document.querySelectorAll('#teamsList .team-card').forEach(card => {
+		   const playersToBeSelected = getPlayersToBeSelected(card.getAttribute('data-name'));
+		   totalRemainingPlayers = totalRemainingPlayers + playersToBeSelected;
+	   });
+	  return totalRemainingPlayers;
 }
 
 /* Update team card's available display (keeps to the requested formula) */
@@ -2414,8 +2489,14 @@ function updateAvailableBalance(teamName){
 	  
 	  const playersToBeSelected = getPlayersToBeSelected(teamName);
 	 
-	  const toselectDiv = card.querySelector('.team-toselect');
-      toselectDiv.innerHTML = 'Remaining Player: ' + '<span class="HighFontClass">'+ playersToBeSelected +'</span>';
+	  const toBeselectPlayerDivId = card.querySelector('#tobeSelected-player-count-id');
+	  toBeselectPlayerDivId.innerHTML = playersToBeSelected;
+	  
+	  const totalNumOfPlayer = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+	  const selectedPlayerCount = (totalNumOfPlayer-1)-Number(playersToBeSelected);
+	  const selectPlayerDivId = card.querySelector('#Selected-player-count-id');
+	  selectPlayerDivId.innerHTML = selectedPlayerCount;
+	 
     }
   });
 }
@@ -2503,7 +2584,7 @@ function UnsoldtoSold(){
 		const data = sortDataByPlayerType(rowData);
 		
 		data.forEach(p => {
-		  if(p.Sold === 'Unsold'){
+		  if(p.Sold === 'Skipped'){
 			p.Sold = '';
 		  }
 		});
@@ -2534,7 +2615,7 @@ function markUnsold(){
                         <hr class="separator-line">
                         <span class="separator-text">Are you sure to mark this player as unsold?
 						<BR><BR>
-						Unsold Players will be bidded at last.
+						Skipped Players will be bidded at last.
 						</span>
                     </div>
                 `;
@@ -2555,7 +2636,7 @@ function markUnsold_Yes(){
 		const data = sortDataByPlayerType(rowData);
 		data.forEach(p => {
 		  if(p.Name === (currentPlayer.Name || currentPlayer.name) && (p.Role === currentPlayer.Role || p.role === currentPlayer.role)){
-			p.Sold = 'Unsold';
+			p.Sold = 'Skipped';
 			//p.Sold = '<span class=\"status-badge status-green\">Yes</span>';
 		  }
 		});
@@ -2583,6 +2664,25 @@ function markUnsold_Yes(){
 	  enableOnUnsoldPlayerClickButton();
 }
 
+function calculateSkippedPlayers(){
+	var skippedPlayerCount = 0;
+	try{
+	if(workbook && mainSheetName){
+			const sheet = workbook.Sheets[mainSheetName];
+			const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+					
+			rowData.forEach(p => {
+			  if(p.Sold === 'Skipped'){
+				skippedPlayerCount = skippedPlayerCount+1;
+			  }
+			});
+		}
+	}catch(e){
+		console.log(e);
+	}
+	return skippedPlayerCount;
+}
+	
 function afterSoldPopup(){
 
   enableAllButton();
@@ -2607,15 +2707,15 @@ function afterSoldPopup(){
 	
 	var totalRemainingPlayers = getTotalRemainingPlayers();
 	const totalNumOfPlayer = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value);
-	const totalOwnerCount = Number(document.getElementById('TOTAL_TEAM_COUNT').value);
-	const totalSoldCount = totalNumOfPlayer - totalRemainingPlayers - totalOwnerCount;
-	document.getElementById('toggleButtonMsg3').innerHTML = totalSoldCount;
-	document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
+	const totalSoldCount = totalNumOfPlayer - totalRemainingPlayers;
+	document.getElementById('soldPlayerCountId').innerHTML = totalSoldCount;
+	document.getElementById('unsoldPlayerCountId').innerHTML = totalRemainingPlayers;
+	document.getElementById('SkippedPlayerCountId').innerHTML = calculateSkippedPlayers();
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 	confirmationBoxDiv.style.display = 'none';
-  
-  
+	
+	scrollToTop()
 }
 
 function afterSubmitOrMarkUnsold(selectedTeamName){
@@ -2650,8 +2750,9 @@ function afterSubmitOrMarkUnsold(selectedTeamName){
 	rightrightPlayerIDVar.style.display = 'none';
 	
 	
-	document.getElementById('toggleButtonMsg3').innerHTML = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value) - totalRemainingPlayers;
-	document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
+	document.getElementById('soldPlayerCountId').innerHTML = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value) - totalRemainingPlayers;
+	document.getElementById('unsoldPlayerCountId').innerHTML = totalRemainingPlayers;
+	document.getElementById('SkippedPlayerCountId').innerHTML = '-1';
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 	confirmationBoxDiv.style.display = 'none';
@@ -3111,6 +3212,8 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	teamDetailsToDisplayFullId.style.display = 'none';
 		
 	processSelectedPlayerRow(clickedRow);
+	applyAuctionOverColorToAllTeam_FromMenu();
+	scrollToTop();
 	
 	/**
 	const renderType = document.getElementById('PlayerListDataTitleId').textContent;
@@ -3130,7 +3233,7 @@ function setTeamDataFromAuctionFile() {
 		
 		//Set Available Balance
 		card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + '<span class="HighFontClass">'+ formatINR(availableBalance) + '</span>' + '<span class="large-money">💰</span>';
-		card.querySelector('.team-balance').setAttribute('valueofdiv', toBeBidBalance);
+		card.querySelector('.team-balance').setAttribute('valueofdiv', availableBalance);
 		
 		//Set Bid Balance
 		card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+
@@ -3175,7 +3278,7 @@ function highlightRandomRow() {
 		const row = rows[i];
 		const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
 		
-		if(soldValueOfEachRow === "Yes" || soldValueOfEachRow === "Unsold"){
+		if(soldValueOfEachRow === "Yes" || soldValueOfEachRow === "Skipped"){
 			isAllSoldOut = "Y";
 		} else {
 			isAllSoldOut = "N";
@@ -3272,42 +3375,48 @@ startSpinner();
 	//alert("startIndex " + startIndex + " endIndex " + endIndex);
 	var selectedRow = null;
 	var soldValueOfSelectedRow = null;
-	for(i=0;i<9;i++){
-		//const randomIndex = Math.floor(Math.random() * rowSize);
-		const randomIndex = getRandomIndex(startIndex, endIndex);
-		// 3. Select the new random row
-		selectedRow = rows[randomIndex];
+	try{
+		for(i=0;i<9;i++){
+			//const randomIndex = Math.floor(Math.random() * rowSize);
+			const randomIndex = getRandomIndex(startIndex, endIndex);
+			// 3. Select the new random row
+			selectedRow = rows[randomIndex];
+			
+			if(selectedRow!=null){
+				soldValueOfSelectedRow = selectedRow.cells[SOLD_INDEX].getAttribute('soldval');
+		  
+				if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Skipped"){
+					continue;
+				}
+			}
+			break;
+		}
 		
-		if(selectedRow!=null){
-			soldValueOfSelectedRow = selectedRow.cells[SOLD_INDEX].getAttribute('soldval');
-	  
-			if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
-				continue;
+		//alert('selectedRow ' + selectedRow.rowIndex);
+		if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Skipped"){
+			for (let j = 0; j < rows.length; j++) {
+				const row = rows[j];
+				const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
+				//alert(soldValueOfEachRow);
+				if(soldValueOfEachRow == null || soldValueOfEachRow.trim()==""){
+					selectedRow = rows[j];
+					break;
+				}
 			}
 		}
-		break;
+		// 4. Highlight the selected row
+		//selectedRow.classList.add('highlight');
+		selectedRow.style.backgroundColor = '#d4edda';
+		currentHighlightedRow = selectedRow;
+		
+		processSelectedPlayerRow(selectedRow);
+		
+		clearAllTeamSelection();
+		scrollToTop();
+	}catch(e){
+		console.error("startIndex-" + startIndex + ", endIndex-" + endIndex + ", rowSize" + rows.length);
+		console.error(err);
 	}
-	
-    //alert('selectedRow ' + selectedRow.rowIndex);
-	if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Unsold"){
-		for (let j = 0; j < rows.length; j++) {
-			const row = rows[j];
-			const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
-			//alert(soldValueOfEachRow);
-			if(soldValueOfEachRow == null || soldValueOfEachRow.trim()==""){
-				selectedRow = rows[j];
-				break;
-			}
-		}
-	}
-    // 4. Highlight the selected row
-    //selectedRow.classList.add('highlight');
-	selectedRow.style.backgroundColor = '#d4edda';
-    currentHighlightedRow = selectedRow;
-	
-	processSelectedPlayerRow(selectedRow);
-	
-    clearAllTeamSelection();
   }
 
 const spinnerContainer = document.getElementById('spinnerContainer');
@@ -3368,7 +3477,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 			const row = rows[i];
 			const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
 			
-			if(soldValueOfEachRow=="Unsold"){
+			if(soldValueOfEachRow=="Skipped"){
 				row.style.backgroundColor = '#FFCCCB';
 			} else if(soldValueOfEachRow=="Yes"){
 				row.style.backgroundColor = '#98FF98';
@@ -3424,7 +3533,15 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 		applyAuctionOverColorToAllTeam_FromMenu();
 		highlightSoldAndUnsoldPlayerByBG();
 		collapseMenu();
+		
+		scrollToTop();
+
     }
+	
+	function scrollToTop() {
+		document.documentElement.scrollTop = 0;
+		document.body.scrollTop = 0;
+	}
 	
 	/**
 	  function uploadConfiguration(showId, hideId) {
@@ -3632,9 +3749,6 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
          */
         function handleFileSelect(worksheet, sheetName) {
 			if (sheetName === OWNER_LIST_SHEET_NAME) {
-				const worksheet = workbook.Sheets[OWNER_LIST_SHEET_NAME];
-				
-				// 5. Convert the sheet data to a JSON array (array of arrays)
 				const jsonOptions = { header: 1 };
 				const sheetData = XLSX.utils.sheet_to_json(worksheet, jsonOptions);
 
@@ -3683,11 +3797,9 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 					return acc;
 				}, {});
 				
-				//alert(result);
 				// 7. Display the structured data as cards
-			   displayData(result);
+			   displayTeamData(result);
 		} else if(sheetName === (CONFIGURATION_SHEET_NAME)){
-					const worksheet = workbook.Sheets[CONFIGURATION_SHEET_NAME];
 					const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 					
 					if (sheetData.length > 1) {
@@ -3708,8 +3820,8 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 						});
 						const totalTeamCount = Number(document.getElementById('TOTAL_TEAM_COUNT').value);
 						const totalPlayersPerTeam = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
-						
-						document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value = totalTeamCount * totalPlayersPerTeam;
+																		
+						document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_TOURNAMENT').value = totalTeamCount * totalPlayersPerTeam;
 						document.getElementById('Increase_Bid_value').textContent=formatINR(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
 						document.getElementById('Decrease_Bid_value').textContent=formatINR(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
 					} else {
@@ -3722,7 +3834,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
         /**
          * Displays the processed JSON data in the requested HTML card structure.
          */
-        function displayData(data) {
+        function displayTeamData(data) {
             const output = document.getElementById('teamsList');
             
             if (data.length === 0) {
@@ -3750,6 +3862,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
                 const availableBalance = totalAllocatedAvailableBalance-basePriceDisplay;
 				
 				const numberOfUnSoldPlayer = initialPlayerCount-1;
+				const numberOfSelecedPlayer = 0;
 				const toBeBidBalanceAvailable = calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer);
 								
                 if(counter==1){
@@ -3760,16 +3873,18 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 						<div id="teamCardsWrapper">
                         <div class="team-card" data-name="${teamName}" data-owner="${ownerName}">
                             <div class="team-name-card" valueofdiv="${teamName}">${teamName}</div>
-                            <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName}</div>
-                            <div class="team-baseprice" valueofdiv="${basePriceDisplay}" >Owner Base Price: 
-							${formatINR(basePriceDisplay)}</div>
-							<div class="team-balance" valueofdiv="${availableBalance}">Available Balance: 
+                            <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName} &nbsp;&nbsp;
+							<span class="team-baseprice" valueofdiv="${basePriceDisplay}">Price: ${formatINR(basePriceDisplay)}</span>
+							</div>
+                            <div class="team-balance" valueofdiv="${availableBalance}">Available Balance: 
 							<span class="HighFontClass">${formatINR(availableBalance)}</span>
 							<span class="large-money" >💰</span></div>
 							<div class="team-tobebid" valueofdiv="${toBeBidBalanceAvailable}" >Bid Balance: 
 							<span class="HighFontClass">${formatINR(toBeBidBalanceAvailable)} </span><span class="large-money">📌</span> </div>
-							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >Remaining Players: 
-							<span class="HighFontClass">${numberOfUnSoldPlayer}</span></div>
+							<div class="team-toselect" valueofdiv="${numberOfUnSoldPlayer}" >🎯 <strong>Player Overview</strong>
+							</div>
+							<span class="players-overview-type">✅ Selected: <span id="Selected-player-count-id"  class="HighFontClass">${numberOfSelecedPlayer}</span></span>
+							<span class="players-overview-type" >🕒 To Be Selected: <span id="tobeSelected-player-count-id" class="HighFontClass">${numberOfUnSoldPlayer}</span></span>
                         </div>
                         <div class="team-details" onclick="showTeamDetails('${safeTeamName}')" > <span style=" background: #fff;font-style: italic;">Details</span> </div>
 						</div>
@@ -3797,40 +3912,35 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 			htmlTeamFullScreenDetailsOutput.innerHTML = htmlTeamFullScreenDetails;
 		
 html += `		
-			<div id="teamCardsWrapper_PlaceBid" style=" display: block; ">
-        <div class="Submit_team-name-card">
-		
+			<div id="teamCardsWrapper_PlaceBid" style="display: block;width=100%;margin-top:-5px ">
         
-        <button id="place-bid-btn-id" class="place-bid-btn" onclick="confirmationMessageOnSubmit();">
-        <i class="fas fa-hammer"></i> 
-        Place Bid
-		</button>
-		
-		<button id="player-unsold-btn-id" class="player-unsold-btn" onclick="markUnsold()">
-        <span class="icon">🏷️</span>
-        Skip
-    </button>
+		<Span style="margin-right:50px">
+			<button id="place-bid-btn-id" class="place-bid-btn" onclick="confirmationMessageOnSubmit();">
+			<i class="fas fa-hammer"></i> 
+			Place Bid
+			</button>
+		</span>
+		<Span >
+			<button id="player-unsold-btn-id" class="player-unsold-btn" onclick="markUnsold()">
+			<span class="icon">🏷️</span>
+			Skip
+			</button>
+		</span>
 	
-	</div>
     </div>
 		
 	`;
             html += `</div>`; // Close teamCardsWrapper
          
             output.innerHTML = html;
-	
-	/**
-	const congratsMessageDiv = document.getElementById('congrats-message');
-	congratsMessageDiv.textContent=CONGRATE_MEG_ON_CONFIGURATION_UPLOAD;
-	congratsMessageDiv.style.display = 'block'; **/
-		
+			
 	document.getElementById('toggleButtonMsg1').innerHTML = document.getElementById('TOURNAMENT_NAME').value + "</BR></BR>" + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
 	
-	document.getElementById('toggleButtonMsg2').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
-	document.getElementById('toggleButtonMsg3').innerHTML = "0" 
-	document.getElementById('toggleButtonMsg4').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
-	document.getElementById('toggleButtonMsg5').innerHTML = document.getElementById('TOTAL_TEAM_COUNT').value;
-	document.getElementById('toggleButtonMsg6').innerHTML = document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value;
+	document.getElementById('totalTournamentPlayerCountId').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_TOURNAMENT').value;
+	document.getElementById('playersToBidCount').innerHTML = document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value;
+	
+	document.getElementById('totalTeamCountId').innerHTML = document.getElementById('TOTAL_TEAM_COUNT').value;
+	document.getElementById('playerPerTeamCountId').innerHTML = document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value;
 	
 	document.getElementById('auction_title_id_below_text').innerHTML = document.getElementById('TOURNAMENT_NAME').value + " - " + document.getElementById('TOURNAMENT_NAME_FULL_FORM').value;
 	
@@ -3941,8 +4051,9 @@ teamCards.forEach(card => {
 				const totalNumOfPlayer = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value);
 				const totalOwnerCount = Number(document.getElementById('TOTAL_TEAM_COUNT').value);
 				const totalSoldCount = totalNumOfPlayer - totalRemainingPlayers - totalOwnerCount;
-				document.getElementById('toggleButtonMsg3').innerHTML = totalSoldCount;
-				document.getElementById('toggleButtonMsg4').innerHTML = totalRemainingPlayers;
+				document.getElementById('soldPlayerCountId').innerHTML = totalSoldCount;
+				document.getElementById('unsoldPlayerCountId').innerHTML = totalRemainingPlayers;
+				document.getElementById('SkippedPlayerCountId').innerHTML = '-1';
 			}
 			
 		}
@@ -4029,7 +4140,95 @@ teamCards.forEach(card => {
    Initial formatting on page load
    ------------------------ */
 initTeamCardsFormatting();
+var windowLocation =  window.location.pathname;
+//alert(windowLocation);
+
+try{
+window.addEventListener('load', function() {
+	//alert(window.location.hostname + " - "  + window.location.pathname);
+	if (windowLocation.includes("auction_main.html")) {
+	  history.pushState(null, null, location.href);
+	  window.onpopstate = function () {
+		history.go(1);
+	  };
+	}
+});
+	
+} catch(e) {
+	console.error(e);
+}
+
+/**
+List of JS Function
+1>formatINR
+2>convertInrToNumber
+3>convertInrToNumber
+4>getPlayersToBeSelected
+5>initTeamCardsFormatting
+6>initTeamCardsFormattingOnTeamClick
+7>calculateToBeBidBalance
+8>sortDataByPlayerType
+9>sortDataByParam
+10>renderPlayers
+11>showPlayerDetailsPopup
+12>closePlayerPopup
+13>clearAllTeamSelection
+14>isAllPlayersSoldOut
+15>getTotalRemainingPlayers
+16>updateAvailableBalance
+17>increaseBid
+18>reduceBid
+19>updateTeamStyle_Submit
+20>UnsoldtoSold
+21>markUnsold
+22>markUnsold_Yes
+23>afterSoldPopup
+24>afterSubmitOrMarkUnsold
+25>handleConfirm
+26>handleCancel
+27>changeBGImageToDarkMode
+28>changeBGImageToOriginalMode
+29>confirmationMessageOnSubmit
+30>confirmationMessageOnSubmit
+31>submitAuction
+32>calBidBalance
+33>setTeamParamsAfterSubmit
+34>getTeamParticularDetails
+35>showTeamDetails
+36>rgbToHex
+37>processSelectedPlayerRow
+38>currentHighlightedRow_ClickOfRow
+39>setTeamDataFromAuctionFile
+40>getRandomIndex
+41>highlightRandomRow
+42>startSpinner
+43>stopSpinner
+44>highlightSoldAndUnsoldPlayerByBG
+45>showContent
+46>uploadLatestAuctionFile
+47>setTeamDetailsToFullTeamDetailsScreen
+48>toggleMaximize
+49>toggleMinimize
+50>collapseMenu
+51>toggleMenu
+52>normalizeHeader
+53>handleFileSelect
+54>displayTeamData
+55>applySelectedUnselectedColorToAllTeam
+56>applyAuctionOverColorToAllTeam
+57>applyAuctionOverColorToAllTeam_FromMenu
+58>removeSold
+59>closePopup
+60>disableAllButton
+61>enableAllButton
+62>disableOnPlaceBidClickButton
+63>enableOnPlaceBidClickButton
+64>disableOnUnsoldPlayerClickButton
+65>enableOnUnsoldPlayerClickButton
+**/
 
 </script>
 </body>
 </html>
+
+
