@@ -1821,6 +1821,41 @@ responsive-box-title {
         background: #f4f6f8;
     }
 	
+	/* Base container */
+  .player-box1 {
+    position: relative;
+    display: inline-block;
+    //width: 120px;
+    //height: 70px;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    //line-height: 140px;
+    font-weight: bold;
+    font-size: 12px;
+    color: #333;
+  }
+
+  /* SOLD stamp overlay (emoji + text) */
+  .player-box::after {
+    content: "💥 SOLD 💥";
+    position: absolute;
+    top: 40%;
+    //left: 5%;
+    transform: rotate(-25deg);
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+    //border: 3px solid red;
+    //border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 15px;
+    opacity: 0.85;
+    text-shadow: 1px 1px 2px #fff;
+    pointer-events: none; /* ignore mouse clicks */
+  }
+  
 </style>
 </head>
 <body>
@@ -4225,6 +4260,92 @@ teamCards.forEach(card => {
 			secondRowID.style.display = 'block';
 		}
 		
+		function openBookForSoldAndSkip(bookType, rows, soldStatus, titleToBook, container){
+			document.getElementById('openBookheaderTitle').innerHTML=titleToBook;
+			var totalPlayers = 0;
+			const newList = [];
+			for (let i = 0; i < rows.length; i++) {
+				const row = rows[i];
+				const soldValue = row.cells[SOLD_INDEX].getAttribute('soldval');
+				if(soldValue==null){
+					soldValue= "";
+				}
+				if(soldValue!=null && soldValue.trim() === soldStatus){
+					totalPlayers = totalPlayers+1;
+					newList.push(row);
+				}
+			}
+					
+			const totalColumns = 5;
+			playersPerColumn = Number(totalPlayers)/Number(totalColumns);
+			playersPerColumn = Math.ceil(playersPerColumn);
+			
+			let counter = 1;
+			let index = 0;
+			let playerNumber = 1;
+			var column = null;
+			for (let col = 0; col < totalColumns; col++) {
+				column = document.createElement('div');
+				column.classList.add('column');
+				for (let i = index; i <totalPlayers; i++) {
+					const playerName = newList[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
+					const playerDiv = document.createElement('div');
+					playerDiv.classList.add('player');
+
+					const topDiv = document.createElement('div');
+					topDiv.classList.add('player-top');
+
+					const numberDiv = document.createElement('div');
+					numberDiv.classList.add('player-number');
+					numberDiv.textContent = playerNumber;
+
+					const nameDiv = document.createElement('div');
+					nameDiv.classList.add('player-name');
+					nameDiv.textContent = `${playerName}`;
+					
+					const nameSpan = document.createElement('span');
+										
+					if(soldStatus=="Yes"){
+						//nameSpan.style.color = "red";
+						//nameSpan.style.border = "2px solid red";
+						//nameSpan.textContent = "Sold";
+						nameDiv.classList.add('player-box');
+					}else if(soldStatus=="Skipped"){
+						nameSpan.style.color = "#FFD700";
+						nameSpan.style.border = "2px solid #FFD700";
+						nameSpan.textContent = soldStatus;
+					}else if(soldStatus==""){
+						nameSpan.style.color = "#4682B4";
+						nameSpan.style.border = "2px solid #4682B4";
+						nameSpan.textContent = 'Available';
+					}
+					nameSpan.style.padding = "4px";
+					nameSpan.style.borderRadius = "6px";
+					nameSpan.style.width = "fit-content"; 
+					nameSpan.style.marginTop = "5px";
+					nameSpan.style.marginBottom = "5px"; 
+					nameSpan.style.display = "block";
+					nameDiv.appendChild(nameSpan);
+					
+					topDiv.appendChild(numberDiv);
+					topDiv.appendChild(nameDiv);
+					
+					playerDiv.appendChild(topDiv);
+					column.appendChild(playerDiv);
+					
+					if(counter==playersPerColumn || i==(totalPlayers-1)){
+						container.appendChild(column);
+						counter = 1;
+						index = playerNumber;
+						playerNumber = playerNumber+1;
+						break;
+					} 
+					counter = counter+1;
+					playerNumber = playerNumber+1;
+				}
+			}
+	}
+		
 		function openBook(bookType){
 			const tbody = document.querySelector('#playerTable tbody');
 			const rows = tbody.getElementsByTagName('tr');
@@ -4248,6 +4369,7 @@ teamCards.forEach(card => {
 			const headerHeight = document.querySelector('.openBookheader').offsetHeight;
 			var playersPerColumn = Math.floor((window.innerHeight - headerHeight) / playerHeight);
 			const container = document.getElementById('openBookContainerid');
+			container.innerHTML='';
 			
 				if(bookType=='allPlayers'){
 					document.getElementById('openBookheaderTitle').innerHTML="All Participated players in Auction";
@@ -4307,11 +4429,26 @@ teamCards.forEach(card => {
 					}
 	
 			  }else if(bookType=='soldPlayers'){
-				document.getElementById('openBookheaderTitle').setContent="So far Sold players in Auction";
+					const soldPlayerCountVal = document.getElementById('soldPlayerCountId').textContent;
+					if(Number(soldPlayerCountVal)<=0){
+						document.getElementById('openBookheaderTitle').innerHTML="No Sold players Found";
+						return;
+					}
+					openBookForSoldAndSkip(bookType, rows, 'Yes', "So far Sold players in Auction",container);
 			  } else if(bookType=='unSoldPlayers'){
-				document.getElementById('openBookheaderTitle').setContent="So far UnSold players in Auction";
+					const unsoldPlayerCountVal = document.getElementById('unsoldPlayerCountId').textContent;
+					if(Number(unsoldPlayerCountVal)<=0){
+						document.getElementById('openBookheaderTitle').innerHTML="No UnSold players Found";
+						return;
+					}
+					openBookForSoldAndSkip(bookType, rows, '', "Available players for Auction",container);
 			  } else if(bookType=='skippedPlayers'){
-				document.getElementById('openBookheaderTitle').setContent="So far Skipped players in Auction";
+					const skippedPlayerCountVal = document.getElementById('SkippedPlayerCountId').textContent;
+					if(Number(skippedPlayerCountVal)<=0){
+						document.getElementById('openBookheaderTitle').innerHTML="No Skipped players Found";
+						return;
+					}
+					openBookForSoldAndSkip(bookType, rows, 'Skipped', "So far Skipped players in Auction",container);
 			  }
 		}
 		
