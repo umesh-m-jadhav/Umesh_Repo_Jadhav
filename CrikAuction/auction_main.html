@@ -81,7 +81,7 @@
   .teams-section-wrapper {
 	width: 100vw; 
 	/* KEY CHANGE: Div occupies 50% of the viewport height (50vh + 50vh = 100vh total) */
-	height: 55vh; 
+	//height: 55vh; 
 	
 	/* Center the text vertically and horizontally inside the div */
 	display: flex;
@@ -1481,7 +1481,7 @@ responsive-box-title {
             font-weight: 900;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
-			color: #000000; */
+			color: #000000;
         }
 		
 		.dotted-text-break-separator {
@@ -1731,7 +1731,7 @@ responsive-box-title {
 		 <div class="split-ball" onclick="highlightRandomRow()" id = "startSpinId" style=" display: block;">
 		 <Div id="toggleButton1" class="ball-text">
 				<span class="responsive-text-tournamentTitleId" id="tournamentTitleId"> </span>
-				<span id="tournamentTitleDescription"> </span>
+				<span id="tournamentTitleDescription" style="font-style: italic;"> </span>
 		 </Div>
 		</div>
 
@@ -2140,7 +2140,7 @@ function initTeamCardsFormattingOnTeamClick(){
     const name = card.getAttribute('data-name');
 	const base = getTeamParticularDetails(name,'.team-baseprice');
     
-    card.querySelector('.team-baseprice').textContent = 'Owner: ' + formatINR(base);
+    card.querySelector('.team-baseprice').textContent = 'Price: ' + formatINR(base);
     //card.querySelector('.team-total').textContent = 'Total Balance: ' + formatINR(TOTAL_BALANCE);
     const available = computeAvailableBalanceForTeam(name);
 	var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
@@ -2194,11 +2194,11 @@ document.getElementById('playerListExcelFile').addEventListener('change', event=
 		
 		const configurationSheetName = workbook.SheetNames[2];
 		const configurationWorksheet = workbook.Sheets[configurationSheetName];
-		handleFileSelect(configurationWorksheet, configurationSheetName);
+		handleFileSelect(configurationWorksheet, configurationSheetName,"From_Fresh_Player_File");
 		
 		const ownerSheetName = workbook.SheetNames[1];
 		const ownerWorksheet = workbook.Sheets[ownerSheetName];
-		handleFileSelect(ownerWorksheet, ownerSheetName);
+		handleFileSelect(ownerWorksheet, ownerSheetName,"From_Fresh_Player_File");
 		
 		mainSheetName = workbook.SheetNames[0];
 		renderPlayers("From_Fresh_Player_File");
@@ -2225,15 +2225,16 @@ document.getElementById('auction-file-id').addEventListener('change', event=>{
 	
 	const configurationSheetName = workbook.SheetNames[2];
 	const configurationWorksheet = workbook.Sheets[configurationSheetName];
-	handleFileSelect(configurationWorksheet, configurationSheetName);
+	handleFileSelect(configurationWorksheet, configurationSheetName, "From_Auction_File");
+	
+	mainSheetName = workbook.SheetNames[0];
+    renderPlayers("From_Auction_File");
 	
 	const ownerSheetName = workbook.SheetNames[1];
 	const ownerWorksheet = workbook.Sheets[ownerSheetName];
-	handleFileSelect(ownerWorksheet, ownerSheetName);
-		
-    mainSheetName = workbook.SheetNames[0];
-    renderPlayers("From_Auction_File");
-	setTeamDataFromAuctionFile();
+	handleFileSelect(ownerWorksheet, ownerSheetName, "From_Auction_File");
+	
+	//setTeamDataFromAuctionFile();
   };
   reader.readAsArrayBuffer(file);
 });
@@ -2375,6 +2376,10 @@ function renderPlayers(renderType){
 		const playerSoldToTeamName = p.SoldToTeam;
 		if(playerSoldToTeamName!=null && playerSoldToTeamName.trim()!=""){
 			const FinalBid = p.FinalBid;
+			if (teamSoldPlayers[playerSoldToTeamName] === null || teamSoldPlayers[playerSoldToTeamName] === undefined) {
+				teamSoldPlayers[playerSoldToTeamName]=[];
+			}
+				
 			teamSoldPlayers[playerSoldToTeamName].push({
 				name: name,
 				mobile: mobile,
@@ -2388,9 +2393,7 @@ function renderPlayers(renderType){
 		skippedPlayerCount = 0;
 	}
 	
-	document.getElementById('soldPlayerCountId').innerHTML = soldPlayerCount; 
-	document.getElementById('unsoldPlayerCountId').innerHTML = unSoldPlayerCount;
-	document.getElementById('SkippedPlayerCountId').innerHTML = skippedPlayerCount;
+	
 	
     // clicking the row selects player (but clicking Details link opens popup)
     tr.addEventListener('click', () => {
@@ -2400,6 +2403,11 @@ function renderPlayers(renderType){
    tbody.appendChild(tr);
    highlightSoldAndUnsoldPlayerByBG();
   });
+  
+   document.getElementById('soldPlayerCountId').innerHTML = soldPlayerCount; 
+	document.getElementById('unsoldPlayerCountId').innerHTML = unSoldPlayerCount;
+	document.getElementById('SkippedPlayerCountId').innerHTML = skippedPlayerCount;
+  console.log("renderPlayers Completed for " + renderType);
 }
 
 /* ------------------------
@@ -3014,7 +3022,6 @@ function getTeamParticularDetails(teamName, attributeNm){
    Show team details popup (owner as item 1, then sold players)
    ------------------------ */
 function showTeamDetails(teamName){
-  //const owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).textContent.replace("Owner: ","");
   const owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).getAttribute('valueofdiv');
   const base = getTeamParticularDetails(teamName,'.team-baseprice');
   let html = '';
@@ -3202,11 +3209,6 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	applyAuctionOverColorToAllTeam_FromMenu();
 	scrollToTop();
 	
-	/**
-	const renderType = document.getElementById('PlayerListDataTitleId').textContent;
-	if(renderType==Player_List_from_Auctioned_File_Title){
-		setTeamDataFromAuctionFile();
-	} **/
 }
 
 //Set available balance, Bid balance, Remaining Players.
@@ -3224,7 +3226,7 @@ function setTeamDataFromAuctionFile() {
 		
 		//Set Bid Balance
 		card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+
- formatINR(toBeBidBalance) + '</span>' + '<span class="large-money">📌</span>';
+		formatINR(toBeBidBalance) + '</span>' + '<span class="large-money">📌</span>';
 	    card.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
 		
 		//Set Remaining Players
@@ -3265,7 +3267,7 @@ function highlightRandomRow() {
 		const row = rows[i];
 		const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
 		
-		if(soldValueOfEachRow === "Yes" || soldValueOfEachRow === "Skipped"){
+		if(soldValueOfEachRow!=null && soldValueOfEachRow === "Yes"){
 			isAllSoldOut = "Y";
 		} else {
 			isAllSoldOut = "N";
@@ -3274,7 +3276,29 @@ function highlightRandomRow() {
 	}
 
 	if(isAllSoldOut=="Y") {
-		alert("All the current uploaded players are sold out. Please upload new players.");
+		alert("Congratulations!!!,\n\nThe auction is officially over! Every player has been successfully sold.");
+		return;
+	}
+	
+	var isOnlySkippedPlayers = "Y";
+	for (let i = 0; i < rows.length; i++) {
+		const row = rows[i];
+		const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
+		
+		if(soldValueOfEachRow!=null && soldValueOfEachRow === "Yes"){
+			continue;
+		}
+		
+		if(soldValueOfEachRow!=null && soldValueOfEachRow === "Skipped"){
+			isOnlySkippedPlayers = "Y";
+		} else {
+			isOnlySkippedPlayers = "N";
+			break;
+		}
+	}
+	
+	if(isOnlySkippedPlayers=="Y") {
+		alert("Attention: Skipped Players Found.!!!\n\nSome players were skipped during the auction. Please move them to 'To Be Sold' mode if you wish to re-auction them.");
 		return;
 	}
 	
@@ -3741,7 +3765,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
          * This function is called when the file input changes.
          * @param {Event} evt The file selection event.
          */
-        function handleFileSelect(worksheet, sheetName) {
+        function handleFileSelect(worksheet, sheetName, renderType) {
 			if (sheetName === OWNER_LIST_SHEET_NAME) {
 				const jsonOptions = { header: 1 };
 				const sheetData = XLSX.utils.sheet_to_json(worksheet, jsonOptions);
@@ -3781,18 +3805,20 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 					return rowObject;
 				});
 				
-				// NEW: Dynamically create the teamSoldPlayers object using the unique TeamNames
-				teamSoldPlayers = result.reduce((acc, owner) => {
-					const teamName = owner.TeamName;
-					// Ensure the teamName is valid and not already a key
-					if (teamName && teamName.trim() !== '' && !acc.hasOwnProperty(teamName)) {
-						acc[teamName] = []; // Initialize with an empty array for sold players
-					}
-					return acc;
-				}, {});
+				if(renderType=="From_Fresh_Player_File") {
+					// NEW: Dynamically create the teamSoldPlayers object using the unique TeamNames
+					teamSoldPlayers = result.reduce((acc, owner) => {
+						const teamName = owner.TeamName;
+						// Ensure the teamName is valid and not already a key
+						if (teamName && teamName.trim() !== '' && !acc.hasOwnProperty(teamName)) {
+							acc[teamName] = []; // Initialize with an empty array for sold players
+						}
+						return acc;
+					}, {});
+				}
 				
 				// 7. Display the structured data as cards
-			   displayTeamData(result);
+			   displayTeamData(result, renderType);
 		} else if(sheetName === (CONFIGURATION_SHEET_NAME)){
 					const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 					
@@ -3822,13 +3848,12 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 						 console.warn(`Sheet "${sheetName}" is empty or contains only headers. Skipping data extraction.`);
 					}
 				}
-			
         }
 
         /**
          * Displays the processed JSON data in the requested HTML card structure.
          */
-        function displayTeamData(data) {
+        function displayTeamData(data, renderType) {
             const output = document.getElementById('teamsList');
             
             if (data.length === 0) {
@@ -3843,21 +3868,37 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
            
 			const totalAllocatedAvailableBalance = document.getElementById('AUCTION_ALLOCATED_BALANCE').value;
 			
-			const initialPlayerCount = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+			var TOTAL_PLAYERS = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
+			TOTAL_PLAYERS = TOTAL_PLAYERS-1; //Don't Include owner count here
+			
 			var counter = 1;
             data.forEach((row) => {
                 const teamName = row.TeamName || 'N/A Team';
                 const ownerName = row.OwnerName || 'N/A Owner';
                 // Format BasePrice for display
-                const basePriceDisplay = row.BasePrice;
+                const ownerBasePrice = row.BasePrice;
                 const ownermobile = row.OwnerMobile;
                 // Escape single quotes for safe embedding in the onclick attribute
                 const safeTeamName = teamName.replace(/'/g, "\\'");
-                const availableBalance = totalAllocatedAvailableBalance-basePriceDisplay;
 				
-				const numberOfUnSoldPlayer = initialPlayerCount-1;
-				const numberOfSelecedPlayer = 0;
-				const toBeBidBalanceAvailable = calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer);
+				const soldList = teamSoldPlayers[teamName] || [];
+			    const soldListSize = soldList.length;
+			    const remaining = TOTAL_PLAYERS - soldListSize;
+			   
+				var availableBalance = "";
+				if(renderType=="From_Fresh_Player_File") {
+					availableBalance = totalAllocatedAvailableBalance-ownerBasePrice;
+				} else if(renderType=="From_Auction_File"){
+					const spent = soldList.reduce((s, p) => s + (Number(p.bid) || 0), 0);
+					availableBalance = totalAllocatedAvailableBalance - ownerBasePrice - spent;
+				}
+				
+				const numberOfUnSoldPlayer = remaining;
+				const numberOfSelecedPlayer = soldListSize;
+				var toBeBidBalanceAvailable = 0;
+				if(Number(numberOfUnSoldPlayer)>0){
+					toBeBidBalanceAvailable = calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer);
+				}
 								
                 if(counter==1){
 					html += `<div class="rowOfDiv">`;
@@ -3868,7 +3909,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
                         <div class="team-card" data-name="${teamName}" data-owner="${ownerName}" data-ownermobile="${ownermobile}">
                             <div class="team-name-card" valueofdiv="${teamName}">${teamName}</div>
                             <div class="team-owner-card" valueofdiv="${ownerName}" >Owner: ${ownerName} &nbsp;&nbsp;
-							<span class="team-baseprice" valueofdiv="${basePriceDisplay}">Price: ${formatINR(basePriceDisplay)}</span>
+							<span class="team-baseprice" valueofdiv="${ownerBasePrice}">Price: ${formatINR(ownerBasePrice)}</span>
 							</div>
                             <div class="team-balance" valueofdiv="${availableBalance}">Available Balance: 
 							<span class="HighFontClass">${formatINR(availableBalance)}</span>
@@ -3895,7 +3936,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 							<div class="team-name-card-teamDetails"><span class="team-name-text-teamDetails">${teamName}</span></div>
 							<div class="team-card-teamDetails" data-name="${teamName}" data-owner="${ownerName}"></div>
 							<div class="team-owner-card-teamDetails">Owner: ${ownerName}</div>
-							<div class="team-baseprice-teamDetails">Owner Base Price: <span class="HighFontClass-teamDetails">${formatINR(basePriceDisplay)}</span></div>
+							<div class="team-baseprice-teamDetails">Owner Base Price: <span class="HighFontClass-teamDetails">${formatINR(ownerBasePrice)}</span></div>
 							<div class="team-balance-teamDetails">Available Balance: <span class="HighFontClass-teamDetails" id="aviBal_${teamName}" >${formatINR(availableBalance)}</span></div>
 							<div class="team-balance-teamDetails">Bid Balance: <span class="HighFontClass-teamDetails" id="bidBal_${teamName}" >${formatINR(toBeBidBalanceAvailable)}</span></div>
 							<div class="team-toselect-teamDetails">Remaining Players: <span class="HighFontClass-teamDetails" id="rimPlayers_${teamName}" >${numberOfUnSoldPlayer}</span></div>
