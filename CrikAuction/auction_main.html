@@ -1821,22 +1821,6 @@ responsive-box-title {
         background: #f4f6f8;
     }
 	
-	/* Base container */
-  .player-box1 {
-    position: relative;
-    display: inline-block;
-    //width: 120px;
-    //height: 70px;
-    background-color: white;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    text-align: center;
-    //line-height: 140px;
-    font-weight: bold;
-    font-size: 12px;
-    color: #333;
-  }
-
   /* SOLD stamp overlay (emoji + text) */
   .player-box::after {
     content: "💥 SOLD 💥";
@@ -1863,7 +1847,7 @@ responsive-box-title {
 <input type="hidden" id="TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION" value="">
 <input type="hidden" id="AUCTION_ALLOCATED_BALANCE" value="">
 <input type="hidden" id="NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER" value="">
-<input type="hidden" id="PLAYER_BASE_PRICE" value="">
+<input type="hidden" id="PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW" value="">
 <input type="hidden" id="INCREMENTAL_DECREMENTAL_BID_AMOUNT" value="">
 <input type="hidden" id="TOURNAMENT_NAME" value="">
 <input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
@@ -2034,10 +2018,10 @@ responsive-box-title {
     <div class="shoulder"></div>
     <div class="bat-blade">
         <div class="bat-message">
-			<span class="book-emoji" id="soldPlayerBookEmojiId" onclick="openBook('allPlayers')">📖</span> Players to Bid= <span id="playersToBidCount"> </span><br><br>
-			<span class="book-emoji" id="soldPlayerBookEmojiId" onclick="openBook('soldPlayers')">📖</span> Sold Player = <span  id="soldPlayerCountId"></span><br>
-            <span class="book-emoji" id="unsoldPlayerBookEmojiId" onclick="openBook('unSoldPlayers')">📖</span>UnSold Player = <span  id="unsoldPlayerCountId"> </span><br>
-			<span class="book-emoji" id="skippedPlayerBookEmojiId" onclick="openBook('skippedPlayers')">📖</span>Skipped Player = <span  id="SkippedPlayerCountId"> </span>
+			<span class="book-emoji" id="soldPlayerBookEmojiId" onclick="openBook('allPlayers')">📖</span> Players for Bid = <span id="playersToBidCount"> </span><br><br>
+			<span class="book-emoji" id="soldPlayerBookEmojiId" onclick="openBook('soldPlayers')">📖</span> Sold Players = <span  id="soldPlayerCountId"></span><br>
+            <span class="book-emoji" id="unsoldPlayerBookEmojiId" onclick="openBook('unSoldPlayers')">📖</span>Available Players = <span  id="unsoldPlayerCountId"> </span><br>
+			<span class="book-emoji" id="skippedPlayerBookEmojiId" onclick="openBook('skippedPlayers')">📖</span>Skipped Players = <span  id="SkippedPlayerCountId"> </span>
         </div>
     </div>
 </div>
@@ -2149,7 +2133,8 @@ responsive-box-title {
 <!-- 4th Open Book with players Details -->
 <div id="openBookParentId" style="display: none;">
     <div class="openBookheader">
-        <h1>🏆</h1> <h1 id="openBookheaderTitle"></h1>
+       <!-- <h1>🏆</h1> <h1 id="openBookheaderTitle"></h1>  -->
+	   <h1 id="openBookheaderTitle"></h1>
         <button class="openBookclose-btn" onclick="closeBook('allPlayers')" >Close ✖</button>
     </div>
 
@@ -2171,6 +2156,7 @@ let selectedTeam = null;
 let SOLD_INDEX = 6;
 let PLAYER_TYPE_INDEX = 1;
 let PLAYER_Name_INDEX = 0;
+let PLAYER_BASE_PRICE_INDEX = 4;
 let BID_DETAILS_INDEX = SOLD_INDEX+1;
 let SORT_INDEX_TEAM_NAME = 1;
 
@@ -2326,7 +2312,8 @@ function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
 
   // 2. Core Calculation: Balance = Available Balance - Number of Unsold Player
   exceptNumberOfUnSoldPlayer = numberOfUnSoldPlayer-1;
-  const toBeBidBalance = availableBalance - (exceptNumberOfUnSoldPlayer * document.getElementById('PLAYER_BASE_PRICE').value);
+  //To-Do check why PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW used
+  const toBeBidBalance = availableBalance - (exceptNumberOfUnSoldPlayer * document.getElementById('PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW').value);
 
   // 3. Return the result
   return toBeBidBalance;
@@ -2642,7 +2629,8 @@ function increaseBid(){
 
 function reduceBid(){
   if(!currentPlayer){ alert('Select a player first!'); return; }
-  const basePrice = parseInt(currentPlayer.BasePrice || currentPlayer.basePrice) || 0;
+  //const basePrice = parseInt(currentPlayer.BasePrice || currentPlayer.basePrice) || 0;
+  const basePrice = parseInt(document.getElementById('PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW').value)|| 0;
   const incORDecAmount = Number(document.getElementById('INCREMENTAL_DECREMENTAL_BID_AMOUNT').value);
   if((currentBid - incORDecAmount) >= basePrice){
     currentBid = currentBid - incORDecAmount;
@@ -3090,10 +3078,10 @@ function submitAuction(){
 
 function calBidBalance(availableBalance, remainingPlayers) {
 	if(remainingPlayers>0){
-		const basePlayerPrice = Number(document.getElementById('PLAYER_BASE_PRICE').value);
+		const basePlayerPrice = Number(document.getElementById('PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW').value);
 		var toBeBidBalance = availableBalance - ((remainingPlayers-1) * basePlayerPrice);
 		if(toBeBidBalance==0){
-			toBeBidBalance = (remainingPlayers-1 * document.getElementById('PLAYER_BASE_PRICE').value);
+			toBeBidBalance = (remainingPlayers-1 * document.getElementById('PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW').value);
 		}
 		return toBeBidBalance;
 	}else{
@@ -3912,9 +3900,14 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 									value = String(value || '').trim(); // Ensure it's a string if not numeric
 								}
 								
-								document.getElementById(key).value=value;
+								if(document.getElementById(key)!=null){
+									document.getElementById(key).value=value;
+								}
 							}
 						});
+						if(!checkMissingKeys()){
+							return;
+						}
 						const totalTeamCount = Number(document.getElementById('TOTAL_TEAM_COUNT').value);
 						const totalPlayersPerTeam = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 																		
@@ -4260,8 +4253,7 @@ teamCards.forEach(card => {
 			secondRowID.style.display = 'block';
 		}
 		
-		function openBookForSoldAndSkip(bookType, rows, soldStatus, titleToBook, container){
-			document.getElementById('openBookheaderTitle').innerHTML=titleToBook;
+		function soldAndSkipInOpenBook(bookType, rows, soldStatus, titleToBook, container){
 			var totalPlayers = 0;
 			const newList = [];
 			for (let i = 0; i < rows.length; i++) {
@@ -4275,75 +4267,58 @@ teamCards.forEach(card => {
 					newList.push(row);
 				}
 			}
-					
-			const totalColumns = 5;
-			playersPerColumn = Number(totalPlayers)/Number(totalColumns);
-			playersPerColumn = Math.ceil(playersPerColumn);
-			
-			let counter = 1;
-			let index = 0;
+									
 			let playerNumber = 1;
-			var column = null;
-			for (let col = 0; col < totalColumns; col++) {
-				column = document.createElement('div');
-				column.classList.add('column');
-				for (let i = index; i <totalPlayers; i++) {
-					const playerName = newList[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
-					const playerDiv = document.createElement('div');
-					playerDiv.classList.add('player');
+			for (let i = 0; i <totalPlayers; i++) {
+				const playerName = newList[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
+				const playerDiv = document.createElement('div');
+				playerDiv.classList.add('player');
 
-					const topDiv = document.createElement('div');
-					topDiv.classList.add('player-top');
+				const topDiv = document.createElement('div');
+				topDiv.classList.add('player-top');
 
-					const numberDiv = document.createElement('div');
-					numberDiv.classList.add('player-number');
-					numberDiv.textContent = playerNumber;
+				const numberDiv = document.createElement('div');
+				numberDiv.classList.add('player-number');
+				numberDiv.textContent = playerNumber;
 
-					const nameDiv = document.createElement('div');
-					nameDiv.classList.add('player-name');
-					nameDiv.textContent = `${playerName}`;
-					
-					const nameSpan = document.createElement('span');
-										
-					if(soldStatus=="Yes"){
-						//nameSpan.style.color = "red";
-						//nameSpan.style.border = "2px solid red";
-						//nameSpan.textContent = "Sold";
-						nameDiv.classList.add('player-box');
-					}else if(soldStatus=="Skipped"){
-						nameSpan.style.color = "#FFD700";
-						nameSpan.style.border = "2px solid #FFD700";
-						nameSpan.textContent = soldStatus;
-					}else if(soldStatus==""){
-						nameSpan.style.color = "#4682B4";
-						nameSpan.style.border = "2px solid #4682B4";
-						nameSpan.textContent = 'Available';
-					}
-					nameSpan.style.padding = "4px";
-					nameSpan.style.borderRadius = "6px";
-					nameSpan.style.width = "fit-content"; 
-					nameSpan.style.marginTop = "5px";
-					nameSpan.style.marginBottom = "5px"; 
-					nameSpan.style.display = "block";
-					nameDiv.appendChild(nameSpan);
-					
-					topDiv.appendChild(numberDiv);
-					topDiv.appendChild(nameDiv);
-					
-					playerDiv.appendChild(topDiv);
-					column.appendChild(playerDiv);
-					
-					if(counter==playersPerColumn || i==(totalPlayers-1)){
-						container.appendChild(column);
-						counter = 1;
-						index = playerNumber;
-						playerNumber = playerNumber+1;
-						break;
-					} 
-					counter = counter+1;
-					playerNumber = playerNumber+1;
+				const nameDiv = document.createElement('div');
+				nameDiv.classList.add('player-name');
+				nameDiv.textContent = `${playerName}`;
+				
+				const nameSpan = document.createElement('span');
+									
+				if(soldStatus=="Yes"){
+					//nameSpan.style.color = "red";
+					//nameSpan.style.border = "2px solid red";
+					//nameSpan.textContent = "Sold";
+					nameDiv.classList.add('player-box');
+				}else if(soldStatus=="Skipped"){
+					nameSpan.style.color = "#FFD700";
+					nameSpan.style.border = "2px solid #FFD700";
+					nameSpan.textContent = soldStatus;
+				}else if(soldStatus==""){
+					nameSpan.style.color = "#4682B4";
+					nameSpan.style.border = "2px solid #4682B4";
+					nameSpan.textContent = 'Available';
 				}
+				nameSpan.style.padding = "4px";
+				nameSpan.style.borderRadius = "6px";
+				nameSpan.style.width = "fit-content"; 
+				nameSpan.style.marginTop = "5px";
+				nameSpan.style.marginBottom = "5px"; 
+				nameSpan.style.display = "block";
+				nameDiv.appendChild(nameSpan);
+				
+				topDiv.appendChild(numberDiv);
+				topDiv.appendChild(nameDiv);
+				
+				playerDiv.appendChild(topDiv);
+				container.appendChild(playerDiv);
+				playerNumber = playerNumber+1;
 			}
+			
+			const playersCountSpan = "<span\">  👥 Count = "+totalPlayers+"</span> ";
+			document.getElementById('openBookheaderTitle').innerHTML=titleToBook + playersCountSpan;
 	}
 		
 		function openBook(bookType){
@@ -4371,91 +4346,163 @@ teamCards.forEach(card => {
 			const container = document.getElementById('openBookContainerid');
 			container.innerHTML='';
 			
-				if(bookType=='allPlayers'){
-					document.getElementById('openBookheaderTitle').innerHTML="All Participated players in Auction";
+			if(bookType=='allPlayers'){
+						
+				for (let i = 0; i < rows.length; i++) {
+					const row = rows[i];
+					totalPlayers = totalPlayers+1;
+				}
 				
-					for (let i = 0; i < rows.length; i++) {
-						const row = rows[i];
-						totalPlayers = totalPlayers+1;
-					}
+				//const totalColumns = Math.ceil(totalPlayers / playersPerColumn);
+				const totalColumns = 5;
+				playersPerColumn = Number(totalPlayers)/Number(totalColumns);
+				playersPerColumn = Math.ceil(playersPerColumn);
+				//alert(bookType + " " + totalPlayers+ " " + totalColumns + " " + playersPerColumn);
+				
+				let counter = 1;
+				
+				let premiumPlayersCount = 0;
+				let goldPlayersCount = 0;
+				let skilledPlayersCount = 0;
+				
+				let index = 0;
+				let playerNumber = 1;
+				var column = null;
+				//for (let col = 0; col < totalColumns; col++) {
+					//column = document.createElement('div');
+					//column.classList.add('column');
 					
-					//const totalColumns = Math.ceil(totalPlayers / playersPerColumn);
-					const totalColumns = 5;
-					playersPerColumn = Number(totalPlayers)/Number(totalColumns);
-					playersPerColumn = Math.ceil(playersPerColumn);
-					//alert(bookType + " " + totalPlayers+ " " + totalColumns + " " + playersPerColumn);
-					
-					let counter = 1;
-					let index = 0;
-					let playerNumber = 1;
-					var column = null;
-					for (let col = 0; col < totalColumns; col++) {
-						column = document.createElement('div');
-						column.classList.add('column');
+					for (let i = index; i <totalPlayers; i++) {
+						const playerName = rows[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
+						const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].textContent;
+						const playerPrice = rows[i].cells[PLAYER_BASE_PRICE_INDEX].textContent;
 						
-						for (let i = index; i <totalPlayers; i++) {
-							const playerName = rows[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
-							const playerDiv = document.createElement('div');
-							playerDiv.classList.add('player');
+						const playerDiv = document.createElement('div');
+						playerDiv.classList.add('player');
 
-							const topDiv = document.createElement('div');
-							topDiv.classList.add('player-top');
+						const topDiv = document.createElement('div');
+						topDiv.classList.add('player-top');
 
-							const numberDiv = document.createElement('div');
-							numberDiv.classList.add('player-number');
-							numberDiv.textContent = playerNumber;
+						const numberDiv = document.createElement('div');
+						numberDiv.classList.add('player-number');
+						numberDiv.textContent = playerNumber;
 
-							const nameDiv = document.createElement('div');
-							nameDiv.classList.add('player-name');
-							nameDiv.textContent = `${playerName}`;
-
-							topDiv.appendChild(numberDiv);
-							topDiv.appendChild(nameDiv);
-							
-							playerDiv.appendChild(topDiv);
-							column.appendChild(playerDiv);
-							
-							if(counter==playersPerColumn || i==(totalPlayers-1)){
-								container.appendChild(column);
-								counter = 1;
-								index = playerNumber;
-								playerNumber = playerNumber+1;
-								break;
-							} 
-							counter = counter+1;
-							playerNumber = playerNumber+1;
+						const nameDiv = document.createElement('div');
+						nameDiv.classList.add('player-name');
+						nameDiv.textContent = `${playerName}`;
+						
+						const nameSpan = document.createElement('span');
+						const playerPriceSpan = document.createElement('span');
+						if(playerCategory.startsWith("A-")){
+							nameSpan.textContent = "💎";
+							playerPriceSpan.style.color = "#4682B4";
+							playerPriceSpan.style.border = "2px solid #4682B4";
+							premiumPlayersCount = premiumPlayersCount+1;
+						}else if(playerCategory.startsWith("B-")){
+							nameSpan.textContent = "✨🪙";
+							playerPriceSpan.style.color = "gold";
+							playerPriceSpan.style.border = "2px solid gold";
+							goldPlayersCount = goldPlayersCount+1;
+						}else{
+							nameSpan.textContent = "🚀";
+							playerPriceSpan.style.color = "black";
+							playerPriceSpan.style.border = "2px solid black";
+							skilledPlayersCount = skilledPlayersCount+1;
 						}
+						nameDiv.appendChild(nameSpan);
+												
+						playerPriceSpan.style.padding = "4px";
+						playerPriceSpan.style.borderRadius = "6px";
+						playerPriceSpan.style.width = "fit-content"; 
+						playerPriceSpan.style.marginTop = "5px";
+						playerPriceSpan.style.marginBottom = "5px"; 
+						playerPriceSpan.style.display = "block";
+						playerPriceSpan.textContent = playerPrice;
+						nameDiv.appendChild(playerPriceSpan);
 						
+						topDiv.appendChild(numberDiv);
+						topDiv.appendChild(nameDiv);
+						
+						playerDiv.appendChild(topDiv);
+						//column.appendChild(playerDiv);
+						container.appendChild(playerDiv);
+						playerNumber = playerNumber+1;
+						
+						/**
+						if(counter==playersPerColumn || i==(totalPlayers-1)){
+							container.appendChild(column);
+							counter = 1;
+							index = playerNumber;
+							playerNumber = playerNumber+1;
+							break;
+						} 
+						counter = counter+1;
+						playerNumber = playerNumber+1;
+						**/
 					}
-	
-			  }else if(bookType=='soldPlayers'){
-					const soldPlayerCountVal = document.getElementById('soldPlayerCountId').textContent;
-					if(Number(soldPlayerCountVal)<=0){
-						document.getElementById('openBookheaderTitle').innerHTML="No Sold players Found";
-						return;
-					}
-					openBookForSoldAndSkip(bookType, rows, 'Yes', "So far Sold players in Auction",container);
-			  } else if(bookType=='unSoldPlayers'){
-					const unsoldPlayerCountVal = document.getElementById('unsoldPlayerCountId').textContent;
-					if(Number(unsoldPlayerCountVal)<=0){
-						document.getElementById('openBookheaderTitle').innerHTML="No UnSold players Found";
-						return;
-					}
-					openBookForSoldAndSkip(bookType, rows, '', "Available players for Auction",container);
-			  } else if(bookType=='skippedPlayers'){
-					const skippedPlayerCountVal = document.getElementById('SkippedPlayerCountId').textContent;
-					if(Number(skippedPlayerCountVal)<=0){
-						document.getElementById('openBookheaderTitle').innerHTML="No Skipped players Found";
-						return;
-					}
-					openBookForSoldAndSkip(bookType, rows, 'Skipped', "So far Skipped players in Auction",container);
-			  }
+					
+				//}
+				const allPlayersCount = premiumPlayersCount + goldPlayersCount + skilledPlayersCount;
+				const premiumPlayersSpan = "| <span style=\"font-size: 15px;color:#4682B4;padding-right:5px;left-right:5px;\">💎 = Premium Player ("+premiumPlayersCount+") </span> |";
+				const goldPlayersSpan = "<span style=\"font-size: 15px;color:gold;padding-left:5px;padding-right:5px;\">✨🪙 = Gold Player ("+goldPlayersCount+")</span> |";
+				const skilledPlayersSpan = "<span style=\"font-size: 15px;color:black;padding-left:5px;padding-right:5px;\">🚀 = Skilled Player ("+skilledPlayersCount+")</span> |";
+				const allPlayersCountSpan = "<span style=\"font-size: 15px;color:0D9488;padding-left:5px;padding-right:100px;\">👥 Total Players= "+allPlayersCount+"</span> ";
+				const msgForAllPlayer = premiumPlayersSpan + goldPlayersSpan + skilledPlayersSpan + allPlayersCountSpan;
+				document.getElementById('openBookheaderTitle').innerHTML=msgForAllPlayer + "** All players **";
+
+		  }else if(bookType=='soldPlayers'){
+				const soldPlayerCountVal = document.getElementById('soldPlayerCountId').textContent;
+				if(Number(soldPlayerCountVal)<=0){
+					document.getElementById('openBookheaderTitle').innerHTML="No Sold players Found";
+					return;
+				}
+				soldAndSkipInOpenBook(bookType, rows, 'Yes', "** Sold players **",container);
+		  } else if(bookType=='unSoldPlayers'){
+				const unsoldPlayerCountVal = document.getElementById('unsoldPlayerCountId').textContent;
+				if(Number(unsoldPlayerCountVal)<=0){
+					document.getElementById('openBookheaderTitle').innerHTML="No UnSold players Found";
+					return;
+				}
+				soldAndSkipInOpenBook(bookType, rows, '', "** Available players **",container);
+		  } else if(bookType=='skippedPlayers'){
+				const skippedPlayerCountVal = document.getElementById('SkippedPlayerCountId').textContent;
+				if(Number(skippedPlayerCountVal)<=0){
+					document.getElementById('openBookheaderTitle').innerHTML="No Skipped players Found";
+					return;
+				}
+				soldAndSkipInOpenBook(bookType, rows, 'Skipped', "** Skipped players **",container);
+		  }
 		}
 		
 /* ------------------------
    Initial formatting on page load
    ------------------------ */
 initTeamCardsFormatting();
+
+function checkMissingKeys() {
+  // Define array of element IDs
+  const keys = ['TOTAL_TEAM_COUNT','TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION','AUCTION_ALLOCATED_BALANCE','NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER','PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW','INCREMENTAL_DECREMENTAL_BID_AMOUNT','TOURNAMENT_NAME','TOURNAMENT_NAME_FULL_FORM'];
+
+  // Loop through each key
+  for (let i = 0; i < keys.length; i++) {
+	const key = keys[i];
+	
+	var keyInExcel = document.getElementById(key);
+	if (!keyInExcel) {
+	  alert(`Error: Missing key - ${key}`);
+	  return false; 
+	}
+	
+	var valueOfKey = keyInExcel.value.trim(); // safe check and trim spaces
+
+	if (!valueOfKey) {
+	  alert(`Error: Value of key - ${key}` + ' is missing.');
+	  return false; // stop function on first missing key
+	}
+  }
+   return true;
+}
+	
 var windowLocation =  window.location.pathname;
 //alert(windowLocation);
 
@@ -4543,5 +4590,3 @@ List of JS Function
 </script>
 </body>
 </html>
-
-
