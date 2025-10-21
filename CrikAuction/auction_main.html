@@ -1907,16 +1907,16 @@ responsive-box-title {
 		 </Div>
 		</div>
 
-<div class="success-container" id="successPopup" style=" display: none;">
+<div class="success-container" id="successPopup" style=" display: none">
         
         <button class="close-btn-top" onclick="closePopup()">&#x2715;</button> 
 
-        <div class="clapping-hands-group left"><span class="clap-individual">👏</span></div>
-        <div class="clapping-hands-group right"><span class="clap-individual">👏</span></div>
+        <!--<div class="clapping-hands-group left"><span class="clap-individual">👏</span></div>
+        <div class="clapping-hands-group right"><span class="clap-individual">👏</span></div> -->
 
         <div class="central-content">
             <div class="emojis">
-                <span class="smiling-face">🥳</span> 
+                <span class="smiling-face">🙌🎉</span> 
             </div>
             
             <div class="messageSoldOut">
@@ -2721,13 +2721,13 @@ function UnsoldtoSold(){
 		  }
 		});
 		workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
-		renderPlayers();
+		renderPlayers("From UnsoldtoSold");
 	}
 	
 	 collapseMenu();
 }
 
-function markUnsold(){
+function skipPlayer(){
 	document.getElementById('AUCTION_ACTION').value = AUCTION_ACTION_UNSOLD_PLAYER;
 	const selectedPlayerValue = document.getElementById('selectedPlayer').textContent;
 	if("Please Select Player"==selectedPlayerValue){
@@ -2745,7 +2745,7 @@ function markUnsold(){
 	container.innerHTML += `
                     <div class="data-separator">
                         <hr class="separator-line">
-                        <span class="separator-text">Are you sure to mark this player as unsold?
+                        <span class="separator-text">Are you sure to Skip this player?
 						<BR><BR>
 						Skipped Players will be bidded at last.
 						</span>
@@ -2761,7 +2761,7 @@ function markUnsold(){
 	
 }
 
-function markUnsold_Yes(){
+function markAsSkippedPlayer(){
 	if(workbook && mainSheetName){
 		const sheet = workbook.Sheets[mainSheetName];
 		const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
@@ -2774,7 +2774,7 @@ function markUnsold_Yes(){
 		});
 		
 		workbook.Sheets[mainSheetName] = XLSX.utils.json_to_sheet(data);
-		renderPlayers();
+		renderPlayers("From markAsSkippedPlayer");
 		}
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
@@ -2862,7 +2862,7 @@ function handleConfirm() {
 			applyAuctionOverColorToAllTeam();
 
 		}else if (actionTaken == AUCTION_ACTION_UNSOLD_PLAYER ) {
-			markUnsold_Yes();
+			markAsSkippedPlayer();
 		}
     }
 
@@ -3063,7 +3063,7 @@ function submitAuction(){
   }
 
   // Reset UI selections (but keep team cards updated)
-  renderPlayers();
+  renderPlayers("From submitAuction");
   currentPlayer = null;
   currentBid = 0;
   
@@ -3322,53 +3322,34 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	
 }
 
-/**
-//Set available balance, Bid balance, Remaining Players.
-function setTeamDataFromAuctionFile() {
-	const teamCards = document.querySelectorAll('#teamsList .team-card');
-	teamCards.forEach(card => {
-		const selectedTeam = { name: card.getAttribute('data-name'), owner: card.getAttribute('data-owner'), ownermobile: this.getAttribute('data-ownermobile') };
-		const availableBalance = computeAvailableBalanceForTeam(selectedTeam.name);
-		const numberOfUnSoldPlayer = getPlayersToBeSelected(selectedTeam.name);
-		const toBeBidBalance = calBidBalance(availableBalance,numberOfUnSoldPlayer);
-		
-		//Set Available Balance
-		card.querySelector('.team-balance').innerHTML = 'Available Balance: ' + '<span class="HighFontClass">'+ formatINR(availableBalance) + '</span>' + '<span class="large-money">💰</span>';
-		card.querySelector('.team-balance').setAttribute('valueofdiv', availableBalance);
-		
-		//Set Bid Balance
-		card.querySelector('.team-tobebid').innerHTML = 'Bid Balance: ' + '<span class="HighFontClass">'+
-		formatINR(toBeBidBalance) + '</span>' + '<span class="large-money">📌</span>';
-	    card.querySelector('.team-tobebid').setAttribute('valueofdiv', toBeBidBalance);
-		
-		//Set Remaining Players
-		card.querySelector('.team-toselect').textContent = 'Remainining Players: ' + numberOfUnSoldPlayer;
-	    card.querySelector('.team-toselect').setAttribute('valueofdiv', numberOfUnSoldPlayer);
-	});
-}**/
- 
 function getRandomIndex(startIndex, endIndex) {
     // Calculate the size of the desired range (inclusive)
     const rangeSize = endIndex - startIndex + 1;
-    
-    // Generate a random number: [0 up to rangeSize)
-    // Add the startIndex to shift the range
-	
+   	
 	// Example usage: Get a random index between 2 and 7 (inclusive)
 	//const randomIndex = getRandomIndex(2, 7);
-	//console.log(randomIndex); // Will be 2, 3, 4, 5, 6, or 7
+	
     const randomNumber = Math.floor(Math.random() * rangeSize) + startIndex;
     
     return randomNumber;
+}
+
+function getRandomIndexFromList(numbersList, playerType) {
+	if(playerType==null || playerType.trim()==""){
+		playerType = "Skilled";
+	}
+	const count = numbersList.length;
+	console.log("("+count+") "+ playerType+"-->"+numbersList);
+	const randomNum = numbersList[Math.floor(Math.random() * numbersList.length)];
+	console.log("("+count+") "+ playerType+"-->"+randomNum);
+	return randomNum;
 }
  
 let currentHighlightedRow = null;
 function highlightRandomRow() {
     const tbody = document.querySelector('#playerTable tbody');
 	const rows = tbody.getElementsByTagName('tr');
-    var startIndex = 0;
-	var endIndex = 0;
-	
+  	const rowIndexList = [];
     if (rows.length === 0) {
 		alert("Please upload players.");
 		return;
@@ -3417,6 +3398,7 @@ function highlightRandomRow() {
 	//Check for last Premium Category Index to make sure Premium players will be consider on priority for bid.
 	var playerCategoryIndex = null;
 	var isPremiumPlayerAvailableForAuction=false;
+	var playerType = "";
 	for (let i = 0; i < rows.length; i++) {
 		const row = rows[i];
 		const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
@@ -3424,21 +3406,14 @@ function highlightRandomRow() {
 		
 		if(playerCategory.startsWith("A-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
 			isPremiumPlayerAvailableForAuction=true;
+			playerType = playerCategory;
+			rowIndexList.push(i);
 		}else if(playerCategory.startsWith("B-")){
-			playerCategoryIndex = (i-1);
 			break;
 		}
 	}
 	
 	if(!isPremiumPlayerAvailableForAuction){
-		startIndex = playerCategoryIndex+1;
-		playerCategoryIndex = null;
-	}else {
-		endIndex = playerCategoryIndex;
-	}
-	
-	if(!isPremiumPlayerAvailableForAuction){
-		var goldPlayerCategoryIndex = null;
 		var isGoldPlayerAvailableForAuction=false;
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
@@ -3447,45 +3422,48 @@ function highlightRandomRow() {
 			
 			if(playerCategory.startsWith("B-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
 				isGoldPlayerAvailableForAuction=true;
+				playerType = playerCategory;
+				rowIndexList.push(i);
 			}else if(playerCategory==null || playerCategory.trim()==""){
-				goldPlayerCategoryIndex = (i-1);
 				break;
 			}
 		}
-		
-		if(!isGoldPlayerAvailableForAuction){
-			startIndex = goldPlayerCategoryIndex+1;
-			endIndex = rows.length;
-			goldPlayerCategoryIndex = null;
-		}else {
-			endIndex = goldPlayerCategoryIndex;
+	}
+	
+	if(!isPremiumPlayerAvailableForAuction && !isGoldPlayerAvailableForAuction){
+		for (let i = 0; i < rows.length; i++) {
+			const row = rows[i];
+			const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
+			if(soldValueOfEachRow == null || soldValueOfEachRow.trim()==""){
+				rowIndexList.push(i);
+			}
 		}
 	}
 	
-const playerListDivVar = document.getElementById('playerListDiv');
-const startSpinIdVar = document.getElementById('startSpinId');
-const batContainer = document.getElementById('left-bat-container-id');
-const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
-const teamsListMainIdVar = document.getElementById('teamsListMainId');
-const rightPlayerIDVar = document.getElementById('rightPlayer');
-const spinnerContainerIDVar = document.getElementById('spinnerContainer');
-const rightMainIdDiv = document.getElementById('right');
+	const playerListDivVar = document.getElementById('playerListDiv');
+	const startSpinIdVar = document.getElementById('startSpinId');
+	const batContainer = document.getElementById('left-bat-container-id');
+	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+	const teamsListMainIdVar = document.getElementById('teamsListMainId');
+	const rightPlayerIDVar = document.getElementById('rightPlayer');
+	const spinnerContainerIDVar = document.getElementById('spinnerContainer');
+	const rightMainIdDiv = document.getElementById('right');
 
-batContainer.style.display = 'block';
-auctionTitleDivID.style.display = 'block';
-startSpinIdVar.style.display = 'none';
-teamsListMainIdVar.style.display = 'none';
-rightPlayerIDVar.style.display = 'none';
-rightMainIdDiv.style.display = 'block';
+	batContainer.style.display = 'block';
+	auctionTitleDivID.style.display = 'block';
+	startSpinIdVar.style.display = 'none';
+	teamsListMainIdVar.style.display = 'none';
+	rightPlayerIDVar.style.display = 'none';
+	rightMainIdDiv.style.display = 'block';
 
-spinnerContainerIDVar.classList.add('visible')
-spinnerContainerIDVar.classList.add('spinnerContainerClass');
-enableAllButton();
+	spinnerContainerIDVar.classList.add('visible')
+	spinnerContainerIDVar.classList.add('spinnerContainerClass');
+	enableAllButton();
 
-const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
-teamDetailsToDisplayFullId.style.display = 'none';
-		
-startSpinner();
+	const teamDetailsToDisplayFullId = document.getElementById('main-content-wrapper-teamDetails-id');
+	teamDetailsToDisplayFullId.style.display = 'none';
+			
+	startSpinner();
     
     // 1. Remove highlight from the previously selected row
     if (currentHighlightedRow) {
@@ -3500,14 +3478,10 @@ startSpinner();
 	var soldValueOfSelectedRow = null;
 	try{
 		for(i=0;i<9;i++){
-			//const randomIndex = Math.floor(Math.random() * rowSize);
-			const randomIndex = getRandomIndex(startIndex, endIndex);
-			// 3. Select the new random row
+			const randomIndex = getRandomIndexFromList(rowIndexList,playerType);
 			selectedRow = rows[randomIndex];
-			
 			if(selectedRow!=null){
 				soldValueOfSelectedRow = selectedRow.cells[SOLD_INDEX].getAttribute('soldval');
-		  
 				if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Skipped"){
 					continue;
 				}
@@ -3515,7 +3489,6 @@ startSpinner();
 			break;
 		}
 		
-		//alert('selectedRow ' + selectedRow.rowIndex);
 		if(soldValueOfSelectedRow === "Yes" || soldValueOfSelectedRow === "Skipped"){
 			for (let j = 0; j < rows.length; j++) {
 				const row = rows[j];
@@ -3536,8 +3509,8 @@ startSpinner();
 		
 		clearAllTeamSelection();
 		scrollToTop();
-	}catch(e){
-		console.error("startIndex-" + startIndex + ", endIndex-" + endIndex + ", rowSize" + rows.length);
+	}catch(err){
+		console.error("rowIndexList- " + rowIndexList + ", rowSize- " + rowIndexList.length);
 		console.error(err);
 	}
   }
@@ -4042,7 +4015,7 @@ html += `
 			</button>
 		</span>
 		<Span >
-			<button id="player-unsold-btn-id" class="player-unsold-btn" onclick="markUnsold()">
+			<button id="player-unsold-btn-id" class="player-unsold-btn" onclick="skipPlayer()">
 			<span class="icon">🏷️</span>
 			Skip
 			</button>
@@ -4167,7 +4140,7 @@ teamCards.forEach(card => {
 				 const toBeBidBalance = calBidBalance(availableBalanceAfterSubmit,numberOfUnSoldPlayerAfterSubmit);
 				 setTeamParamsAfterSubmit(teamSheetName,availableBalanceAfterSubmit,toBeBidBalance,numberOfUnSoldPlayerAfterSubmit);
 				
-				 renderPlayers();
+				 renderPlayers("From removeSold");
 
 				var totalRemainingPlayers = getTotalRemainingPlayers();
 				const totalNumOfPlayer = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value);
@@ -4584,7 +4557,7 @@ List of JS Function
 17>updateTeamStyle_Submit
 18>UnsoldtoSold
 19>markUnsold
-20>markUnsold_Yes
+20>markAsSkippedPlayer
 21>afterSoldPopup
 22>handleConfirm
 23>handleCancel
