@@ -1547,7 +1547,7 @@ responsive-box-title {
 
         /* Top-Level Minimize Icon Styling */
         .top-level-minimize-icon-teamDetails {
-            position: absolute; 
+			position: absolute; 
             left: 20px; 
             top: 50%; 
             transform: translateY(-50%); 
@@ -1840,6 +1840,19 @@ responsive-box-title {
     pointer-events: none; /* ignore mouse clicks */
   }
   
+  .special-note-In-Player-Box {
+	  font-family: 'Segoe UI', sans-serif;
+	  font-size: 0.9rem;
+	  font-weight: bold;
+	  font-style: italic;            /* 👈 italic text */
+	  color: #B8860B;
+	  background-color: #FFF8DC;
+	  border: 2px solid #FFD700;
+	  padding: 10px;
+	  border-radius: 10px;
+	  text-align: center;
+	}
+  
 </style>
 </head>
 <body>
@@ -2096,7 +2109,7 @@ responsive-box-title {
             onclick="toggleMaximize('teamsListMainId')"
             title="Maximize/Minimize"
         >
-            &#9724; </span>
+            📖 </span>
 
   <div class="teams-section" id="teams-section-id" style="margin-top: 0px;">
    
@@ -2120,7 +2133,7 @@ responsive-box-title {
 <div class="main-content-wrapper-teamDetails" id="main-content-wrapper-teamDetails-id" style="display: none;">
     
 	<div class="page-title-teamDetails-container-teamDetails">
-        <span  onclick="toggleMinimize()" class="top-level-minimize-icon-teamDetails">−</span> 
+        <span  onclick="toggleMinimize()" class="top-level-minimize-icon-teamDetails"><button class="openBookclose-btn">Close ✖</button></span> 
         <h1 class="page-title-teamDetails">RPL Team and Bidding Stage</h1>
     </div>
 
@@ -2155,10 +2168,13 @@ let selectedTeam = null;
 
 let SOLD_INDEX = 6;
 let PLAYER_TYPE_INDEX = 1;
-let PLAYER_Name_INDEX = 0;
+let PLAYER_NAME_INDEX = 0;
 let PLAYER_BASE_PRICE_INDEX = 4;
 let BID_DETAILS_INDEX = SOLD_INDEX+1;
 let SORT_INDEX_TEAM_NAME = 1;
+
+let PLAYER_ROLE_INDEX = 3;
+let PLAYER_UNAVAILIBILTY_INDEX = 5;
 
 const CONGRATE_MEG_ON_CONFIGURATION_UPLOAD = "Congratulations! Auction Configuration data is already loaded. Please proceed."
 const AUCTION_ACTION_PLACE_BID = "AUCTION_ACTION_PLACE_BID";
@@ -3242,7 +3258,7 @@ let currentHighlightedRow_ClickOfRowVar = null;
 function currentHighlightedRow_ClickOfRow(clickedRow) {
     const tbody = document.querySelector('#playerTable tbody');
  	const soldValueOfRow = clickedRow.cells[SOLD_INDEX].getAttribute('soldval');
-	const playerNameTd = clickedRow.cells[PLAYER_Name_INDEX];
+	const playerNameTd = clickedRow.cells[PLAYER_NAME_INDEX];
 	const playerNameval = playerNameTd.getAttribute('playerval');
 		
 	if(soldValueOfRow=="Yes") {
@@ -4252,6 +4268,13 @@ teamCards.forEach(card => {
 			const secondRowID = document.getElementById('teamsListMainId');
 			secondRowID.style.display = 'block';
 		}
+						
+		function addAdditionalSpan(nameDiv,availability,role){
+			const availabilitySpan = document.createElement('div');
+			availabilitySpan.innerHTML = role+"<BR>"+availability ;
+			availabilitySpan.classList.add('special-note-In-Player-Box');
+			nameDiv.appendChild(availabilitySpan);
+		}
 		
 		function soldAndSkipInOpenBook(bookType, rows, soldStatus, titleToBook, container){
 			var totalPlayers = 0;
@@ -4270,7 +4293,26 @@ teamCards.forEach(card => {
 									
 			let playerNumber = 1;
 			for (let i = 0; i <totalPlayers; i++) {
-				const playerName = newList[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
+				const playerName = newList[i].cells[PLAYER_NAME_INDEX].getAttribute('playerval');
+				var availability = newList[i].cells[PLAYER_UNAVAILIBILTY_INDEX].textContent;
+				var playerPrice = newList[i].cells[PLAYER_BASE_PRICE_INDEX].textContent;
+				if(availability==null){
+					availability = "";
+				} else {
+					availability = availability.trim();
+				}
+				
+				if(availability==""){
+					availability='Full availability';
+				}
+				
+				var role = newList[i].cells[PLAYER_ROLE_INDEX].textContent;
+				if(role==null){
+					role = "";
+				} else {
+					role = role.trim();
+				}
+				
 				const playerDiv = document.createElement('div');
 				playerDiv.classList.add('player');
 
@@ -4288,9 +4330,6 @@ teamCards.forEach(card => {
 				const nameSpan = document.createElement('span');
 									
 				if(soldStatus=="Yes"){
-					//nameSpan.style.color = "red";
-					//nameSpan.style.border = "2px solid red";
-					//nameSpan.textContent = "Sold";
 					nameDiv.classList.add('player-box');
 				}else if(soldStatus=="Skipped"){
 					nameSpan.style.color = "#FFD700";
@@ -4299,15 +4338,19 @@ teamCards.forEach(card => {
 				}else if(soldStatus==""){
 					nameSpan.style.color = "#4682B4";
 					nameSpan.style.border = "2px solid #4682B4";
-					nameSpan.textContent = 'Available';
+					nameSpan.textContent = 'Available @'+playerPrice;
 				}
 				nameSpan.style.padding = "4px";
 				nameSpan.style.borderRadius = "6px";
 				nameSpan.style.width = "fit-content"; 
 				nameSpan.style.marginTop = "5px";
 				nameSpan.style.marginBottom = "5px"; 
+				nameSpan.style.fontSize= "0.9rem";
 				nameSpan.style.display = "block";
 				nameDiv.appendChild(nameSpan);
+				if(soldStatus=="Skipped" || soldStatus==""){
+					addAdditionalSpan(nameDiv,availability,role);
+				}
 				
 				topDiv.appendChild(numberDiv);
 				topDiv.appendChild(nameDiv);
@@ -4347,7 +4390,6 @@ teamCards.forEach(card => {
 			container.innerHTML='';
 			
 			if(bookType=='allPlayers'){
-						
 				for (let i = 0; i < rows.length; i++) {
 					const row = rows[i];
 					totalPlayers = totalPlayers+1;
@@ -4373,7 +4415,7 @@ teamCards.forEach(card => {
 					//column.classList.add('column');
 					
 					for (let i = index; i <totalPlayers; i++) {
-						const playerName = rows[i].cells[PLAYER_Name_INDEX].getAttribute('playerval');
+						const playerName = rows[i].cells[PLAYER_NAME_INDEX].getAttribute('playerval');
 						const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].textContent;
 						const playerPrice = rows[i].cells[PLAYER_BASE_PRICE_INDEX].textContent;
 						
