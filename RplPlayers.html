@@ -207,23 +207,21 @@ function showOwnerDetails() {
         html += `<p><b>Base Price:</b> ${formattedBase}</p>`;
     }
     if(o.sheetData && o.sheetData.length > 0){
-        html += `<div style='overflow-x:auto;'><table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th>` + (!IsAuctionData ? `<th>Base Price</th>` : '') + `</tr>`;
+        html += `<div style='display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;'>`;
         o.sheetData.forEach((r, index) => {
-            html += `<tr>`;
-            html += `<td>${index+1}</td>`;
-            html += `<td>${r['Name'] || ''}</td>`;
-            html += `<td>${r['Mobile'] || ''}</td>`;
             let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;
             let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';
-            html += `<td>${formattedBid}</td>`;
-            if(!IsAuctionData){
-                let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;
-                let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';
-                html += `<td>${formattedBase}</td>`;
-            }
-            html += `</tr>`;
+            let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;
+            let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';
+            html += `<div style='flex:1 1 200px; border:1px solid #ccc; border-radius:10px; padding:12px; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1);'>`;
+            html += `<p><b>Sr. No:</b> ${index+1}</p>`;
+            html += `<p><b>Name:</b> ${r['Name'] || ''}</p>`;
+            html += `<p><b>Mobile:</b> ${r['Mobile'] || ''}</p>`;
+            html += `<p><b>Bid Amount:</b> ${formattedBid}</p>`;
+            if(!IsAuctionData) html += `<p><b>Base Price:</b> ${formattedBase}</p>`;
+            html += `</div>`;
         });
-        html += `</table></div>`;
+        html += `</div>`;
     } else { if(IsAuctionData){ html += `<p>No data available for this owner.</p>`; } }
     html += `</div>`;
     ownerArea.innerHTML = html;
