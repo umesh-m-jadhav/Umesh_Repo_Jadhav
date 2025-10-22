@@ -2469,6 +2469,38 @@ function sortDataByParam(dataArray, sortIndex){
 	return dataArray;
 }
 
+function sortRowDataByParam(dataArray){
+	dataArray.sort((a, b) => {
+		const nameA = a.cells[PLAYER_NAME_INDEX].getAttribute('playerval');
+		const nameB = b.cells[PLAYER_NAME_INDEX].getAttribute('playerval');
+
+		// --- 1. Handle Empty/Null Values ---
+		const isEmptyA = nameA === '' || nameA === null;
+		const isEmptyB = nameB === '' || nameB === null;
+
+		if (isEmptyA && isEmptyB) {
+			return 0; // Both are empty/null, keep original relative order
+		}
+		if (isEmptyA) {
+			return 1; // nameA is empty, place it after nameB (at the end)
+		}
+		if (isEmptyB) {
+			return -1; // nameB is empty, place it after nameA (nameA comes before)
+		}
+
+		// --- 2. Handle Ascending String Sort ---
+		if (nameA < nameB) {
+			return -1; // nameA comes before nameB
+		}
+		if (nameA > nameB) {
+			return 1; // nameA comes after nameB
+		}
+		return 0; // names are equal
+	});
+
+	return dataArray;
+}
+
 function renderPlayers(renderType){
   if(!workbook || !mainSheetName) return;
   const sheet = workbook.Sheets[mainSheetName];
@@ -2628,7 +2660,9 @@ function updateAvailableBalance(teamName){
 	  toBeselectPlayerDivId.innerHTML = playersToBeSelected;
 	  
 	  const totalNumOfPlayer = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
-	  const selectedPlayerCount = (totalNumOfPlayer-1)-Number(playersToBeSelected);
+	  const skippedPlayers = calculateSkippedPlayers();
+	  
+	  const selectedPlayerCount = (totalNumOfPlayer-1)-Number(playersToBeSelected)-Number(skippedPlayers);
 	  const selectPlayerDivId = card.querySelector('#Selected-player-count-id');
 	  selectPlayerDivId.innerHTML = selectedPlayerCount;
 	 
@@ -2708,8 +2742,12 @@ function UnsoldtoSold(){
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 	auctionTitleDivID.style.display = 'none';
-
-	var confirmMsg = "You are putting all unsold players to sold Category. Please confirm."
+	const skippedPlayers = calculateSkippedPlayers();
+	if(Number(skippedPlayers) <=0){
+		alert("No Skipped Players found");
+		return;
+	}
+	var confirmMsg = "You are putting all Skipped players to sold Category. Please confirm."
 	if(!confirm(confirmMsg)){
 		return;
 	}
@@ -2729,6 +2767,7 @@ function UnsoldtoSold(){
 	}
 	
 	 collapseMenu();
+	 alert("'"+skippedPlayers + "' Skipped Players again queued in Auction.You can do their Auction now.");
 }
 
 function skipPlayer(){
@@ -2751,7 +2790,7 @@ function skipPlayer(){
                         <hr class="separator-line">
                         <span class="separator-text">Are you sure to Skip this player?
 						<BR><BR>
-						Skipped Players will be bidded at last.
+						Only Skipped Players will be bidded at last.
 						</span>
                     </div>
                 `;
@@ -2781,8 +2820,8 @@ function markAsSkippedPlayer(){
 		renderPlayers("From markAsSkippedPlayer");
 		}
 	
-	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
-	confirmationBoxDiv.style.display = 'none';
+		const confirmationBoxDiv = document.getElementById('confirmation-box-id');
+		confirmationBoxDiv.style.display = 'none';
 	
 	  currentPlayer = null;
 	  const startSpinIdVar = document.getElementById('startSpinId');
@@ -2791,8 +2830,8 @@ function markAsSkippedPlayer(){
 	  const batContainer = document.getElementById('left-bat-container-id');
 	  batContainer.style.display = 'block';
 	
-	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
-	auctionTitleDivID.style.display = 'none';
+		const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
+		auctionTitleDivID.style.display = 'none';
 	
 	  afterSoldPopup();
 	  changeBGImageToOriginalMode();
@@ -2843,10 +2882,11 @@ function afterSoldPopup(){
 	
 	var totalRemainingPlayers = getTotalRemainingPlayers();
 	const totalNumOfPlayer = Number(document.getElementById('TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION').value);
+	const skippedPlayers = calculateSkippedPlayers();
 	const totalSoldCount = totalNumOfPlayer - totalRemainingPlayers;
 	document.getElementById('soldPlayerCountId').innerHTML = totalSoldCount;
-	document.getElementById('unsoldPlayerCountId').innerHTML = totalRemainingPlayers;
-	document.getElementById('SkippedPlayerCountId').innerHTML = calculateSkippedPlayers();
+	document.getElementById('unsoldPlayerCountId').innerHTML = totalRemainingPlayers- skippedPlayers;
+	document.getElementById('SkippedPlayerCountId').innerHTML = skippedPlayers
 	
 	const confirmationBoxDiv = document.getElementById('confirmation-box-id');
 	confirmationBoxDiv.style.display = 'none';
@@ -4290,7 +4330,7 @@ teamCards.forEach(card => {
 
 		function soldAndSkipInOpenBook(bookType, rows, soldStatus, titleToBook, container){
 			var totalPlayers = 0;
-			const newList = [];
+			var newList = [];
 			for (let i = 0; i < rows.length; i++) {
 				const row = rows[i];
 				const soldValue = row.cells[SOLD_INDEX].getAttribute('soldval');
@@ -4302,7 +4342,10 @@ teamCards.forEach(card => {
 					newList.push(row);
 				}
 			}
-									
+			
+			if(soldStatus=="Yes" && newList.length>0){
+				newList = sortRowDataByParam(newList);
+			}			
 			let playerNumber = 1;
 			for (let i = 0; i <totalPlayers; i++) {
 				const playerName = newList[i].cells[PLAYER_NAME_INDEX].getAttribute('playerval');
