@@ -1227,7 +1227,8 @@ display: flex;
         }
 		
 		.split-ball {
-             position: relative;
+             //position: relative;
+			 position: absolute; //At office.
 			 overflow: hidden;
             
 			top: 20px;        /* 💥 Updated to 30px from the top edge */
@@ -1331,7 +1332,8 @@ display: flex;
 	//position: absolute;
 	//overflow: hidden;
     top: 20px;        /* 💥 Updated to 30px from the top edge */
-    right: 350px;        /* Move to the right edge */
+    //right: 350px;
+	right: 21%; //At office
     width: 100px;
     height: 100px;
     filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
@@ -1343,7 +1345,8 @@ display: flex;
 	//position: absolute;
 	//overflow: hidden;
     top: 20px;        /* 💥 Updated to 30px from the top edge */
-    left: 200px;        /* Move to the right edge */
+    //left: 200px;
+	left: 20% //At office
     width: 200px;
    height: 200px;
     filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
@@ -1825,7 +1828,7 @@ responsive-box-title {
   .player-box::after {
     content: "💥 SOLD 💥";
     position: absolute;
-    top: 40%;
+    top: 10%;
     //left: 5%;
     transform: rotate(-25deg);
     color: red;
@@ -2493,11 +2496,12 @@ function renderPlayers(renderType){
 	const SoldToTeam = p.SoldToTeam || '';
 	const TeamOwnerName = p.TeamOwnerName || '';
 	const photoURL = p.PhotoURL || '';
+	const finalBid = p.FinalBid || '';
 	
 	var bidDetails = "";
 	var soldVal = "";
 	if(sold!=null && sold.trim()=="Yes"){
-		const bidPrice = "Sold at[" +formatINR(p.BasePrice)+ "]";
+		const bidPrice = "Sold at[" +formatINR(finalBid)+ "]";
 		const teamDetails = "To Team[" +p.SoldToTeam+ "]";
 		const ownerName = "Team Owner[" +p.TeamOwnerName+ "]";
 		bidDetails = bidPrice +"<br><br>" + teamDetails + "<br><br>"+ownerName;
@@ -3230,7 +3234,7 @@ function rgbToHex(rgb) {
 			const name = p.Name || p.name || '';
 			const mobile = p.Mobile || p.mobile || 'N/A';
 			const role = p.Role || p.role || '';
-			const unavailibilty = p.Unavailibilty || 'Full availability';
+			const unavailibilty = p.Unavailibilty;
 			const sold = p.Sold || '';
 				  
 		  // show formatted values
@@ -3242,7 +3246,13 @@ function rgbToHex(rgb) {
 			document.getElementById('playerPhoto').src = "PlayersPhoto\\"+p.PhotoURL;
 		  }
 		  document.getElementById('basePrice').textContent = formatINR(base);
-		  document.getElementById('PlayerUnavailibiltyID').textContent = "Unavailibilty - " + unavailibilty;
+		  //At Office
+		  if(unavailibilty==null || unavailibilty.trim()==""){
+			 document.getElementById('PlayerUnavailibiltyID').textContent = "Full availability";
+		  }else{
+			 document.getElementById('PlayerUnavailibiltyID').textContent = "Unavailibilty - " + unavailibilty;
+		  }
+		 
 		  
 		  // enable buttons
 		  document.getElementById('placeBidBtn').classList.remove('disabled');
@@ -3305,6 +3315,9 @@ function currentHighlightedRow_ClickOfRow(clickedRow) {
 	
 	const batContainer = document.getElementById('left-bat-container-id');
 	batContainer.style.display = 'none';
+	
+	const rightbatContainer = document.getElementById('right-bat-container-id');
+	rightbatContainer.style.display = 'block';
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 	auctionTitleDivID.style.display = 'none';
@@ -3772,21 +3785,28 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
             if (event) {
                 event.stopPropagation(); 
             }
-            
             if (optionsDiv.style.display !== 'block') {
                 optionsDiv.style.display = 'block';
                 headerDiv.classList.add('active');
                 updateContentMargin();
+				//At office
+				const batContainer = document.getElementById('left-bat-container-id');
+				batContainer.style.display = 'none';
             } else {
                 collapseMenu();
+				//At office
+				const batContainer = document.getElementById('left-bat-container-id');
+				batContainer.style.display = 'block';
             }
         }
-
-        // --- CORE FUNCTIONALITY: OUTSIDE CLICK LISTENER ---
+       
         document.addEventListener('click', function(event) {
             // Check if the click target is OUTSIDE the menu container
             if (!rplNavMenu.contains(event.target)) {
                 collapseMenu();
+				 //At office
+				 //const batContainer = document.getElementById('left-bat-container-id');
+				 //batContainer.style.display = 'block';
             }
         }); 
        
@@ -4249,6 +4269,25 @@ teamCards.forEach(card => {
 			nameDiv.appendChild(availabilitySpan);
 		}
 		
+		function findPlayerByName(nameToFind) {
+		  const results = [];
+
+		  for (const team in teamSoldPlayers) {
+			const players = teamSoldPlayers[team];
+
+			players.forEach(player => {
+			  if (player.name.toLowerCase() === nameToFind.toLowerCase()) {
+				results.push({
+				  ...player,
+				  playerSoldToTeamName: team
+				});
+			  }
+			});
+		  }
+
+		return results;
+	}
+
 		function soldAndSkipInOpenBook(bookType, rows, soldStatus, titleToBook, container){
 			var totalPlayers = 0;
 			const newList = [];
@@ -4325,6 +4364,12 @@ teamCards.forEach(card => {
 					addAdditionalSpan(nameDiv,availability,role);
 				}
 				
+				if(soldStatus=="Yes"){
+					const soldDetailsOfPlayers = findPlayerByName(playerName);
+					const soldTeamName = soldDetailsOfPlayers[0].playerSoldToTeamName;
+					const bidPrize = soldDetailsOfPlayers[0].bid;
+					addAdditionalSpan(nameDiv,"To: "+soldTeamName,"Sold @"+formatINR(bidPrize));
+				}
 				topDiv.appendChild(numberDiv);
 				topDiv.appendChild(nameDiv);
 				
