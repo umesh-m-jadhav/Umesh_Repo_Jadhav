@@ -16,17 +16,18 @@
     .bidding-section { background: linear-gradient(135deg, #fff7e6, #ffe082); border: 1px solid #ffb74d; }
     .separator { height: 6px; background: linear-gradient(90deg, #2193b0, #6dd5ed); border-radius: 6px; margin: 20px 0; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; word-break: break-word; }
     th { background: #f0f0f0; }
     .soldout { color:red; font-weight:bold; background: #fff3f3; padding:8px; border-radius:6px; margin-bottom:10px; display:inline-block; }
+    @media screen and (max-width: 600px) { table, th, td { font-size: 14px; padding: 4px 6px; } }
   </style>
 </head>
 <body>
   <div class='container'>
     <div class='header'>
-<div style='text-align:center; font-size:26px; font-weight:bold; color:white; background: linear-gradient(90deg, #1976d2, #42a5f5); padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); letter-spacing:1px;'>Auction is yet to start</div>
       <h2>RPL (R21 Premium League) Catalogue</h2>
     </div>
+<div style='text-align:center; font-size:26px; font-weight:bold; color:white; background: linear-gradient(90deg, #1976d2, #42a5f5); padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); letter-spacing:1px;'>Auction is yet to start</div>
     <select id='ownerSelect' onchange='showOwnerDetails()'>
       <option value=''>-- Select Owner --</option>
       <option value="Atharva jadhav">Pratapgad Warrior - Atharva jadhav</option>
@@ -206,7 +207,7 @@ function showOwnerDetails() {
         html += `<p><b>Base Price:</b> ${formattedBase}</p>`;
     }
     if(o.sheetData && o.sheetData.length > 0){
-        html += `<table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th>` + (!IsAuctionData ? `<th>Base Price</th>` : '') + `</tr>`;
+        html += `<div style='overflow-x:auto;'><table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th>` + (!IsAuctionData ? `<th>Base Price</th>` : '') + `</tr>`;
         o.sheetData.forEach((r, index) => {
             html += `<tr>`;
             html += `<td>${index+1}</td>`;
@@ -222,7 +223,7 @@ function showOwnerDetails() {
             }
             html += `</tr>`;
         });
-        html += `</table>`;
+        html += `</table></div>`;
     } else { if(IsAuctionData){ html += `<p>No data available for this owner.</p>`; } }
     html += `</div>`;
     ownerArea.innerHTML = html;
