@@ -1,15 +1,24 @@
 package com.example;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -40,30 +52,43 @@ public class GeneratePlayerHtml {
     
 	private static String localClonedRepoPath = "F:\\social\\AuctionCode\\CrikAuction\\Clone_Umesh_Repo_Jadhav";
 	private static String remoteUrl = "https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav.git";
-	private static String token = "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";
+	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/";
+	private static final String BRANCH = "main"; // branch to upload to
+	private static ScheduledExecutorService scheduler;
+	  
+	private static String token = "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";
 	// Calculate end time (current time + 5 hours in milliseconds)
 	private static long endTime = System.currentTimeMillis() + 5 * 60 * 60 * 1000; // 5 hours
-	private static  boolean IsAuctionStarted = false;
-	 
+	private static boolean isSoldDataAvailable = false;
+	private static boolean isAllPlayersSoldOut = false;
+	
+	private static boolean IsAuctionStarted = true;
+	private static boolean IsAuctionData = true;
+	private static boolean isUploadToGit = true;
+	private static boolean testSupportNeeded = true;
+	private static boolean isRefreshNeeded = false;
+	
 	public static void main(String[] args) {
-		while (System.currentTimeMillis() < endTime) {
-           
-			mainAuctionLogic();	
-            System.out.println("Finished at " + new Date() +System.lineSeparator());
-            
-            try {
-                Thread.sleep(30 * 1000); // 30 seconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+		if(testSupportNeeded) {
+			OUTPUT_HTML_FILE = "Test"+OUTPUT_HTML_FILE;
+			outputPath = baseFolder + OUTPUT_HTML_FILE;
+		}
+		
+		startScheduler();
+		
+//		while (System.currentTimeMillis() < endTime) {
+// 			mainAuctionLogic();	
+//            System.out.println("Finished at " + new Date() +System.lineSeparator());
+//            
+//            try {
+//                Thread.sleep(10 * 1000); // 30 seconds
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 		
 	}
     public static void mainAuctionLogic() {
-        boolean IsAuctionData = true; // Change as needed
-        boolean isUploadToGit = false;
-        IsAuctionStarted = false; // change to true when auction starts
-
         String excelPath;
         if (IsAuctionData) {
             excelPath = getLatestAuctionFile(auctionFolder);
@@ -93,10 +118,53 @@ public class GeneratePlayerHtml {
         
         if(isUploadToGit) {
 	        System.out.println("GIT upoaded started....");
-	        uploadFileToGit();
+	        //uploadFileToGit();
+	        uploadFileToGitHubUsingRest();
 	        System.out.println("GIT upoaded finished....");
         }
     }
+    
+    public static void startScheduler() {
+        // Single-threaded scheduler (safe, lightweight)
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        Runnable uploadTask = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("[" + new java.util.Date() + "] Starting GitHub upload task...");
+                    //uploadFileToGitHubUsingRest();
+                    mainAuctionLogic();
+                    System.out.println("[" + new java.util.Date() + "] Upload task finished successfully.");
+                } catch (Exception e) {
+                    System.err.println("[" + new java.util.Date() + "] Upload failed: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        // Run immediately, then every 60 seconds (customize as needed)
+        scheduler.scheduleAtFixedRate(uploadTask, 0, 60, TimeUnit.SECONDS);
+
+        // Add shutdown hook for clean exit
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> stopGitHubUploadScheduler()));
+    }
+    
+    public static void stopGitHubUploadScheduler() {
+        if (scheduler != null && !scheduler.isShutdown()) {
+            System.out.println("Stopping GitHub upload scheduler...");
+            scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
+                    scheduler.shutdownNow();
+                }
+                System.out.println("Scheduler stopped cleanly.");
+            } catch (InterruptedException e) {
+                scheduler.shutdownNow();
+            }
+        }
+    }
+
     
     private static void uploadFileToGit() {
         Git git = null;
@@ -115,18 +183,18 @@ public class GeneratePlayerHtml {
             }
 
             // Path to the file in the repo
-            Path targetPath = Paths.get(localClonedRepoPath, "RplPlayers.html");
+            Path targetPath = Paths.get(localClonedRepoPath, OUTPUT_HTML_FILE);
 
             // Overwrite file
             Files.copy(Paths.get(outputPath), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
             // Force add the file (update index even if only content/case changed)
-            git.add().addFilepattern("RplPlayers.html").setUpdate(true).call();
+            git.add().addFilepattern(OUTPUT_HTML_FILE).setUpdate(true).call();
 
             // Commit, allowing empty commit to force push even if Git thinks no changes
             git.commit()
-               .setMessage("Upload RplPlayers.html via Java + JGit (force overwrite)")
-               .setAllowEmpty(true) // <-- this allows commit even if git sees no changes
+               .setMessage("Upload "+OUTPUT_HTML_FILE +" via Java + JGit (force overwrite)")
+               .setAllowEmpty(true)  // <-- this allows commit even if git sees no changes
                .call();
 
             // Push to remote
@@ -136,7 +204,7 @@ public class GeneratePlayerHtml {
                .setRefSpecs(new RefSpec("refs/heads/main:refs/heads/main"))
                .call();
 
-            System.out.println("RplPlayers.html uploaded successfully (force overwrite)!");
+            System.out.println(OUTPUT_HTML_FILE + " uploaded successfully (force overwrite)!");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,6 +213,88 @@ public class GeneratePlayerHtml {
         }
     }
 
+    private static void uploadFileToGitHubUsingRest() {
+        HttpURLConnection getConn = null;
+        HttpURLConnection conn = null;
+        BufferedReader br = null;
+
+        try {
+            File file = new File(outputPath);
+            if (!file.exists()) {
+                System.out.println("File not found: " + outputPath);
+                return;
+            }
+
+            // Read and encode file
+            byte[] fileContent = Files.readAllBytes(file.toPath());
+            String encodedContent = Base64.getEncoder().encodeToString(fileContent);
+
+            String getUrl = GITHUB_API_URL + OUTPUT_HTML_FILE;
+
+            // Step 1: Check if file exists to get SHA
+            getConn = (HttpURLConnection) new URL(getUrl).openConnection();
+            getConn.setRequestProperty("Authorization", "token " + token);
+            getConn.setRequestProperty("Accept", "application/vnd.github+json");
+
+            String sha = null;
+            if (getConn.getResponseCode() == 200) {
+                br = new BufferedReader(new InputStreamReader(getConn.getInputStream(), "UTF-8"));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) sb.append(line);
+                br.close();
+                br = null;
+
+                String response = sb.toString();
+                int shaIndex = response.indexOf("\"sha\":\"");
+                if (shaIndex != -1) {
+                    sha = response.substring(shaIndex + 7, response.indexOf("\"", shaIndex + 7));
+                    System.out.println("Existing SHA: " + sha);
+                }
+            }
+
+            // Step 2: Upload (create/update)
+            String jsonBody = "{"
+                    + "\"message\": \"Upload " + OUTPUT_HTML_FILE + " via Java REST API\","
+                    + "\"branch\": \"" + BRANCH + "\","
+                    + "\"content\": \"" + encodedContent + "\""
+                    + (sha != null ? ",\"sha\": \"" + sha + "\"" : "")
+                    + "}";
+
+            conn = (HttpURLConnection) new URL(getUrl).openConnection();
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("Authorization", "token " + token);
+            conn.setRequestProperty("Accept", "application/vnd.github+json");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(jsonBody.getBytes("UTF-8"));
+            }
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 201 || responseCode == 200) {
+                System.out.println(OUTPUT_HTML_FILE + " uploaded successfully to GitHub!");
+            } else {
+                System.out.println("Failed to upload file. Response Code: " + responseCode);
+                try (BufferedReader err = new BufferedReader(new InputStreamReader(conn.getErrorStream(), "UTF-8"))) {
+                    String line;
+                    while ((line = err.readLine()) != null) System.out.println(line);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Ensure everything closes
+            try {
+                if (br != null) br.close();
+            } catch (IOException ignored) {}
+
+            if (getConn != null) getConn.disconnect();
+            if (conn != null) conn.disconnect();
+        }
+    }
 
 
     
@@ -213,6 +363,17 @@ public class GeneratePlayerHtml {
                 if (p.name != null && !p.name.trim().isEmpty()) {
                     players.add(p);
                 }
+                if (IsAuctionData)
+                	if(p.soldAt != null && p.soldAt.trim()!="") {
+                		if(!isSoldDataAvailable ) {
+                			isSoldDataAvailable= true;
+                		}
+                		if(p.soldAt.trim().equalsIgnoreCase("Yes")) {
+                			isAllPlayersSoldOut = true;
+                		}else {
+                			isAllPlayersSoldOut = false;
+                		}
+                	} 
             }
 
         } catch (Exception e) {
@@ -342,17 +503,24 @@ public class GeneratePlayerHtml {
 
             // --- Auction Highlight ---
             if (IsAuctionStarted) {
-                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
-                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
-                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
-                        "letter-spacing:1px;'>Auction is in Progress</div>");
-            } else {
-                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
-                        "background: linear-gradient(90deg, #1976d2, #42a5f5); " +
-                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
-                        "letter-spacing:1px;'>Auction is yet to start</div>");
+            	if (isAllPlayersSoldOut) {
+	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
+	                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
+	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
+	                        "letter-spacing:1px;'>The auction is officially over! Every player has been successfully sold.</div>");
+	            }else if (isSoldDataAvailable) {
+	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
+	                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
+	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
+	                        "letter-spacing:1px;'>Auction is started and in Progress</div>");
+	            } else {
+	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
+	                        "background: linear-gradient(90deg, #1976d2, #42a5f5); " +
+	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
+	                        "letter-spacing:1px;'>Auction is yet to start</div>");
+	            }
             }
-
+            
             // --- Owner dropdown ---
             out.println("    <select id='ownerSelect' onchange='showOwnerDetails()'>");
             out.println("      <option value=''>-- Select Team - Owner --</option>");
@@ -441,47 +609,6 @@ public class GeneratePlayerHtml {
             out.println("    biddingHtml += `<p><b>Team Owner Mobile:</b> ${p.ownerMobile || ''}</p>`;");
             out.println("    content.innerHTML = `<div id='profileSection' class='profile-section'>${profileHtml}</div><div class='separator'></div><div id='biddingSection' class='bidding-section'>${biddingHtml}</div>`;");
             out.println("}");
-
-            /**
-            // Show owner details (with responsive table)
-            out.println("function showOwnerDetails() {");
-            out.println("    const ownerName = document.getElementById('ownerSelect').value;");
-            out.println("    const ownerArea = document.getElementById('ownerArea');");
-            out.println("    if (!ownerName) { ownerArea.innerHTML = ''; return; }");
-            out.println("    const o = owners[ownerName] || {};");
-            out.println("    let html = '';");
-            out.println("    html += `<div class='profile-section'>`;");
-            out.println("    html += `<img src='PlayersPhoto/${o.photoURL}' alt='Owner Photo' style='max-width:120px; border-radius:12px; margin-bottom:8px;'>`;");
-            out.println("    html += `<h3>Owner: ${ownerName}</h3>`;");
-            out.println("    html += `<p>Team: ${o.teamName || ''}</p>`;");
-            out.println("    if(!IsAuctionData && o.basePrice && o.basePrice.trim() !== '') {");
-            out.println("        let base = Number(o.basePrice.replace(/,/g,''));");
-            out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
-            out.println("        html += `<p><b>Base Price:</b> ${formattedBase}</p>`;");
-            out.println("    }");
-            out.println("    if(o.sheetData && o.sheetData.length > 0){");
-            out.println("        html += `<div style='overflow-x:auto;'><table><tr><th>Sr. No</th><th>Player Name</th><th>Mobile</th><th>Bid Amount</th>` + (!IsAuctionData ? `<th>Base Price</th>` : '') + `</tr>`;");
-            out.println("        o.sheetData.forEach((r, index) => {");
-            out.println("            html += `<tr>`;");
-            out.println("            html += `<td>${index+1}</td>`;");
-            out.println("            html += `<td>${r['Name'] || ''}</td>`;");
-            out.println("            html += `<td>${r['Mobile'] || ''}</td>`;");
-            out.println("            let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;");
-            out.println("            let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';");
-            out.println("            html += `<td>${formattedBid}</td>`;");
-            out.println("            if(!IsAuctionData){");
-            out.println("                let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;");
-            out.println("                let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';");
-            out.println("                html += `<td>${formattedBase}</td>`;");
-            out.println("            }");
-            out.println("            html += `</tr>`;");
-            out.println("        });");
-            out.println("        html += `</table></div>`;");
-            out.println("    } else { if(IsAuctionData){ html += `<p>No data available for this owner.</p>`; } }");
-            out.println("    html += `</div>`;");
-            out.println("    ownerArea.innerHTML = html;");
-            out.println("}");
-			**/
             
          // --- Owner JS Function (Horizontal Cards) ---
             out.println("function showOwnerDetails() {");
@@ -573,6 +700,36 @@ public class GeneratePlayerHtml {
             out.println("  </script>");
             out.println("</body>");
             out.println("</html>");
+            if (IsAuctionData && isRefreshNeeded && !isAllPlayersSoldOut) {
+	         // --- Auto Refresh Page Content Every 2 Seconds (Without Reload) ---
+            	out.println("<script>");
+            	out.println("function refreshPageContent() {");
+            	out.println("    var xhr = new XMLHttpRequest();");
+            	out.println("    xhr.open('GET', window.location.href, true);");
+            	out.println("    xhr.setRequestHeader('Cache-Control', 'no-cache');");
+            	out.println("    xhr.onreadystatechange = function() {");
+            	out.println("        if (xhr.readyState === 4 && xhr.status === 200) {");
+            	out.println("            var parser = new DOMParser();");
+            	out.println("            var doc = parser.parseFromString(xhr.responseText, 'text/html');");
+            	out.println("            var newBody = doc.getElementsByTagName('body')[0];");
+            	out.println("            if (newBody) {");
+            	out.println("                document.body.innerHTML = newBody.innerHTML;");
+            	out.println("                console.log('1>Page content updated at ' + new Date().toLocaleTimeString());");
+            	out.println("                // Force image reloads");
+            	out.println("                var imgs = document.getElementsByTagName('img');");
+            	out.println("                for (var i = 0; i < imgs.length; i++) {");
+            	out.println("                    var src = imgs[i].src;");
+            	out.println("                    imgs[i].src = src.split('?')[0] + '?t=' + new Date().getTime();");
+            	out.println("                }");
+            	out.println("            }");
+            	out.println("        }");
+            	out.println("    };");
+            	out.println("    xhr.send();");
+            	out.println("}");
+            	out.println("setInterval(refreshPageContent, 10000);");
+            	out.println("</script>");
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
