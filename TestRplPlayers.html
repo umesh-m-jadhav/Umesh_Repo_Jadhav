@@ -270,29 +270,3 @@ if(IsAuctionData) {
   </script>
 </body>
 </html>
-<script>
-function refreshPageContent() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', window.location.href, true);
-    xhr.setRequestHeader('Cache-Control', 'no-cache');
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(xhr.responseText, 'text/html');
-            var newBody = doc.getElementsByTagName('body')[0];
-            if (newBody) {
-                document.body.innerHTML = newBody.innerHTML;
-                console.log('Page content updated at ' + new Date().toLocaleTimeString());
-                // Force image reloads
-                var imgs = document.getElementsByTagName('img');
-                for (var i = 0; i < imgs.length; i++) {
-                    var src = imgs[i].src;
-                    imgs[i].src = src.split('?')[0] + '?t=' + new Date().getTime();
-                }
-            }
-        }
-    };
-    xhr.send();
-}
-setInterval(refreshPageContent, 10000);
-</script>
