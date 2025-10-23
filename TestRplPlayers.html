@@ -283,6 +283,12 @@ function refreshPageContent() {
             if (newBody) {
                 document.body.innerHTML = newBody.innerHTML;
                 console.log('Page content updated at ' + new Date().toLocaleTimeString());
+                // Force image reloads
+                var imgs = document.getElementsByTagName('img');
+                for (var i = 0; i < imgs.length; i++) {
+                    var src = imgs[i].src;
+                    imgs[i].src = src.split('?')[0] + '?t=' + new Date().getTime();
+                }
             }
         }
     };
