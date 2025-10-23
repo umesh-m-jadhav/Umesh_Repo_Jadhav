@@ -62,14 +62,14 @@
 </div>
     <select id='ownerSelect' onchange='showOwnerDetails()'>
       <option value=''>-- Select Team - Owner --</option>
-      <option value="Atharva jadhav">Pratapgad Warrior - Atharva jadhav</option>
-      <option value="Atharva Kunjir">Torna Tigers - Atharva Kunjir</option>
-      <option value="Atul Gupta">Rajmachi Lions - Atul Gupta</option>
-      <option value="Manish Kadu">Suvarnadurg Chams - Manish Kadu</option>
-      <option value="Sandesh Kadam">Janjira Marines - Sandesh Kadam</option>
-      <option value="Swapnil Chafale">Lohgad Giants - Swapnil Chafale</option>
-      <option value="Umesh Jadhav">Rajgad Capital - Umesh Jadhav</option>
-      <option value="Yogesh Lalwani">Shivaneri Lions - Yogesh Lalwani</option>
+      <option value="Janjira Marines">Janjira Marines - Janjira Marines</option>
+      <option value="Lohgad Giants">Lohgad Giants - Lohgad Giants</option>
+      <option value="Pratapgad Warrior">Pratapgad Warrior - Pratapgad Warrior</option>
+      <option value="Rajgad Capital">Rajgad Capital - Rajgad Capital</option>
+      <option value="Rajmachi Lions">Rajmachi Lions - Rajmachi Lions</option>
+      <option value="Shivaneri Lions">Shivaneri Lions - Shivaneri Lions</option>
+      <option value="Suvarnadurg Chams">Suvarnadurg Chams - Suvarnadurg Chams</option>
+      <option value="Torna Tigers">Torna Tigers - Torna Tigers</option>
     </select>
     <div id='ownerArea'></div>
     <select id='playerSelect' onchange='showDetails()'>
@@ -180,14 +180,14 @@
       "Vedant Kunjir": { name: "Vedant Kunjir", towerFlat: "T36-407", mobile: "7028392345", unavailability: "", role: "Batsman", photo: "IMG_20240513_202645 - Vedant Kunjir.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
     };
     const owners = {
-      "Atharva Kunjir": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", basePrice: "300000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:21:00","Unavailability":"Available in all","BidAmount":"640000","Mobile":"8149759914","Name":"Sumit Kumar","TowerFlat":"T31-1904"}] },
-      "Atul Gupta": { teamName: "Rajmachi Lions", photoURL: "Atul_gupta.JPG", basePrice: "250000", sheetData: [] },
-      "Sandesh Kadam": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", basePrice: "250000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:31:05","Unavailability":"","BidAmount":"810000","Mobile":"7083147157","Name":"Kailash Konapure","TowerFlat":"T30-507"}] },
-      "Manish Kadu": { teamName: "Suvarnadurg Chams", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:20:18","Unavailability":"","BidAmount":"680000","Mobile":"9155673500","Name":"Amit Kumar","TowerFlat":"32-1503"},{"AuctionedTimestamp":"2025-10-23 09:44:32","Unavailability":"","BidAmount":"420000","Mobile":"7722043321","Name":"Dhananjay Atole","TowerFlat":"T39-2503"}] },
-      "Swapnil Chafale": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", basePrice: "350000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:54:10","Unavailability":"8th Nov","BidAmount":"350000","Mobile":"8961144553","Name":"Rajeev Kumar","TowerFlat":"T31-1006"}] },
-      "Yogesh Lalwani": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", basePrice: "400000", sheetData: [] },
-      "Atharva jadhav": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", basePrice: "400000", sheetData: [{"AuctionedTimestamp":"2025-10-23 08:43:20","Unavailability":"","BidAmount":"790000","Mobile":"9979504953","Name":"Priyank Joshi","TowerFlat":"T37-1609"}] },
-      "Umesh Jadhav": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [] },
+      "Rajmachi Lions": { teamName: "Rajmachi Lions", photoURL: "Atul_gupta.JPG", basePrice: "250000", sheetData: [] },
+      "Torna Tigers": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", basePrice: "300000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:21:00","Unavailability":"Available in all","BidAmount":"640000","Mobile":"8149759914","Name":"Sumit Kumar","TowerFlat":"T31-1904"}] },
+      "Janjira Marines": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", basePrice: "250000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:31:05","Unavailability":"","BidAmount":"810000","Mobile":"7083147157","Name":"Kailash Konapure","TowerFlat":"T30-507"}] },
+      "Lohgad Giants": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", basePrice: "350000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:54:10","Unavailability":"8th Nov","BidAmount":"350000","Mobile":"8961144553","Name":"Rajeev Kumar","TowerFlat":"T31-1006"}] },
+      "Shivaneri Lions": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", basePrice: "400000", sheetData: [] },
+      "Suvarnadurg Chams": { teamName: "Suvarnadurg Chams", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [{"AuctionedTimestamp":"2025-10-23 09:20:18","Unavailability":"","BidAmount":"680000","Mobile":"9155673500","Name":"Amit Kumar","TowerFlat":"32-1503"},{"AuctionedTimestamp":"2025-10-23 09:44:32","Unavailability":"","BidAmount":"420000","Mobile":"7722043321","Name":"Dhananjay Atole","TowerFlat":"T39-2503"}] },
+      "Pratapgad Warrior": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", basePrice: "400000", sheetData: [{"AuctionedTimestamp":"2025-10-23 08:43:20","Unavailability":"","BidAmount":"790000","Mobile":"9979504953","Name":"Priyank Joshi","TowerFlat":"T37-1609"}] },
+      "Rajgad Capital": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [] },
     };
 function showDetails() {
     const select1 = document.getElementById('playerSelect');
@@ -306,7 +306,7 @@ if(IsAuctionData) {
     separator.style.borderRadius = '6px';
     separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
     soldOutArea.appendChild(separator);
-    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players6</h3>`;
+    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 6</h3>`;
     const soldContainer = document.createElement('div');
     soldContainer.style.display = 'flex';
     soldContainer.style.flexWrap = 'wrap';
