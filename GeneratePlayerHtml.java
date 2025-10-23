@@ -49,7 +49,7 @@ public class GeneratePlayerHtml {
 	private static String defaultExcelPath = baseFolder + "DataFile\\Player_List.xlsx";
 	private static  String auctionFolder = "C:\\Users\\Admin\\Downloads";
 	private static String outputPath = baseFolder + OUTPUT_HTML_FILE;
-    
+   
 	private static String localClonedRepoPath = "F:\\social\\AuctionCode\\CrikAuction\\Clone_Umesh_Repo_Jadhav";
 	private static String remoteUrl = "https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav.git";
 	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/";
@@ -63,9 +63,9 @@ public class GeneratePlayerHtml {
 	private static boolean isAllPlayersSoldOut = false;
 	
 	private static boolean IsAuctionStarted = true;
-	private static boolean IsAuctionData = true;
-	private static boolean isUploadToGit = true;
-	private static boolean testSupportNeeded = true;
+	private static boolean IsAuctionData = false;
+	private static boolean isUploadToGit = false;
+	private static boolean testSupportNeeded = false;
 	private static boolean isRefreshNeeded = false;
 	
 	public static void main(String[] args) {
@@ -368,12 +368,10 @@ public class GeneratePlayerHtml {
                 		if(!isSoldDataAvailable ) {
                 			isSoldDataAvailable= true;
                 		}
-                		if(p.soldAt.trim().equalsIgnoreCase("Yes")) {
-                			isAllPlayersSoldOut = true;
-                		}else {
-                			isAllPlayersSoldOut = false;
-                		}
-                	} 
+                		isAllPlayersSoldOut = true;
+                	} else {
+                		isAllPlayersSoldOut = false;
+                	}
             }
 
         } catch (Exception e) {
@@ -493,6 +491,23 @@ public class GeneratePlayerHtml {
             out.println("    th { background: #f0f0f0; }");
             out.println("    .soldout { color:red; font-weight:bold; background: #fff3f3; padding:8px; border-radius:6px; margin-bottom:10px; display:inline-block; }");
             out.println("    @media screen and (max-width: 600px) { table, th, td { font-size: 14px; padding: 4px 6px; } }");
+            out.println("    @keyframes dance {");
+            out.println("      0% { transform: rotate(0deg) translateY(0); }");
+            out.println("      20% { transform: rotate(-5deg) translateY(-2px); }");
+            out.println("      40% { transform: rotate(5deg) translateY(2px); }");
+            out.println("      60% { transform: rotate(-5deg) translateY(-2px); }");
+            out.println("      80% { transform: rotate(5deg) translateY(2px); }");
+            out.println("      100% { transform: rotate(0deg) translateY(0); }");
+            out.println("    }");
+            out.println("    .auction-dancing {");
+            out.println("      animation: dance 1.5s infinite;");
+            out.println("      background: linear-gradient(90deg, #ff1744, #f50057);");
+            out.println("      border-radius: 12px;");
+            out.println("      padding: 12px;");
+            out.println("      color: white;");
+            out.println("      display: inline-block;");
+            out.println("      margin-bottom: 12px;");
+            out.println("    }");
             out.println("  </style>");
             out.println("</head>");
             out.println("<body>");
@@ -507,12 +522,31 @@ public class GeneratePlayerHtml {
 	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
 	                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
 	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
-	                        "letter-spacing:1px;'>The auction is officially over! Every player has been successfully sold.</div>");
+	                        "letter-spacing:1px;'>The auction is officially over! " +players.size()+ " players has been successfully sold.</div>");
 	            }else if (isSoldDataAvailable) {
-	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
-	                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
-	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
-	                        "letter-spacing:1px;'>Auction is started and in Progress</div>");
+	                	    // Container with dancing animation
+	            	    out.println("<div class='auction-dancing'>");
+	            	    out.println("<div style='text-align:center; padding:16px; border-radius:12px; margin:20px 0; color:white;'>");
+	            	    out.println("<div style='font-size:18px; font-weight:bold;'>Auction is started and in Progress</div>");
+
+	            	    // --- Vertical Cards ---
+	            	    out.println("<div style='display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px;'>");
+
+	            	    out.println("<div style='background: #4caf50; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
+	            	    out.println("<b>Total Players</b><br>" + players.size());
+	            	    out.println("</div>");
+
+	            	    out.println("<div style='background: #2196f3; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
+	            	    out.println("<b>Sold Players</b><br>" + players.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count());
+	            	    out.println("</div>");
+
+	            	    out.println("<div style='background: #ff9800; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
+	            	    out.println("<b>Remaining Players</b><br>" + (players.size() - players.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count()));
+	            	    out.println("</div>");
+
+	            	    out.println("</div>"); // end cards container
+	            	    out.println("</div>"); // end inner block
+	            	    out.println("</div>"); // end animation container
 	            } else {
 	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
 	                        "background: linear-gradient(90deg, #1976d2, #42a5f5); " +
@@ -536,14 +570,41 @@ public class GeneratePlayerHtml {
             out.println("    <div id='ownerArea'></div>");
 
             // --- Player dropdown ---
-            out.println("    <select id='playerSelect' onchange='showDetails()'>");
-            out.println("      <option value=''>-- Select Player --</option>");
-            for (Player p : players) {
-                if (p.name != null && !p.name.trim().isEmpty()) {
-                    out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+            
+            if(IsAuctionData == true){
+            	// --- Dropdown 1: Not yet Auctioned players ---
+            	out.println("    <select id='playerSelect' onchange='showDetails()'>");
+                out.println("    <option value=''>Select Players (Not yet Auctioned)</option>");
+                for (Player p : players) {
+                    if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt ==null ||  p.soldAt.trim()=="")) {
+                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+                    }
                 }
+                out.println("    </select>");
+                
+                // --- Dropdown 2: Auction Completed players ---
+                out.println("    <select id='playerSelectCompleted' onchange='showDetails()' style='margin:10px;'>");
+                out.println("      <option value=''>Select Players (Auction Completed)</option>");
+                for (Player p : players) {
+                    if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt != null && !p.soldAt.trim().isEmpty())) {
+                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+                    }
+                }
+                out.println("    </select>");
+                
+            }else {
+            	out.println("    <select id='playerSelect' onchange='showDetails()'>");
+            	out.println("      <option value=''>-- Select Player --</option>");
+            	for (Player p : players) {
+                    if (p.name != null && !p.name.trim().isEmpty()) {
+                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+                    }
+                }
+            	 out.println("    </select>");
             }
-            out.println("    </select>");
+            
+            
+           
             out.println("    <div id='contentArea'></div>");
 
             // --- JS ---
@@ -571,44 +632,91 @@ public class GeneratePlayerHtml {
             }
             out.println("    };");
 
-            // Show player details
+         // --- Show player details ---
             out.println("function showDetails() {");
-            out.println("    const name = document.getElementById('playerSelect').value;");
+            out.println("    const select1 = document.getElementById('playerSelect');");
+            out.println("    const select2 = document.getElementById('playerSelectCompleted');");
+            out.println("    let name = '';");
+
+            out.println("    // Detect which dropdown triggered the event");
+            out.println("    if (document.activeElement === select1) {");
+            out.println("        name = select1.value;");
+            out.println("        if (select2) select2.selectedIndex = 0;");
+            out.println("    } else if (document.activeElement === select2) {");
+            out.println("        name = select2.value;");
+            out.println("        if (select1) select1.selectedIndex = 0;");
+            out.println("    } else {");
+            out.println("        name = select1.value || select2.value;");
+            out.println("    }");
+
             out.println("    const content = document.getElementById('contentArea');");
             out.println("    if (!name) { content.innerHTML = ''; return; }");
             out.println("    const p = players[name] || {};");
-            out.println("    let profileHtml = '';");
-            out.println("    if(IsAuctionData && p.soldAt && p.soldAt.trim() !== '') { profileHtml += `<div class='soldout'>SOLD OUT</div>`; }");
+
+            out.println("    // Mask function for mobile/towerFlat");
+            out.println("    function maskLastFour(str) {");
+            out.println("        if (!str) return '';");
+            out.println("        return '*'.repeat(str.length - 4) + str.slice(-4);");
+            out.println("    }");
+
+            out.println("    let innerHtml = '';");
+
+            // SOLD OUT Label
+            out.println("    if(IsAuctionData && p.soldAt && p.soldAt.trim() !== '') {");
+            out.println("        innerHtml += `<div class='soldout' style='text-align:center; color:#e91e63; font-weight:bold; margin-top:10px;'>SOLD OUT</div>`;");
+            out.println("    }");
+
+            // PHOTO
             out.println("    if (p.photo && p.photo.trim() !== '') {");
-            out.println("        profileHtml += `<div style='position: relative; display: inline-block;'>`;"); 
-            out.println("        profileHtml += `<span id='photoLoading' style='color: #ff5722; font-weight: bold;'>Please wait, your photo is coming...</span>`;"); 
-            out.println("        profileHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}' style='display:block; max-width:180px; border-radius:12px; border:3px solid #fff; box-shadow:0 6px 14px rgba(0,0,0,0.12); margin-bottom:16px;' onload='document.getElementById(\"photoLoading\").style.display=\"none\";' onerror='document.getElementById(\"photoLoading\").innerText=\"Photo not available\";'>`;"); 
-            out.println("        profileHtml += `</div>`;");
-            out.println("    } else { profileHtml += `<img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available'>`; }");
-            out.println("    profileHtml += `<h3>Your Profile Info.</h3>`;");
-            out.println("    profileHtml += `<p><b>Name:</b> ${p.name || ''}</p>`;");
-            out.println("    profileHtml += `<p><b>Tower/Flat:</b> ${p.towerFlat || ''}</p>`;");
-            out.println("    profileHtml += `<p><b>Mobile:</b> ${p.mobile || ''}</p>`;");
-            out.println("    profileHtml += `<p><b>Unavailability:</b> ${p.unavailability || ''}</p>`;");
-            out.println("    profileHtml += `<p><b>Role:</b> ${p.role || ''}</p>`;");
+            out.println("        innerHtml += `<div style='text-align:center; margin-top:10px;'>`;");
+            out.println("        innerHtml += `<span id='photoLoading' style='color:#ff5722; font-weight:bold;'>Please wait, your photo is coming...</span>`;");
+            out.println("        innerHtml += `<img src='PlayersPhoto/${p.photo}' alt='${name}' style='display:block; margin:auto; margin-top:5px; max-width:180px; border-radius:10px; border:3px solid #fff; box-shadow:0 6px 14px rgba(0,0,0,0.12);' onload='document.getElementById(\"photoLoading\").style.display=\"none\";' onerror='document.getElementById(\"photoLoading\").innerText=\"Photo not available\";'>`;");
+            out.println("        innerHtml += `</div>`;");
+            out.println("    } else {");
+            out.println("        innerHtml += `<div style='text-align:center; margin-top:10px;'><img src='PlayersPhoto/Image_Not_Given.png' alt='No Photo Available' style='max-width:180px; border-radius:10px;'></div>`;");
+            out.println("    }");
+
+            // PROFILE CARD
+            out.println("    innerHtml += `<div style='background:#ffffff; border-radius:12px; padding:15px; margin:15px auto; max-width:350px; box-shadow:0 3px 10px rgba(0,0,0,0.1);'>`;");
+            out.println("    innerHtml += `<h3 style='text-align:center; color:#1976d2;'>Your Profile Info.</h3>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Name:</b> ${p.name || ''}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Tower/Flat:</b> ${maskLastFour(p.towerFlat)}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Mobile:</b> ${maskLastFour(p.mobile)}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Unavailability:</b> ${p.unavailability || ''}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Role:</b> ${p.role || ''}</p>`");
+
             out.println("    if(!IsAuctionData && p.basePrice && p.basePrice.trim() !== '') {");
             out.println("        let base = Number(p.basePrice.replace(/,/g,''));");
             out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
-            out.println("        profileHtml += `<p><b>Base Price:</b> ${formattedBase}</p>`;");
+            out.println("        innerHtml += `<p style='margin:2px 0;'><b>Base Price:</b> ${formattedBase}</p>`;");
             out.println("    }");
-            out.println("    let biddingHtml = '<h3>Your Bidding Details</h3>';"); 
+            out.println("    innerHtml += `</div>`;");
+
+            // BIDDING CARD
+            out.println("    innerHtml += `<div style='background:#fefefe; border-radius:12px; padding:15px; margin:15px auto; max-width:350px; box-shadow:0 3px 10px rgba(0,0,0,0.1);'>`;");
+            out.println("    innerHtml += `<h3 style='text-align:center; color:#388e3c;'>Your Bidding Details</h3>`;");
+
             out.println("    if (!p.soldAt || p.soldAt.trim() === '') {");
-            out.println("        biddingHtml += `<p><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;");
+            out.println("        innerHtml += `<p style='margin:2px 0;'><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;");
             out.println("    } else {");
             out.println("        let bidNumber = Number(p.soldAt.replace(/,/g, ''));");
             out.println("        let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);");
-            out.println("        biddingHtml += `<p><b>Final Bid:</b> ${formattedBid}</p>`;");
+            out.println("        innerHtml += `<p style='margin:2px 0;'><b>Final Bid:</b> ${formattedBid}</p>`;");
             out.println("    }");
-            out.println("    biddingHtml += `<p><b>Sold To Team:</b> ${p.toTeam || ''}</p>`;");
-            out.println("    biddingHtml += `<p><b>Team Owner Name:</b> ${p.toOwner || ''}</p>`;");
-            out.println("    biddingHtml += `<p><b>Team Owner Mobile:</b> ${p.ownerMobile || ''}</p>`;");
-            out.println("    content.innerHTML = `<div id='profileSection' class='profile-section'>${profileHtml}</div><div class='separator'></div><div id='biddingSection' class='bidding-section'>${biddingHtml}</div>`;");
+
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Sold To Team:</b> ${p.toTeam || ''}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Team Owner Name:</b> ${p.toOwner || ''}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Team Owner Mobile:</b> ${maskLastFour(p.ownerMobile)}</p>`;");
+            out.println("    innerHtml += `</div>`;");
+
+            // MAIN FULL-WIDTH CONTAINER with STRIPED BACKGROUND
+            out.println("    content.innerHTML = `");
+            out.println("        <div style=\"width:100%; min-height:100%; border:4px solid #1976d2; border-radius:14px; padding:20px; box-sizing:border-box;");
+            out.println("        background: repeating-linear-gradient(45deg, #f0f8ff, #f0f8ff 15px, #e3f2fd 15px, #e3f2fd 30px);\">");
+            out.println("            <div style='max-width:400px; margin:auto; text-align:center;'>${innerHtml}</div>");
+            out.println("        </div>`;");
             out.println("}");
+
             
          // --- Owner JS Function (Horizontal Cards) ---
             out.println("function showOwnerDetails() {");
@@ -653,8 +761,7 @@ public class GeneratePlayerHtml {
             out.println("    html += `</div>`;");
             out.println("    ownerArea.innerHTML = html;");
             out.println("}");
-
-            
+                    
          // --- Sold Out Players Section ---
             out.println("if(IsAuctionData) {");
             out.println("    const soldOutArea = document.createElement('div');");
