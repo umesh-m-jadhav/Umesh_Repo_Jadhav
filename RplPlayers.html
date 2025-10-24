@@ -44,6 +44,16 @@
     <div class='header'>
       <h2>RPL (R21 Premium League) Catalogue</h2>
     </div>
+<div class='auction-dancing'>
+<div style='text-align:center; padding:16px; border-radius:12px; margin:20px 0; color:white;'>
+<div style='font-size:18px; font-weight:bold;'>Auction is Scheduled at below</div>
+<div style='display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px;'>
+<div style='background: #4caf50; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
+<b>1st Nov, 2025</b><br>12pm to 3pm
+</div>
+</div>
+</div>
+</div>
     <select id='ownerSelect' onchange='showOwnerDetails()'>
       <option value=''>-- Select Team - Owner --</option>
       <option value="Janjira Marines">Janjira Marines - Sandesh Kadam</option>
@@ -209,7 +219,7 @@ function showDetails() {
     innerHtml += `<p style='margin:2px 0;'><b>Name:</b> ${p.name || ''}</p>`;
     innerHtml += `<p style='margin:2px 0;'><b>Tower/Flat:</b> ${maskLastFour(p.towerFlat)}</p>`;
     innerHtml += `<p style='margin:2px 0;'><b>Mobile:</b> ${maskLastFour(p.mobile)}</p>`;
-    innerHtml += `<p style='margin:2px 0;'><b>Unavailability:</b> ${p.unavailability || ''}</p>`;
+    innerHtml += `<p style='margin:2px 0;'><b>Unavailability:</b> ${p.unavailability || 'Full Availability'}</p>`;
     innerHtml += `<p style='margin:2px 0;'><b>Role:</b> ${p.role || ''}</p>`
     if(!IsAuctionData && p.basePrice && p.basePrice.trim() !== '') {
         let base = Number(p.basePrice.replace(/,/g,''));
@@ -262,7 +272,7 @@ function showOwnerDetails() {
             if(mobileMasked.length > 4) {
                 mobileMasked = '*'.repeat(mobileMasked.length - 4) + mobileMasked.slice(-4);
             }
-            let unavailability = r['Unavailability'] || '';
+            let unavailability = r['Unavailability'] || 'Full Availability';
             html += `<div style='flex:1 1 200px; border:1px solid #ccc; border-radius:10px; padding:10px; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-size:14px;'>`;
             html += `<p style='margin:2px 0;'><b>Player No:</b> ${index+1}</p>`;
             html += `<p style='margin:2px 0;'><b>Name:</b> ${r['Name'] || ''}</p>`;
