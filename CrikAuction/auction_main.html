@@ -268,8 +268,29 @@
   .bid-section { margin-top:5px;text-align: left;}
   .bid-section input { 
 		padding:6px; 
-		font-size:16px; width:200px; 
+		font-size:16px; 
+	width:200px; 
 text-align:right; }
+
+@keyframes colorDance {
+  0% { color: red; }
+  25% { color: orange; }
+  50% { color: green; }
+  75% { color: blue; }
+  100% { color: red; }
+}
+
+.color-dance {
+  font-weight: bold;
+  text-align: center;
+  font-size: 18px;
+  animation: colorDance 1s infinite linear;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #fffbea;
+  width: 100px;
+}
+
   .bid-section button { 
 	 /* Base Button Style */
             background-color: #2c3e50; /* Dark slate/navy blue (professional base) */
@@ -2078,7 +2099,7 @@ responsive-box-title {
         
         <div class="bid-section" >
          <!-- <label for="bidInput" class="bid-label">Enter Bid Amount:</label> -->
-		  <input type="text" id="finalBid" readonly value="-"/>
+		  <input type="text" id="finalBid" readonly value="-" class="color-dance"/>
 		  
 		  	<button id="placeBidBtn" onclick="increaseBid()" >
          Increase Bid (<span class="symbol plus">+</span><span id="Increase_Bid_value" style="padding: 0px 0px;"></span>)
@@ -2523,7 +2544,7 @@ function renderPlayers(renderType){
     const role = p.Role || p.role || '';
     const base = parseInt(p.BasePrice || p.basePrice || 0) || 0;
     const sold = p.Sold || '';
-    const unavailibilty = p.Unavailibilty || '';
+    const unavailibilty = p.Unavailability || ''; 
 	const PlayerType = p.PlayerType || '';
 	const SoldToTeam = p.SoldToTeam || '';
 	const TeamOwnerName = p.TeamOwnerName || '';
@@ -2662,7 +2683,8 @@ function updateAvailableBalance(teamName){
 	  const totalNumOfPlayer = Number(document.getElementById('NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER').value);
 	  const skippedPlayers = calculateSkippedPlayers();
 	  
-	  const selectedPlayerCount = (totalNumOfPlayer-1)-Number(playersToBeSelected)-Number(skippedPlayers);
+	  //const selectedPlayerCount = (totalNumOfPlayer-1)-Number(playersToBeSelected)-Number(skippedPlayers);
+	  const selectedPlayerCount = (totalNumOfPlayer-1)-Number(playersToBeSelected);
 	  const selectPlayerDivId = card.querySelector('#Selected-player-count-id');
 	  selectPlayerDivId.innerHTML = selectedPlayerCount;
 	 
@@ -3080,14 +3102,20 @@ function submitAuction(){
 				Name: player.Name, 
 				TowerFlat: player.TowerFlat,
 				Mobile: player.Mobile,
-				Unavailibilty: player.Unavailibilty,
+				Unavailability: player.Unavailability,
 				BidAmount: player.FinalBid};
 	});
 
     workbook.Sheets[teamSheetName] = XLSX.utils.json_to_sheet(soldPlayersDetailsToWriteInExcel);
     if(!workbook.SheetNames.includes(teamSheetName)) workbook.SheetNames.push(teamSheetName);
 
-    // Track sold players for display (store mobile too)
+	try{
+		if (teamSoldPlayers[selectedTeam.name] === null || teamSoldPlayers[selectedTeam.name] === undefined) {
+			teamSoldPlayers[selectedTeam.name]=[];
+		}
+    } catch(err){
+		console.log(err);
+	}
     teamSoldPlayers[selectedTeam.name].push({
       name: currentPlayer.Name || currentPlayer.name,
       mobile: currentPlayer.Mobile || currentPlayer.mobile || 'N/A',
@@ -3274,7 +3302,7 @@ function rgbToHex(rgb) {
 			const name = p.Name || p.name || '';
 			const mobile = p.Mobile || p.mobile || 'N/A';
 			const role = p.Role || p.role || '';
-			const unavailibilty = p.Unavailibilty;
+			const unavailibilty = p.Unavailability;
 			const sold = p.Sold || '';
 				  
 		  // show formatted values
@@ -3444,7 +3472,7 @@ function highlightRandomRow() {
 	}
 	
 	if(isOnlySkippedPlayers=="Y") {
-		alert("Attention: Skipped Players Found.!!!\n\nSome players were skipped during the auction. Please move them to 'To Be Sold' mode if you wish to re-auction them.");
+		alert("Attention: Only Skipped Players Found.!!!\n\nSome players were skipped during the auction. Please move them to 'To Be Sold' mode if you wish to re-auction them.");
 		return;
 	}
 	
@@ -4180,7 +4208,7 @@ teamCards.forEach(card => {
 					return { Name: player.Name, 
 							TowerFlat: player.TowerFlat,
 							Mobile: player.Mobile,
-							Unavailibilty: player.Unavailibilty,
+							Unavailibilty: player.Unavailability,
 							BidAmount: player.FinalBid};
 				});
 
