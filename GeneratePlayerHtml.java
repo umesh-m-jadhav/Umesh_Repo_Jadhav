@@ -8,19 +8,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,9 +32,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.transport.RefSpec;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 public class GeneratePlayerHtml {
 	
@@ -50,24 +42,26 @@ public class GeneratePlayerHtml {
 	private static  String auctionFolder = "C:\\Users\\Admin\\Downloads";
 	private static String outputPath = baseFolder + OUTPUT_HTML_FILE;
    
-	private static String localClonedRepoPath = "F:\\social\\AuctionCode\\CrikAuction\\Clone_Umesh_Repo_Jadhav";
-	private static String remoteUrl = "https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav.git";
-	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/";
+	//private static String localClonedRepoPath = "F:\\social\\AuctionCode\\CrikAuction\\Clone_Umesh_Repo_Jadhav";
+	//private static String remoteUrl = "https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav.git";
+	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/CrikAuction";
 	private static final String BRANCH = "main"; // branch to upload to
 	private static ScheduledExecutorService scheduler;
 	  
-	private static String token = "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";
-	// Calculate end time (current time + 5 hours in milliseconds)
-	private static long endTime = System.currentTimeMillis() + 5 * 60 * 60 * 1000; // 5 hours
-	private static boolean isSoldDataAvailable = false;
-	private static boolean isAllPlayersSoldOut = false;
+	private static String token = "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";
+	
+	private static boolean isAtleastOneSoldDataAvailable = false;
+	private static boolean isAllPlayersSoldOut = true;
 	
 	private static boolean IsAuctionStarted = true;
-	private static boolean IsAuctionData = false;
-	private static boolean isUploadToGit = false;
-	private static boolean testSupportNeeded = false;
+	private static boolean IsAuctionData = true;
+	private static boolean isUploadToGit = true;
+	private static boolean testSupportNeeded = true;
 	private static boolean isRefreshNeeded = false;
 	
+	private static HttpURLConnection getConn = null;
+	private static HttpURLConnection conn = null;
+		
 	public static void main(String[] args) {
 		if(testSupportNeeded) {
 			OUTPUT_HTML_FILE = "Test"+OUTPUT_HTML_FILE;
@@ -75,18 +69,8 @@ public class GeneratePlayerHtml {
 		}
 		
 		startScheduler();
-		
-//		while (System.currentTimeMillis() < endTime) {
-// 			mainAuctionLogic();	
-//            System.out.println("Finished at " + new Date() +System.lineSeparator());
-//            
-//            try {
-//                Thread.sleep(10 * 1000); // 30 seconds
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-		
+		 if (getConn != null) getConn.disconnect();
+         if (conn != null) conn.disconnect();
 	}
     public static void mainAuctionLogic() {
         String excelPath;
@@ -132,22 +116,44 @@ public class GeneratePlayerHtml {
             @Override
             public void run() {
                 try {
-                    System.out.println("[" + new java.util.Date() + "] Starting GitHub upload task...");
+                    System.out.println("[" + new java.util.Date() + "] IsAuctionStarted..." + IsAuctionStarted);
+                    System.out.println("[" + new java.util.Date() + "] IsAuctionData..." + IsAuctionData);
+                    System.out.println("[" + new java.util.Date() + "] isUploadToGit..." + isUploadToGit);
+                    System.out.println("[" + new java.util.Date() + "] testSupportNeeded..." + testSupportNeeded);
+                    
                     //uploadFileToGitHubUsingRest();
                     mainAuctionLogic();
                     System.out.println("[" + new java.util.Date() + "] Upload task finished successfully.");
+                    System.out.println();
                 } catch (Exception e) {
                     System.err.println("[" + new java.util.Date() + "] Upload failed: " + e.getMessage());
                     e.printStackTrace();
+                    System.out.println();
                 }
             }
         };
 
         // Run immediately, then every 60 seconds (customize as needed)
-        scheduler.scheduleAtFixedRate(uploadTask, 0, 60, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(uploadTask, 0, 120, TimeUnit.SECONDS);
 
         // Add shutdown hook for clean exit
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> stopGitHubUploadScheduler()));
+        //Runtime.getRuntime().addShutdownHook(new Thread(() -> stopGitHubUploadScheduler()));
+        
+     // Stop the scheduler after 3 hours (3 * 60 * 60 = 10800 seconds)
+        Runnable stopTask = () -> {
+            System.out.println("Stopping scheduler at: " + java.time.LocalTime.now());
+            scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
+                    scheduler.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                scheduler.shutdownNow();
+            }
+        };
+
+        // Schedule stop task after 3 hours
+        scheduler.schedule(stopTask, 3, TimeUnit.HOURS);
     }
     
     public static void stopGitHubUploadScheduler() {
@@ -165,7 +171,7 @@ public class GeneratePlayerHtml {
         }
     }
 
-    
+    /**
     private static void uploadFileToGit() {
         Git git = null;
         try {
@@ -212,10 +218,9 @@ public class GeneratePlayerHtml {
             if (git != null) git.close();
         }
     }
-
+		**/
+    
     private static void uploadFileToGitHubUsingRest() {
-        HttpURLConnection getConn = null;
-        HttpURLConnection conn = null;
         BufferedReader br = null;
 
         try {
@@ -232,16 +237,19 @@ public class GeneratePlayerHtml {
             String getUrl = GITHUB_API_URL + OUTPUT_HTML_FILE;
 
             // Step 1: Check if file exists to get SHA
+            
             getConn = (HttpURLConnection) new URL(getUrl).openConnection();
             getConn.setRequestProperty("Authorization", "token " + token);
             getConn.setRequestProperty("Accept", "application/vnd.github+json");
-
+                        
             String sha = null;
             if (getConn.getResponseCode() == 200) {
                 br = new BufferedReader(new InputStreamReader(getConn.getInputStream(), "UTF-8"));
                 StringBuilder sb = new StringBuilder();
                 String line;
-                while ((line = br.readLine()) != null) sb.append(line);
+                while ((line = br.readLine()) != null) {
+                	sb.append(line);
+                }
                 br.close();
                 br = null;
 
@@ -260,13 +268,14 @@ public class GeneratePlayerHtml {
                     + "\"content\": \"" + encodedContent + "\""
                     + (sha != null ? ",\"sha\": \"" + sha + "\"" : "")
                     + "}";
-
-            conn = (HttpURLConnection) new URL(getUrl).openConnection();
-            conn.setRequestMethod("PUT");
-            conn.setRequestProperty("Authorization", "token " + token);
-            conn.setRequestProperty("Accept", "application/vnd.github+json");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
+            
+	            conn = (HttpURLConnection) new URL(getUrl).openConnection();
+	            conn.setRequestMethod("PUT");
+	            conn.setRequestProperty("Authorization", "token " + token);
+	            conn.setRequestProperty("Accept", "application/vnd.github+json");
+	            conn.setRequestProperty("Content-Type", "application/json");
+	            conn.setDoOutput(true);
+            
 
             try (OutputStream os = conn.getOutputStream()) {
                 os.write(jsonBody.getBytes("UTF-8"));
@@ -365,10 +374,12 @@ public class GeneratePlayerHtml {
                 }
                 if (IsAuctionData)
                 	if(p.soldAt != null && p.soldAt.trim()!="") {
-                		if(!isSoldDataAvailable ) {
-                			isSoldDataAvailable= true;
+                		if(!isAtleastOneSoldDataAvailable ) {
+                			isAtleastOneSoldDataAvailable= true;
                 		}
-                		isAllPlayersSoldOut = true;
+                		if(isAllPlayersSoldOut) {
+                			isAllPlayersSoldOut = true;
+                		}
                 	} else {
                 		isAllPlayersSoldOut = false;
                 	}
@@ -424,7 +435,7 @@ public class GeneratePlayerHtml {
                     od.teamName = teamName;
                     od.photoURL = (photoURL != null && !photoURL.trim().isEmpty()) ? photoURL : "Image_Not_Given.png";
                     od.basePrice = basePrice; // assign
-
+                    od.name = ownerName;
                     Sheet teamSheet = workbook.getSheet(teamName);
                     if (teamSheet != null) {
                         List<Map<String, String>> rows = new ArrayList<>();
@@ -446,8 +457,9 @@ public class GeneratePlayerHtml {
                         }
                         od.sheetData = rows;
                     }
-
-                    ownerDataMap.put(ownerName.trim(), od);
+                    
+                    ownerDataMap.put(teamName.trim(), od);
+                    //ownerDataMap.put(ownerName.trim(), od);
                 }
             }
 
@@ -523,7 +535,7 @@ public class GeneratePlayerHtml {
 	                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
 	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
 	                        "letter-spacing:1px;'>The auction is officially over! " +players.size()+ " players has been successfully sold.</div>");
-	            }else if (isSoldDataAvailable) {
+	            }else if (isAtleastOneSoldDataAvailable) {
 	                	    // Container with dancing animation
 	            	    out.println("<div class='auction-dancing'>");
 	            	    out.println("<div style='text-align:center; padding:16px; border-radius:12px; margin:20px 0; color:white;'>");
@@ -547,24 +559,34 @@ public class GeneratePlayerHtml {
 	            	    out.println("</div>"); // end cards container
 	            	    out.println("</div>"); // end inner block
 	            	    out.println("</div>"); // end animation container
+	            	}
 	            } else {
-	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
-	                        "background: linear-gradient(90deg, #1976d2, #42a5f5); " +
-	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
-	                        "letter-spacing:1px;'>Auction is yet to start</div>");
+	            	out.println("<div class='auction-dancing'>");
+            	    out.println("<div style='text-align:center; padding:16px; border-radius:12px; margin:20px 0; color:white;'>");
+            	    out.println("<div style='font-size:18px; font-weight:bold;'>Auction is Scheduled at below</div>");
+
+            	    // --- Vertical Cards ---
+            	    out.println("<div style='display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px;'>");
+
+            	    out.println("<div style='background: #4caf50; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
+            	    out.println("<b>1st Nov, 2025</b><br>" +"12pm to 3pm </b><br>");
+            	    out.println("Location - @Trendy Community hall");
+            	    out.println("</div>");
+            	    out.println("</div>"); // end cards container
+            	    out.println("</div>"); // end inner block
+            	    out.println("</div>"); // end animation container
 	            }
-            }
-            
+                        
             // --- Owner dropdown ---
             out.println("    <select id='ownerSelect' onchange='showOwnerDetails()'>");
             out.println("      <option value=''>-- Select Team - Owner --</option>");
             ownerDataMap.entrySet().stream()
                     .sorted(Map.Entry.comparingByKey(String.CASE_INSENSITIVE_ORDER))
                     .forEach(entry -> {
-                        String owner = entry.getKey();
-                        String team = entry.getValue().teamName != null ? entry.getValue().teamName : "";
+                        String team  = entry.getKey();
+                        String owner = entry.getValue().name != null ? entry.getValue().name : "";
                         String display = team + " - " + owner;
-                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(owner), escapeHtml(display));
+                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(team), escapeHtml(display));
                     });
             out.println("    </select>");
             out.println("    <div id='ownerArea'></div>");
@@ -572,18 +594,19 @@ public class GeneratePlayerHtml {
             // --- Player dropdown ---
             
             if(IsAuctionData == true){
-            	// --- Dropdown 1: Not yet Auctioned players ---
-            	out.println("    <select id='playerSelect' onchange='showDetails()'>");
-                out.println("    <option value=''>Select Players (Not yet Auctioned)</option>");
-                for (Player p : players) {
-                    if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt ==null ||  p.soldAt.trim()=="")) {
-                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
-                    }
-                }
-                out.println("    </select>");
-                
+            	if (!isAllPlayersSoldOut) {
+	            	// --- Dropdown 1: Not yet Auctioned players ---
+	            	out.println("    <select id='playerSelect' onchange='showDetails()'>");
+	                out.println("    <option value=''>Select Players (Not yet Auctioned)</option>");
+	                for (Player p : players) {
+	                    if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt ==null ||  p.soldAt.trim()=="")) {
+	                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+	                    }
+	                }
+	                out.println("    </select>");
+            	}
                 // --- Dropdown 2: Auction Completed players ---
-                out.println("    <select id='playerSelectCompleted' onchange='showDetails()' style='margin:10px;'>");
+                out.println("    <select id='playerSelectCompleted' onchange='showDetails()' style='margin:0px;'>");
                 out.println("      <option value=''>Select Players (Auction Completed)</option>");
                 for (Player p : players) {
                     if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt != null && !p.soldAt.trim().isEmpty())) {
@@ -682,7 +705,7 @@ public class GeneratePlayerHtml {
             out.println("    innerHtml += `<p style='margin:2px 0;'><b>Name:</b> ${p.name || ''}</p>`;");
             out.println("    innerHtml += `<p style='margin:2px 0;'><b>Tower/Flat:</b> ${maskLastFour(p.towerFlat)}</p>`;");
             out.println("    innerHtml += `<p style='margin:2px 0;'><b>Mobile:</b> ${maskLastFour(p.mobile)}</p>`;");
-            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Unavailability:</b> ${p.unavailability || ''}</p>`;");
+            out.println("    innerHtml += `<p style='margin:2px 0;'><b>Unavailability:</b> ${p.unavailability || 'Full Availability'}</p>`;");
             out.println("    innerHtml += `<p style='margin:2px 0;'><b>Role:</b> ${p.role || ''}</p>`");
 
             out.println("    if(!IsAuctionData && p.basePrice && p.basePrice.trim() !== '') {");
@@ -745,7 +768,7 @@ public class GeneratePlayerHtml {
             out.println("            if(mobileMasked.length > 4) {");
             out.println("                mobileMasked = '*'.repeat(mobileMasked.length - 4) + mobileMasked.slice(-4);");
             out.println("            }");
-            out.println("            let unavailability = r['Unavailability'] || '';");  // <-- new row
+            out.println("            let unavailability = r['Unavailability'] || 'Full Availability';");  // <-- new row
 
             out.println("            html += `<div style='flex:1 1 200px; border:1px solid #ccc; border-radius:10px; padding:10px; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-size:14px;'>`;");
             out.println("            html += `<p style='margin:2px 0;'><b>Player No:</b> ${index+1}</p>`;");
@@ -766,7 +789,16 @@ public class GeneratePlayerHtml {
             out.println("if(IsAuctionData) {");
             out.println("    const soldOutArea = document.createElement('div');");
             out.println("    soldOutArea.style.marginTop = '40px';");
-            out.println("    soldOutArea.innerHTML = `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players</h3>`;");
+         // Stylish separator added
+            out.println("    const separator = document.createElement('div');");
+            out.println("    separator.style.height = '6px';");
+            out.println("    separator.style.width = '60%';");
+            out.println("    separator.style.margin = '0 auto 20px auto';");
+            out.println("    separator.style.borderRadius = '6px';");
+            out.println("    separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';");
+            out.println("    soldOutArea.appendChild(separator);");
+            
+            out.println("    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: "+ + players.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count() +"</h3>`;");
 
             out.println("    const soldContainer = document.createElement('div');");
             out.println("    soldContainer.style.display = 'flex';");
@@ -896,6 +928,7 @@ public class GeneratePlayerHtml {
 
     static class OwnerData {
         String teamName = "";
+        String name = "";
         String photoURL = "Image_Not_Given.png";
         String basePrice = ""; // new
         List<Map<String, String>> sheetData = new ArrayList<>();
