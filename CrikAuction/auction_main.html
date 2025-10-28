@@ -2212,11 +2212,42 @@ const AUCTION_ACTION_UNSOLD_PLAYER = "AUCTION_ACTION_UNSOLD_PLAYER";
 const Fresh_Player_List_Title = "Fresh Player List";
 const Player_List_from_Auctioned_File_Title = "Player List from Auctioned File"
 
-/* format as Indian rupee with commas */
-function formatINR(n){
+ 
+function formatINR1(n){
   if(n === null || n === undefined || n === '-') return '-';
   const num = Number(n) || 0;
   return '₹' + num.toLocaleString('en-IN');
+}
+
+function formatINR(num) {
+  try{
+	  let formatted;
+
+	  if (num >= 10000000) {
+		// Crore
+		const crore = num / 10000000;
+		formatted = removeTrailingZero(crore) + " crore";
+	  } else if (num >= 100000) {
+		// Lakh
+		const lakh = num / 100000;
+		formatted = removeTrailingZero(lakh) + " lakh";
+	  } else if (num >= 1000) {
+		// Thousand (K)
+		const thousand = num / 1000;
+		formatted = removeTrailingZero(thousand) + "K";
+	  } else {
+		formatted = num.toString();
+	  }
+
+	  return "₹" + formatted;
+  } catch(e){
+		return formatINR1(num);
+		console.log(e);
+  }
+}
+
+function removeTrailingZero(value) {
+  return value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
 }
 
 function convertInrToNumber(inrString) {
@@ -3214,9 +3245,9 @@ function showTeamDetails(teamName){
   const owner = document.querySelector(`.team-card[data-name="${teamName}"] .team-owner-card`).getAttribute('valueofdiv');
   const base = getTeamParticularDetails(teamName,'.team-baseprice');
   let html = '';
-
+  const TOTAL_BALANCE = formatINR(Number(document.getElementById('AUCTION_ALLOCATED_BALANCE').value));
   // Owner as item 1
-  html += `<span class="available-highlight">Total Allocated Balance:  ₹20,00,000</span>`;
+  html += `<span class="available-highlight">Total Allocated Balance: `+TOTAL_BALANCE+`</span>`;
   html +="\n\n";
   html += `1. Owner: ${owner} — Base: ${formatINR(base)}\n\n`;
 
