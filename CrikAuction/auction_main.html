@@ -2753,28 +2753,29 @@ function UnsoldtoSold(){
     }
 	
 	const playerListDivIdVar = document.getElementById('playerListDiv');
-	playerListDivIdVar.style.display = 'block';
+	playerListDivIdVar.style.display = 'none';
 	
 	const rightDivIdVar = document.getElementById('right');
-	rightDivIdVar.style.display = 'none';
+	rightDivIdVar.style.display = 'block';
 	
 	const teamsListMainIdDivIdVar = document.getElementById('teamsListMainId');
-	teamsListMainIdDivIdVar.style.display = 'none';
+	teamsListMainIdDivIdVar.style.display = 'block';
 	
 	const startSpinIdDivIdVar = document.getElementById('startSpinId');
-	startSpinIdDivIdVar.style.display = 'none';
+	startSpinIdDivIdVar.style.display = 'block';
 	
 	const batContainer = document.getElementById('left-bat-container-id');
-	batContainer.style.display = 'none';
+	batContainer.style.display = 'block';
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 	auctionTitleDivID.style.display = 'none';
+	
 	const skippedPlayers = calculateSkippedPlayers();
 	if(Number(skippedPlayers) <=0){
 		alert("No Skipped Players found");
 		return;
 	}
-	var confirmMsg = "You are putting all Skipped players to sold Category. Please confirm."
+	var confirmMsg = "You are about to submit all skipped players for re-auction. Please confirm."
 	if(!confirm(confirmMsg)){
 		return;
 	}
@@ -2794,7 +2795,7 @@ function UnsoldtoSold(){
 	}
 	
 	 collapseMenu();
-	 alert("'"+skippedPlayers + "' Skipped Players again queued in Auction.You can do their Auction now.");
+	 alert("'"+skippedPlayers + "' Skipped players are back in the auction! You can start their bidding now.");
 }
 
 function skipPlayer(){
@@ -2817,7 +2818,7 @@ function skipPlayer(){
                         <hr class="separator-line">
                         <span class="separator-text">Are you sure to Skip this player?
 						<BR><BR>
-						Only Skipped Players will be bidded at last.
+						Skipped players will be auctioned last.
 						</span>
                     </div>
                 `;
