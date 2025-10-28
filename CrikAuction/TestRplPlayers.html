@@ -52,10 +52,10 @@
 <b>Total Players</b><br>48
 </div>
 <div style='background: #2196f3; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>Sold Players</b><br>1
+<b>Sold Players</b><br>2
 </div>
 <div style='background: #ff9800; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>Remaining Players</b><br>47
+<b>Remaining Players</b><br>46
 </div>
 </div>
 </div>
@@ -78,7 +78,6 @@
       <option value="Aditya Vasekar">Aditya Vasekar</option>
       <option value="Akshay Zolekar">Akshay Zolekar</option>
       <option value="Amit Jadhav">Amit Jadhav</option>
-      <option value="Amit Kumar">Amit Kumar</option>
       <option value="Amit Mundra">Amit Mundra</option>
       <option value="Ankit patel">Ankit patel</option>
       <option value="Ashish Bajaj">Ashish Bajaj</option>
@@ -124,6 +123,7 @@
     </select>
     <select id='playerSelectCompleted' onchange='showDetails()' style='margin:0px;'>
       <option value=''>Select Players (Auction Completed)</option>
+      <option value="Amit Kumar">Amit Kumar</option>
       <option value="Priyank Joshi">Priyank Joshi</option>
     </select>
     <div id='contentArea'></div>
@@ -157,7 +157,7 @@ function removeTrailingZero(value) {
       "Aditya Vasekar": { name: "Aditya Vasekar", towerFlat: "T30-1308", mobile: "9405928504", unavailability: "", role: "All Rounder", photo: "Aditya_Vasekar.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
       "Akshay Zolekar": { name: "Akshay Zolekar", towerFlat: "32-1403", mobile: "7620098286", unavailability: "", role: "All Rounder", photo: "IMG_0654 - Akshay Zolekar.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
       "Amit Jadhav": { name: "Amit Jadhav", towerFlat: "T32-0906", mobile: "9881677399", unavailability: "", role: "All Rounder", photo: "Amit_Jadhav.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
-      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
+      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "700000", toTeam: "Lohgad Giants", toOwner: "Swapnil Chafale", ownerMobile: "9766698699", basePrice: "" },
       "Amit Mundra": { name: "Amit Mundra", towerFlat: "T31- 2208", mobile: "9623312391", unavailability: "", role: "All Rounder", photo: "20250605_233115 - CA Amit Mundra.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
       "Ankit patel": { name: "Ankit patel", towerFlat: "T-31,308", mobile: "7415555965", unavailability: "", role: "All Rounder", photo: "IMG_2087 - Ankit Patel.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
       "Ashish Bajaj": { name: "Ashish Bajaj", towerFlat: "T33-1902", mobile: "9545412374", unavailability: "TBD", role: "All Rounder", photo: "63d588eb-fb7a-4954-a446-8b8baf79b41b - ASHISH BAJAJ.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "" },
@@ -206,7 +206,7 @@ function removeTrailingZero(value) {
       "Rajmachi Lions": { teamName: "Rajmachi Lions", photoURL: "Atul_gupta.JPG", basePrice: "250000", sheetData: [] },
       "Torna Tigers": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", basePrice: "300000", sheetData: [] },
       "Janjira Marines": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", basePrice: "250000", sheetData: [{"AuctionedTimestamp":"2025-10-29 02:17:01","Unavailability":"","BidAmount":"720000","Mobile":"9979504953","Name":"Priyank Joshi","TowerFlat":"T37-1609"}] },
-      "Lohgad Giants": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", basePrice: "350000", sheetData: [] },
+      "Lohgad Giants": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", basePrice: "350000", sheetData: [{"AuctionedTimestamp":"2025-10-29 02:19:05","Unavailability":"","BidAmount":"700000","Mobile":"9155673500","Name":"Amit Kumar","TowerFlat":"32-1503"}] },
       "Shivaneri Lions": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", basePrice: "400000", sheetData: [] },
       "Suvarnadurg Chams": { teamName: "Suvarnadurg Chams", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [] },
       "Pratapgad Warrior": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", basePrice: "400000", sheetData: [] },
@@ -329,7 +329,7 @@ if(IsAuctionData) {
     separator.style.borderRadius = '6px';
     separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
     soldOutArea.appendChild(separator);
-    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 1</h3>`;
+    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 2</h3>`;
     const soldContainer = document.createElement('div');
     soldContainer.style.display = 'flex';
     soldContainer.style.flexWrap = 'wrap';
