@@ -1239,7 +1239,7 @@ display: flex;
 		
 		.split-ball {
              //position: relative;
-			 position: absolute; //At office.
+			 position: absolute; 
 			 overflow: hidden;
             
 			top: 20px;        /* 💥 Updated to 30px from the top edge */
@@ -1361,7 +1361,7 @@ display: flex;
 	//overflow: hidden;
     top: 20px;        /* 💥 Updated to 30px from the top edge */
     //right: 350px;
-	right: 21%; //At office
+	right: 21%; 
     width: 100px;
     height: 100px;
     filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
@@ -1374,7 +1374,7 @@ display: flex;
 	//overflow: hidden;
     top: 20px;        /* 💥 Updated to 30px from the top edge */
     //left: 200px;
-	left: 20% //At office
+	left: 20%
     width: 200px;
    height: 200px;
     filter: drop-shadow(-5px 5px 10px rgba(0, 0, 0, 0.3));
@@ -2104,7 +2104,7 @@ responsive-box-title {
         
         <div class="bid-section" >
          <!-- <label for="bidInput" class="bid-label">Enter Bid Amount:</label> -->
-		  <input type="text" id="finalBid" readonly value="-" class="color-dance"/>
+		  <input type="text" id="finalBid" readonly value="-" valueofinputbid="0" class="color-dance"/>
 		  
 		  	<button id="placeBidBtn" onclick="increaseBid()" >
          Increase Bid (<span class="symbol plus">+</span><span id="Increase_Bid_value" style="padding: 0px 0px;"></span>)
@@ -2309,7 +2309,8 @@ function validateIfTeamHasBalanceToBid(teamName){
 	 //const toBeBidBalanceAvailable = calculateToBeBidBalance(available, numberOfUnSoldPlayer);
 	 const toBeBidBalanceAvailable = getTeamParticularDetails(teamName,'.team-tobebid');
 	 const toBeBidBalanceAvailableformatINR = formatINR(toBeBidBalanceAvailable);
-	 const finalBid = document.getElementById('finalBid').value
+	 //const finalBid = document.getElementById('finalBid').value
+	 const finalBid = currentBid;
 	 
 	 if(numberOfUnSoldPlayer==0){
 		alert("You have selected all the players. Your Auction is over.");
@@ -2321,11 +2322,12 @@ function validateIfTeamHasBalanceToBid(teamName){
 		return "N";
 	}
 	
-	 if(convertInrToNumber(finalBid)>toBeBidBalanceAvailable){
+	if(finalBid>toBeBidBalanceAvailable){
+	 //if(convertInrToNumber(finalBid)>toBeBidBalanceAvailable){
 		alert(
 	  'You do not have sufficient Bidding balance.\n\n' +
-	  'Your current Bidding balance is '+ toBeBidBalanceAvailableformatINR +
-	  '\n\nThe Player bid amount is ' + finalBid);
+	  'Your Bidding balance is '+ toBeBidBalanceAvailableformatINR +
+	  '\n\nThe bid amount on this Player is ' + formatINR(finalBid));
 	  return "N";
 	 }
 	 
@@ -2783,6 +2785,12 @@ function UnsoldtoSold(){
      return;
     }
 	
+	const skippedPlayers = calculateSkippedPlayers();
+	if(Number(skippedPlayers) <=0){
+		alert("No Skipped Players found");
+		return;
+	}
+	
 	const playerListDivIdVar = document.getElementById('playerListDiv');
 	playerListDivIdVar.style.display = 'none';
 	
@@ -2800,12 +2808,7 @@ function UnsoldtoSold(){
 	
 	const auctionTitleDivID = document.getElementById('auction_title_id_below_spin');
 	auctionTitleDivID.style.display = 'none';
-	
-	const skippedPlayers = calculateSkippedPlayers();
-	if(Number(skippedPlayers) <=0){
-		alert("No Skipped Players found");
-		return;
-	}
+		
 	var confirmMsg = "You are about to submit all skipped players for re-auction. Please confirm."
 	if(!confirm(confirmMsg)){
 		return;
@@ -3342,8 +3345,10 @@ function rgbToHex(rgb) {
 			const unavailibilty = p.Unavailability;
 			const sold = p.Sold || '';
 				  
-		  // show formatted values
+		  // show formatted values umesh
 		  document.getElementById('finalBid').value = formatINR(currentBid);
+		  document.getElementById('finalBid').setAttribute('valueofinputbid', currentBid);
+		  
 		  document.getElementById('selectedPlayer').textContent = (name) + ' (' + role + ')';
 		  if(p.PhotoURL == null || p.PhotoURL.trim()==""){
 			document.getElementById('playerPhoto').src = 'Image_Not_Given.png';
@@ -3351,7 +3356,7 @@ function rgbToHex(rgb) {
 			document.getElementById('playerPhoto').src = "PlayersPhoto\\"+p.PhotoURL;
 		  }
 		  document.getElementById('basePrice').textContent = formatINR(base);
-		  //At Office
+		  
 		  if(unavailibilty==null || unavailibilty.trim()==""){
 			 document.getElementById('PlayerUnavailibiltyID').textContent = "Full availability";
 		  }else{
@@ -3894,12 +3899,12 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
                 optionsDiv.style.display = 'block';
                 headerDiv.classList.add('active');
                 updateContentMargin();
-				//At office
+				
 				const batContainer = document.getElementById('left-bat-container-id');
 				batContainer.style.display = 'none';
             } else {
                 collapseMenu();
-				//At office
+				
 				const batContainer = document.getElementById('left-bat-container-id');
 				batContainer.style.display = 'block';
             }
@@ -3909,7 +3914,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
             // Check if the click target is OUTSIDE the menu container
             if (!rplNavMenu.contains(event.target)) {
                 collapseMenu();
-				 //At office
+				 
 				 //const batContainer = document.getElementById('left-bat-container-id');
 				 //batContainer.style.display = 'block';
             }
@@ -4273,7 +4278,7 @@ teamCards.forEach(card => {
 				const totalSoldCount = totalNumOfPlayer - totalRemainingPlayers - totalOwnerCount;
 				document.getElementById('soldPlayerCountId').innerHTML = totalSoldCount;
 				document.getElementById('unsoldPlayerCountId').innerHTML = totalRemainingPlayers;
-				document.getElementById('SkippedPlayerCountId').innerHTML = '-1';
+				//document.getElementById('SkippedPlayerCountId').innerHTML = '-1';
 			}
 			
 		}
