@@ -70,6 +70,7 @@ Location - @Trendy Community hall
     <select id='playerSelect' onchange='showDetails()'>
       <option value=''>-- Select Player --</option>
       <option value="Aarit Vijay Phalke">Aarit Vijay Phalke</option>
+      <option value="Aditya Vasekar">Aditya Vasekar</option>
       <option value="Akshay Zolekar">Akshay Zolekar</option>
       <option value="Amit Jadhav">Amit Jadhav</option>
       <option value="Amit Kumar">Amit Kumar</option>
@@ -77,7 +78,6 @@ Location - @Trendy Community hall
       <option value="Ankit patel">Ankit patel</option>
       <option value="Ashish Bajaj">Ashish Bajaj</option>
       <option value="Avik Bhowmik">Avik Bhowmik</option>
-      <option value="Deepak D Ghaisas">Deepak D Ghaisas</option>
       <option value="Deepak Gidwani">Deepak Gidwani</option>
       <option value="Deepak Jha">Deepak Jha</option>
       <option value="Deepak Rout">Deepak Rout</option>
@@ -120,9 +120,33 @@ Location - @Trendy Community hall
     </select>
     <div id='contentArea'></div>
   <script>
+function formatIndianNumber(num) {
+  let formatted;
+
+  if (num >= 10000000) {
+    const crore = num / 10000000;
+    formatted = removeTrailingZero(crore) + ' crore';
+  } else if (num >= 100000) {
+    const lakh = num / 100000;
+    formatted = removeTrailingZero(lakh) + ' lakh';
+  } else if (num >= 1000) {
+    const thousand = num / 1000;
+    formatted = removeTrailingZero(thousand) + 'K';
+  } else {
+    formatted = num.toString();
+  }
+
+  return '\u20B9' + formatted;
+}
+
+function removeTrailingZero(value) {
+  return value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
+}
+
     const IsAuctionData = false;
     const players = {
       "Aarit Vijay Phalke": { name: "Aarit Vijay Phalke", towerFlat: "T31-2108", mobile: "8605451999", unavailability: "", role: "All Rounder", photo: "IMG20250914175258 - Vijay Phalke.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
+      "Aditya Vasekar": { name: "Aditya Vasekar", towerFlat: "T30-1308", mobile: "9405928504", unavailability: "", role: "All Rounder", photo: "Aditya_Vasekar.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "250000" },
       "Akshay Zolekar": { name: "Akshay Zolekar", towerFlat: "32-1403", mobile: "7620098286", unavailability: "", role: "All Rounder", photo: "IMG_0654 - Akshay Zolekar.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Amit Jadhav": { name: "Amit Jadhav", towerFlat: "T32-0906", mobile: "9881677399", unavailability: "", role: "All Rounder", photo: "Amit_Jadhav.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
@@ -130,7 +154,6 @@ Location - @Trendy Community hall
       "Ankit patel": { name: "Ankit patel", towerFlat: "T-31,308", mobile: "7415555965", unavailability: "", role: "All Rounder", photo: "IMG_2087 - Ankit Patel.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Ashish Bajaj": { name: "Ashish Bajaj", towerFlat: "T33-1902", mobile: "9545412374", unavailability: "TBD", role: "All Rounder", photo: "63d588eb-fb7a-4954-a446-8b8baf79b41b - ASHISH BAJAJ.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Avik Bhowmik": { name: "Avik Bhowmik", towerFlat: "T30-1903", mobile: "9096041070", unavailability: "Available on all 3 dates as of now", role: "Batsman", photo: "IMG_4873 - Avik Bhowmik.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
-      "Deepak D Ghaisas": { name: "Deepak D Ghaisas", towerFlat: "40-1607", mobile: "9850829430", unavailability: "Not yet sure", role: "All Rounder", photo: "Deepal_ghaisas.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Deepak Gidwani": { name: "Deepak Gidwani", towerFlat: "T30-1702", mobile: "9527516903", unavailability: "", role: "All Rounder", photo: "Deepak Gidwani.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Deepak Jha": { name: "Deepak Jha", towerFlat: "T33- 1004", mobile: "9820779419", unavailability: "", role: "All Rounder", photo: "Deepak - Deepak Jha.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Deepak Rout": { name: "Deepak Rout", towerFlat: "T36-1608", mobile: "9579661955", unavailability: "16th", role: "All Rounder", photo: "Deepak Raut Trendy Cricket.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
@@ -224,7 +247,7 @@ function showDetails() {
     innerHtml += `<p style='margin:2px 0;'><b>Role:</b> ${p.role || ''}</p>`
     if(!IsAuctionData && p.basePrice && p.basePrice.trim() !== '') {
         let base = Number(p.basePrice.replace(/,/g,''));
-        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);
+        let formattedBase = formatIndianNumber(base)
         innerHtml += `<p style='margin:2px 0;'><b>Base Price:</b> ${formattedBase}</p>`;
     }
     innerHtml += `</div>`;
@@ -234,7 +257,7 @@ function showDetails() {
         innerHtml += `<p style='margin:2px 0;'><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;
     } else {
         let bidNumber = Number(p.soldAt.replace(/,/g, ''));
-        let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);
+        let formattedBid = formatIndianNumber(bidNumber)
         innerHtml += `<p style='margin:2px 0;'><b>Final Bid:</b> ${formattedBid}</p>`;
     }
     innerHtml += `<p style='margin:2px 0;'><b>Sold To Team:</b> ${p.toTeam || ''}</p>`;
@@ -259,16 +282,16 @@ function showOwnerDetails() {
     html += `<p>Team: ${o.teamName || ''}</p>`;
     if(!IsAuctionData && o.basePrice && o.basePrice.trim() !== '') {
         let base = Number(o.basePrice.replace(/,/g,''));
-        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);
+        let formattedBase = formatIndianNumber(base)
         html += `<p><b>Base Price:</b> ${formattedBase}</p>`;
     }
     if(o.sheetData && o.sheetData.length > 0){
         html += `<div style='display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;'>`;
         o.sheetData.forEach((r, index) => {
             let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;
-            let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';
+        let formattedBid = formatIndianNumber(bid)
             let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;
-            let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';
+        	let formattedBase = formatIndianNumber(base)
             let mobileMasked = r['Mobile'] || '';
             if(mobileMasked.length > 4) {
                 mobileMasked = '*'.repeat(mobileMasked.length - 4) + mobileMasked.slice(-4);
@@ -317,7 +340,7 @@ if(IsAuctionData) {
             card.style.padding = '8px';
             card.style.background = '#fff';
             let photo = p.photo && p.photo.trim() !== '' ? p.photo : 'Image_Not_Given.png';
-            let formattedBid = p.soldAt ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(Number(p.soldAt.replace(/,/g,''))) : '';
+            let formattedBid = formatIndianNumber(p.soldAt)
             card.innerHTML = `<p style='margin:4px 0; font-weight:bold;'>${p.name}</p>` +
                              `<div style='position:relative;'><img src='PlayersPhoto/${photo}' style='width:100%; border-radius:8px;'>` +
                              `<div style='position:absolute; top:0; left:-40px; transform:rotate(-45deg); width:200%; text-align:center; background:rgba(255,0,0,0.7); color:white; font-weight:bold; font-size:16px;'>SOLD</div></div>` +
