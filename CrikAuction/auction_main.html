@@ -2247,7 +2247,7 @@ function formatINR(num) {
 }
 
 function removeTrailingZero(value) {
-  return value % 1 === 0 ? value.toFixed(0) : value.toFixed(1);
+  return value % 1 === 0 ? value.toFixed(0) : value.toFixed(2);
 }
 
 function convertInrToNumber(inrString) {
