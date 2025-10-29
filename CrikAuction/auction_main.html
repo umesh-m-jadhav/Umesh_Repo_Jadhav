@@ -2387,7 +2387,9 @@ function calculateToBeBidBalance(availableBalance, numberOfUnSoldPlayer) {
     console.error("Invalid input: Both Available Balance and Number of Unsold Player must be valid numbers.");
     return null; 
   }
-
+  if(numberOfUnSoldPlayer==0){
+	return 0;
+  }
   // 2. Core Calculation: Balance = Available Balance - Number of Unsold Player
   exceptNumberOfUnSoldPlayer = numberOfUnSoldPlayer-1;
   //To-Do check why PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW used
