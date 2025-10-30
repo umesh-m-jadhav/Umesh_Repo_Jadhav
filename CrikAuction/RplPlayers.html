@@ -57,14 +57,14 @@ Location - @Trendy Community hall
 </div>
     <select id='ownerSelect' onchange='showOwnerDetails()'>
       <option value=''>-- Select Team - Owner --</option>
-      <option value="Janjira Marines">Janjira Marines - Sandesh Kadam</option>
-      <option value="Lohgad Giants">Lohgad Giants - Swapnil Chafale</option>
-      <option value="Pratapgad Warrior">Pratapgad Warrior - Atharva jadhav</option>
-      <option value="Rajgad Capital">Rajgad Capital - Umesh Jadhav</option>
-      <option value="Rajmachi Lions">Rajmachi Lions - Atul Gupta</option>
-      <option value="Shivaneri Lions">Shivaneri Lions - Yogesh Lalwani</option>
-      <option value="Suvarnadurg Chams">Suvarnadurg Chams - Manish Kadu</option>
-      <option value="Torna Tigers">Torna Tigers - Atharva Kunjir</option>
+      <option value="Janjira Marines" ownerName="Sandesh Kadam">Janjira Marines - Sandesh Kadam</option>
+      <option value="Lohgad Giants" ownerName="Swapnil Chafale">Lohgad Giants - Swapnil Chafale</option>
+      <option value="Pratapgad Warrior" ownerName="Atharva jadhav">Pratapgad Warrior - Atharva jadhav</option>
+      <option value="Rajgad Capital" ownerName="Umesh Jadhav">Rajgad Capital - Umesh Jadhav</option>
+      <option value="Rajmachi Lions" ownerName="Atul Gupta">Rajmachi Lions - Atul Gupta</option>
+      <option value="Shivaneri Lions" ownerName="Yogesh Lalwani">Shivaneri Lions - Yogesh Lalwani</option>
+      <option value="Suvarnadurg Chams" ownerName="Manish Kadu">Suvarnadurg Chams - Manish Kadu</option>
+      <option value="Torna Tigers" ownerName="Atharva Kunjir">Torna Tigers - Atharva Kunjir</option>
     </select>
     <div id='ownerArea'></div>
     <select id='playerSelect' onchange='showDetails()'>
@@ -271,10 +271,13 @@ function showDetails() {
         </div>`;
 }
 function showOwnerDetails() {
-    const ownerName = document.getElementById('ownerSelect').value;
+    const ownerDropDown = document.getElementById('ownerSelect');
+    const teamName = ownerDropDown.value;
+    const selectedOption = ownerDropDown.options[ownerDropDown.selectedIndex];
+    const ownerName = selectedOption.getAttribute('ownername');
     const ownerArea = document.getElementById('ownerArea');
-    if (!ownerName) { ownerArea.innerHTML = ''; return; }
-    const o = owners[ownerName] || {};
+    if (!teamName) { ownerArea.innerHTML = ''; return; }
+    const o = owners[teamName] || {};
     let html = '';
     html += `<div class='profile-section'>`;
     html += `<img src='PlayersPhoto/${o.photoURL}' alt='Owner Photo' style='max-width:120px; border-radius:12px; margin-bottom:8px;'>`;
@@ -286,8 +289,10 @@ function showOwnerDetails() {
         html += `<p><b>Base Price:</b> ${formattedBase}</p>`;
     }
     if(o.sheetData && o.sheetData.length > 0){
+    const soldPlayersListPerTeam = o.sheetData
+     soldPlayersListPerTeam.sort((a, b) => new Date(a.AuctionedTimestamp) - new Date(b.AuctionedTimestamp));
         html += `<div style='display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;'>`;
-        o.sheetData.forEach((r, index) => {
+        soldPlayersListPerTeam.forEach((r, index) => {
             let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;
         let formattedBid = formatIndianNumber(bid)
             let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;
@@ -300,7 +305,6 @@ function showOwnerDetails() {
             html += `<div style='flex:1 1 200px; border:1px solid #ccc; border-radius:10px; padding:10px; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-size:14px;'>`;
             html += `<p style='margin:2px 0;'><b>Player No:</b> ${index+1}</p>`;
             html += `<p style='margin:2px 0;'><b>Name:</b> ${r['Name'] || ''}</p>`;
-            html += `<p style='margin:2px 0;'><b>Mobile:</b> ${mobileMasked}</p>`;
             html += `<p style='margin:2px 0;'><b>Bid Amount:</b> ${formattedBid}</p>`;
             if(!IsAuctionData) html += `<p style='margin:2px 0;'><b>Base Price:</b> ${formattedBase}</p>`;
             html += `<p style='margin:2px 0;'><b>Unavailability:</b> ${unavailability}</p>`;
