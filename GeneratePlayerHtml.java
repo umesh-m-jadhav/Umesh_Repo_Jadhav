@@ -35,34 +35,52 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class GeneratePlayerHtml {
 	
+	private static String PORTAL_NAME = "RPL (R21 Premium League) Catalogue";
 	private static String OUTPUT_HTML_FILE = "RplPlayers.html";
 	
 	private static String baseFolder = "F:\\social\\AuctionCode\\CrikAuction\\";
 	private static String defaultExcelPath = baseFolder + "DataFile\\Player_List.xlsx";
 	private static  String auctionFolder = "C:\\Users\\Admin\\Downloads";
 	private static String outputPath = baseFolder + OUTPUT_HTML_FILE;
-   
-	//private static String localClonedRepoPath = "F:\\social\\AuctionCode\\CrikAuction\\Clone_Umesh_Repo_Jadhav";
-	//private static String remoteUrl = "https://github.com/umesh-m-jadhav/Umesh_Repo_Jadhav.git";
-	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/CrikAuction";
+   	
+	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/CrikAuction/";
 	private static final String BRANCH = "main"; // branch to upload to
 	private static ScheduledExecutorService scheduler;
 	  
-	private static String token = "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";
+	private static String token = "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";
 	
 	private static boolean isAtleastOneSoldDataAvailable = false;
-	private static boolean isAllPlayersSoldOut = true;
+	private static boolean isAllPlayersSoldOut = false;
 	
-	private static boolean IsAuctionStarted = true;
-	private static boolean IsAuctionData = true;
-	private static boolean isUploadToGit = true;
-	private static boolean testSupportNeeded = true;
+	private static boolean IsAuctionStarted = false;
+	private static boolean IsAuctionData = false;
+	private static boolean isUploadToGit = false;
+	private static boolean testSupportNeeded = false;
 	private static boolean isRefreshNeeded = false;
 	
 	private static HttpURLConnection getConn = null;
 	private static HttpURLConnection conn = null;
-		
+	private static int totalNumberOfPlayers = 0;
+	//2 MINS
+	private static int SCHEDULER_TIMING_IN_SEC = 120;
+	//30 SEC
+	//private static int SCHEDULER_TIMING_IN_SEC = 30;
+	
 	public static void main(String[] args) {
+		String tokenFromCommandLine = null;
+		if(args!=null && args.length>0) {
+			tokenFromCommandLine = args[0];
+		}
+		
+		if(tokenFromCommandLine!=null && tokenFromCommandLine.length()>0) {
+			System.out.println("Reading token from command line " + tokenFromCommandLine);
+			token = tokenFromCommandLine;
+		}
+		if(testSupportNeeded) {
+			System.out.println("********This is Test Jar*******(TestRplPlayers.html)***************");
+		} else {
+			System.out.println("********This is Live Jar******(RplPlayers.html)****************");
+		}
 		if(testSupportNeeded) {
 			OUTPUT_HTML_FILE = "Test"+OUTPUT_HTML_FILE;
 			outputPath = baseFolder + OUTPUT_HTML_FILE;
@@ -97,12 +115,11 @@ public class GeneratePlayerHtml {
         System.out.println("HTML generated successfully.");
         System.out.println("Source File: " + excelPath);
         System.out.println("Output File: " + outputPath);
-        System.out.println("Total Players: " + players.size());
+        System.out.println("Total Players: " + totalNumberOfPlayers);
         System.out.println("Total Owners: " + ownerDataMap.size());
         
         if(isUploadToGit) {
 	        System.out.println("GIT upoaded started....");
-	        //uploadFileToGit();
 	        uploadFileToGitHubUsingRest();
 	        System.out.println("GIT upoaded finished....");
         }
@@ -120,8 +137,8 @@ public class GeneratePlayerHtml {
                     System.out.println("[" + new java.util.Date() + "] IsAuctionData..." + IsAuctionData);
                     System.out.println("[" + new java.util.Date() + "] isUploadToGit..." + isUploadToGit);
                     System.out.println("[" + new java.util.Date() + "] testSupportNeeded..." + testSupportNeeded);
+                    System.out.println("[" + new java.util.Date() + "] SCHEDULER_TIMING_IN_SEC..." + SCHEDULER_TIMING_IN_SEC);
                     
-                    //uploadFileToGitHubUsingRest();
                     mainAuctionLogic();
                     System.out.println("[" + new java.util.Date() + "] Upload task finished successfully.");
                     System.out.println();
@@ -134,8 +151,8 @@ public class GeneratePlayerHtml {
         };
 
         // Run immediately, then every 60 seconds (customize as needed)
-        scheduler.scheduleAtFixedRate(uploadTask, 0, 120, TimeUnit.SECONDS);
-
+        scheduler.scheduleAtFixedRate(uploadTask, 0, SCHEDULER_TIMING_IN_SEC, TimeUnit.SECONDS);
+               
         // Add shutdown hook for clean exit
         //Runtime.getRuntime().addShutdownHook(new Thread(() -> stopGitHubUploadScheduler()));
         
@@ -170,56 +187,7 @@ public class GeneratePlayerHtml {
             }
         }
     }
-
-    /**
-    private static void uploadFileToGit() {
-        Git git = null;
-        try {
-            File repoDir = new File(localClonedRepoPath);
-
-            // Open existing repo or clone if not exists
-            if (repoDir.exists()) {
-                git = Git.open(repoDir);
-            } else {
-                git = Git.cloneRepository()
-                        .setURI(remoteUrl)
-                        .setDirectory(repoDir)
-                        .setCredentialsProvider(new UsernamePasswordCredentialsProvider("umesh-m-jadhav", token))
-                        .call();
-            }
-
-            // Path to the file in the repo
-            Path targetPath = Paths.get(localClonedRepoPath, OUTPUT_HTML_FILE);
-
-            // Overwrite file
-            Files.copy(Paths.get(outputPath), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-            // Force add the file (update index even if only content/case changed)
-            git.add().addFilepattern(OUTPUT_HTML_FILE).setUpdate(true).call();
-
-            // Commit, allowing empty commit to force push even if Git thinks no changes
-            git.commit()
-               .setMessage("Upload "+OUTPUT_HTML_FILE +" via Java + JGit (force overwrite)")
-               .setAllowEmpty(true)  // <-- this allows commit even if git sees no changes
-               .call();
-
-            // Push to remote
-            git.push()
-               .setCredentialsProvider(new UsernamePasswordCredentialsProvider("umesh-m-jadhav", token))
-               .setRemote("origin")
-               .setRefSpecs(new RefSpec("refs/heads/main:refs/heads/main"))
-               .call();
-
-            System.out.println(OUTPUT_HTML_FILE + " uploaded successfully (force overwrite)!");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (git != null) git.close();
-        }
-    }
-		**/
-    
+       
     private static void uploadFileToGitHubUsingRest() {
         BufferedReader br = null;
 
@@ -333,7 +301,7 @@ public class GeneratePlayerHtml {
     }
 
     private static List<Player> readPlayersFromExcel(String excelFilePath, boolean IsAuctionData) {
-        List<Player> players = new ArrayList<>();
+        List<Player> playerList = new ArrayList<>();
         DataFormatter formatter = new DataFormatter();
 
         try (FileInputStream fis = new FileInputStream(excelFilePath);
@@ -341,7 +309,7 @@ public class GeneratePlayerHtml {
 
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = sheet.iterator();
-            if (!iterator.hasNext()) return players;
+            if (!iterator.hasNext()) return playerList;
 
             Row headerRow = iterator.next();
             Map<String, Integer> colMap = new HashMap<>();
@@ -349,12 +317,21 @@ public class GeneratePlayerHtml {
                 String header = formatter.formatCellValue(cell).trim();
                 colMap.put(header, cell.getColumnIndex());
             }
-
-            while (iterator.hasNext()) {
-                Row row = iterator.next();
+           
+            for (Row row : sheet) {
+            	if(row==null) {
+                	continue;
+                }
+            	//Do not consider header in loop
+                if(row.getRowNum()==0) {
+                	continue;
+                }
                 Player p = new Player();
-
                 p.name = getValue(formatter, row, colMap.get("Name"));
+                if(p.name==null || p.name.trim()=="") {
+                	continue;
+                }
+                
                 p.towerFlat = getValue(formatter, row, colMap.get("TowerFlat"));
                 p.mobile = getValue(formatter, row, colMap.get("Mobile"));
                 p.unavailability = getValue(formatter, row, colMap.get("Unavailability"));
@@ -368,21 +345,30 @@ public class GeneratePlayerHtml {
                 if (!IsAuctionData) {
                     p.basePrice = getValue(formatter, row, colMap.get("BasePrice"));
                 }
-
-                if (p.name != null && !p.name.trim().isEmpty()) {
-                    players.add(p);
-                }
-                if (IsAuctionData)
-                	if(p.soldAt != null && p.soldAt.trim()!="") {
-                		if(!isAtleastOneSoldDataAvailable ) {
-                			isAtleastOneSoldDataAvailable= true;
-                		}
-                		if(isAllPlayersSoldOut) {
-                			isAllPlayersSoldOut = true;
-                		}
-                	} else {
-                		isAllPlayersSoldOut = false;
-                	}
+                playerList.add(p);
+            }
+            totalNumberOfPlayers = playerList.size();
+            //Check if at least one player get sold out so that we can show a message "Auction is started"
+            if (IsAuctionData) {
+	            for (Player player : playerList) {
+	                String soldAt = player.soldAt;
+	                if(soldAt != null && soldAt.trim()!="") {
+	                	isAtleastOneSoldDataAvailable= true;
+	                	break;
+	                }
+	            }
+	            //Check if all player get sold out so that we can show a message "Auction is over"
+	            if(isAtleastOneSoldDataAvailable) {
+	            	for (Player player : playerList) {
+		                String soldAt = player.soldAt;
+		                if(soldAt!=null && soldAt.trim()!="") {
+		                	isAllPlayersSoldOut = true;
+		                } else {
+		                	isAllPlayersSoldOut = false;
+		                	break;
+		                }
+		            }
+	            }
             }
 
         } catch (Exception e) {
@@ -390,8 +376,8 @@ public class GeneratePlayerHtml {
             e.printStackTrace();
         }
 
-        players.sort(Comparator.comparing(p -> Optional.ofNullable(p.name).orElse("").toLowerCase()));
-        return players;
+        playerList.sort(Comparator.comparing(p -> Optional.ofNullable(p.name).orElse("").toLowerCase()));
+        return playerList;
     }
 
     private static Map<String, OwnerData> readOwnerSheetsFromExcel(String excelFilePath) {
@@ -477,7 +463,7 @@ public class GeneratePlayerHtml {
         return formatter.formatCellValue(cell).trim();
     }
 
-    private static void generateHtml(List<Player> players, Map<String, OwnerData> ownerDataMap, String outputPath, boolean IsAuctionData) {
+    private static void generateHtml(List<Player> playerList, Map<String, OwnerData> ownerDataMap, String outputPath, boolean IsAuctionData) {
         
         try (PrintWriter out = new PrintWriter(new FileWriter(outputPath))) {
 
@@ -486,7 +472,11 @@ public class GeneratePlayerHtml {
             out.println("<head>");
             out.println("  <meta charset='UTF-8'>");
             out.println("  <meta name='viewport' content='width=device-width, initial-scale=1.0'>");
-            out.println("  <title>RPL (R21 Premium League) Catalogue</title>");
+            if(testSupportNeeded) {
+            	out.println("  <title> Test-" + PORTAL_NAME + "</title>");
+            }else {
+            	out.println("  <title>" + PORTAL_NAME + "</title>");
+            }
             out.println("  <style>");
             out.println("    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background: #f5f7fa; color: #333; }");
             out.println("    .container { max-width: 820px; margin: auto; }");
@@ -523,18 +513,32 @@ public class GeneratePlayerHtml {
             out.println("  </style>");
             out.println("</head>");
             out.println("<body>");
+            if(testSupportNeeded) {
+	            out.println("  <div class='container'>");
+	            out.println("    <div class='header'>");
+	            out.println("      <h2>Test Portal</h2>");
+	            out.println("    </div> <BR>");
+            }
             out.println("  <div class='container'>");
             out.println("    <div class='header'>");
-            out.println("      <h2>RPL (R21 Premium League) Catalogue</h2>");
+            out.println("      <h2>"+PORTAL_NAME+"</h2>");
             out.println("    </div>");
-
             // --- Auction Highlight ---
+            System.out.println("****totalNumberOfPlayers " + totalNumberOfPlayers);
+            System.out.println("****isAtleastOneSoldDataAvailable " + isAtleastOneSoldDataAvailable);
+            System.out.println("****isAllPlayersSoldOut " + isAllPlayersSoldOut);
+            try {
+            	System.out.println("****Sold Players " + playerList.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count());
+            	System.out.println("****Remaining Players " + (totalNumberOfPlayers - playerList.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count()));
+            } catch(Exception e) {
+            	e.printStackTrace();
+            }
             if (IsAuctionStarted) {
             	if (isAllPlayersSoldOut) {
 	                out.println("<div style='text-align:center; font-size:26px; font-weight:bold; color:white; " +
 	                        "background: linear-gradient(90deg, #ff1744, #f50057); " +
 	                        "padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); " +
-	                        "letter-spacing:1px;'>The auction is officially over! " +players.size()+ " players has been successfully sold.</div>");
+	                        "letter-spacing:1px;'>The auction is officially over! " +totalNumberOfPlayers+ " players has been successfully sold.</div>");
 	            }else if (isAtleastOneSoldDataAvailable) {
 	                	    // Container with dancing animation
 	            	    out.println("<div class='auction-dancing'>");
@@ -545,15 +549,15 @@ public class GeneratePlayerHtml {
 	            	    out.println("<div style='display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px;'>");
 
 	            	    out.println("<div style='background: #4caf50; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
-	            	    out.println("<b>Total Players</b><br>" + players.size());
+	            	    out.println("<b>Total Players</b><br>" + totalNumberOfPlayers);
 	            	    out.println("</div>");
 
 	            	    out.println("<div style='background: #2196f3; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
-	            	    out.println("<b>Sold Players</b><br>" + players.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count());
+	            	    out.println("<b>Sold Players</b><br>" + playerList.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count());
 	            	    out.println("</div>");
 
 	            	    out.println("<div style='background: #ff9800; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
-	            	    out.println("<b>Remaining Players</b><br>" + (players.size() - players.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count()));
+	            	    out.println("<b>Remaining Players</b><br>" + (totalNumberOfPlayers - playerList.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count()));
 	            	    out.println("</div>");
 
 	            	    out.println("</div>"); // end cards container
@@ -569,7 +573,7 @@ public class GeneratePlayerHtml {
             	    out.println("<div style='display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px;'>");
 
             	    out.println("<div style='background: #4caf50; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>");
-            	    out.println("<b>1st Nov, 2025</b><br>" +"12pm to 3pm </b><br>");
+            	    out.println("<b>1st Nov, 2025</b><br>" +"11:30am to 2:30pm </b><br>");
             	    out.println("Location - @Trendy Community hall");
             	    out.println("</div>");
             	    out.println("</div>"); // end cards container
@@ -586,7 +590,7 @@ public class GeneratePlayerHtml {
                         String team  = entry.getKey();
                         String owner = entry.getValue().name != null ? entry.getValue().name : "";
                         String display = team + " - " + owner;
-                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(team), escapeHtml(display));
+                        out.printf("      <option value=\"%s\" ownerName=\"%s\">%s</option>%n", escapeHtmlAttr(team), escapeHtmlAttr(owner), escapeHtml(display));
                     });
             out.println("    </select>");
             out.println("    <div id='ownerArea'></div>");
@@ -598,7 +602,7 @@ public class GeneratePlayerHtml {
 	            	// --- Dropdown 1: Not yet Auctioned players ---
 	            	out.println("    <select id='playerSelect' onchange='showDetails()'>");
 	                out.println("    <option value=''>Select Players (Not yet Auctioned)</option>");
-	                for (Player p : players) {
+	                for (Player p : playerList) {
 	                    if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt ==null ||  p.soldAt.trim()=="")) {
 	                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
 	                    }
@@ -607,8 +611,8 @@ public class GeneratePlayerHtml {
             	}
                 // --- Dropdown 2: Auction Completed players ---
                 out.println("    <select id='playerSelectCompleted' onchange='showDetails()' style='margin:0px;'>");
-                out.println("      <option value=''>Select Players (Auction Completed)</option>");
-                for (Player p : players) {
+                out.println("      <option value=''>Select Players (Sold Out)</option>");
+                for (Player p : playerList) {
                     if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt != null && !p.soldAt.trim().isEmpty())) {
                         out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
                     }
@@ -618,7 +622,7 @@ public class GeneratePlayerHtml {
             }else {
             	out.println("    <select id='playerSelect' onchange='showDetails()'>");
             	out.println("      <option value=''>-- Select Player --</option>");
-            	for (Player p : players) {
+            	for (Player p : playerList) {
                     if (p.name != null && !p.name.trim().isEmpty()) {
                         out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
                     }
@@ -632,11 +636,36 @@ public class GeneratePlayerHtml {
 
             // --- JS ---
             out.println("  <script>");
+            
+            out.println("function formatIndianNumber(num) {");
+            out.println("  let formatted;");
+            out.println("");
+            out.println("  if (num >= 10000000) {");
+            out.println("    const crore = num / 10000000;");
+            out.println("    formatted = removeTrailingZero(crore) + ' crore';");
+            out.println("  } else if (num >= 100000) {");
+            out.println("    const lakh = num / 100000;");
+            out.println("    formatted = removeTrailingZero(lakh) + ' lakh';");
+            out.println("  } else if (num >= 1000) {");
+            out.println("    const thousand = num / 1000;");
+            out.println("    formatted = removeTrailingZero(thousand) + 'K';");
+            out.println("  } else {");
+            out.println("    formatted = num.toString();");
+            out.println("  }");
+            out.println("");
+            out.println("  return '\\u20B9' + formatted;"); 
+            out.println("}");
+            out.println("");
+            out.println("function removeTrailingZero(value) {");
+            out.println("  return value % 1 === 0 ? value.toFixed(0) : value.toFixed(2);");
+            out.println("}");
+            out.println("");
+            
             out.println("    const IsAuctionData = " + IsAuctionData + ";");
             
             // Players data
             out.println("    const players = {");
-            for (Player p : players) {
+            for (Player p : playerList) {
                 out.printf("      \"%s\": { name: \"%s\", towerFlat: \"%s\", mobile: \"%s\", unavailability: \"%s\", role: \"%s\", photo: \"%s\", soldAt: \"%s\", toTeam: \"%s\", toOwner: \"%s\", ownerMobile: \"%s\", basePrice: \"%s\" },%n",
                         escapeJsKey(p.name), escapeJs(p.name), escapeJs(p.towerFlat), escapeJs(p.mobile),
                         escapeJs(p.unavailability), escapeJs(p.role), escapeJs(p.photoURL),
@@ -654,7 +683,7 @@ public class GeneratePlayerHtml {
                         toJsonArray(entry.getValue().sheetData));
             }
             out.println("    };");
-
+                       
          // --- Show player details ---
             out.println("function showDetails() {");
             out.println("    const select1 = document.getElementById('playerSelect');");
@@ -710,7 +739,8 @@ public class GeneratePlayerHtml {
 
             out.println("    if(!IsAuctionData && p.basePrice && p.basePrice.trim() !== '') {");
             out.println("        let base = Number(p.basePrice.replace(/,/g,''));");
-            out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
+            //out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
+            out.println("        let formattedBase = formatIndianNumber(base)");
             out.println("        innerHtml += `<p style='margin:2px 0;'><b>Base Price:</b> ${formattedBase}</p>`;");
             out.println("    }");
             out.println("    innerHtml += `</div>`;");
@@ -723,7 +753,8 @@ public class GeneratePlayerHtml {
             out.println("        innerHtml += `<p style='margin:2px 0;'><b>Final Bid:</b> <span style='color:red'>This will be decided Post Auction. Auction is scheduled on 1st Nov</span></p>`;");
             out.println("    } else {");
             out.println("        let bidNumber = Number(p.soldAt.replace(/,/g, ''));");
-            out.println("        let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);");
+            //out.println("        let formattedBid = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(bidNumber);");
+            out.println("        let formattedBid = formatIndianNumber(bidNumber)");
             out.println("        innerHtml += `<p style='margin:2px 0;'><b>Final Bid:</b> ${formattedBid}</p>`;");
             out.println("    }");
 
@@ -739,14 +770,16 @@ public class GeneratePlayerHtml {
             out.println("            <div style='max-width:400px; margin:auto; text-align:center;'>${innerHtml}</div>");
             out.println("        </div>`;");
             out.println("}");
-
             
          // --- Owner JS Function (Horizontal Cards) ---
             out.println("function showOwnerDetails() {");
-            out.println("    const ownerName = document.getElementById('ownerSelect').value;");
+            out.println("    const ownerDropDown = document.getElementById('ownerSelect');");
+            out.println("    const teamName = ownerDropDown.value;");
+            out.println("    const selectedOption = ownerDropDown.options[ownerDropDown.selectedIndex];");
+            out.println("    const ownerName = selectedOption.getAttribute('ownername');");
             out.println("    const ownerArea = document.getElementById('ownerArea');");
-            out.println("    if (!ownerName) { ownerArea.innerHTML = ''; return; }");
-            out.println("    const o = owners[ownerName] || {};");
+            out.println("    if (!teamName) { ownerArea.innerHTML = ''; return; }");
+            out.println("    const o = owners[teamName] || {};");
             out.println("    let html = '';");
             out.println("    html += `<div class='profile-section'>`;");
             out.println("    html += `<img src='PlayersPhoto/${o.photoURL}' alt='Owner Photo' style='max-width:120px; border-radius:12px; margin-bottom:8px;'>`;");
@@ -754,16 +787,21 @@ public class GeneratePlayerHtml {
             out.println("    html += `<p>Team: ${o.teamName || ''}</p>`;");
             out.println("    if(!IsAuctionData && o.basePrice && o.basePrice.trim() !== '') {");
             out.println("        let base = Number(o.basePrice.replace(/,/g,''));");
-            out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
+            //out.println("        let formattedBase = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(base);");
+            out.println("        let formattedBase = formatIndianNumber(base)");
             out.println("        html += `<p><b>Base Price:</b> ${formattedBase}</p>`;");
             out.println("    }");
             out.println("    if(o.sheetData && o.sheetData.length > 0){");
+            out.println("    const soldPlayersListPerTeam = o.sheetData");
+            out.println("     soldPlayersListPerTeam.sort((a, b) => new Date(a.AuctionedTimestamp) - new Date(b.AuctionedTimestamp));");
             out.println("        html += `<div style='display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;'>`;"); // flex container
-            out.println("        o.sheetData.forEach((r, index) => {");
+            out.println("        soldPlayersListPerTeam.forEach((r, index) => {");
             out.println("            let bid = r['BidAmount'] ? Number(r['BidAmount'].replace(/,/g,'')) : 0;");
-            out.println("            let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';");
+            //out.println("            let formattedBid = bid ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(bid) : '';");
+            out.println("        let formattedBid = formatIndianNumber(bid)");
             out.println("            let base = r['BasePrice'] ? Number(r['BasePrice'].replace(/,/g,'')) : 0;");
-            out.println("            let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';");
+            //out.println("            let formattedBase = base ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(base) : '';");
+            out.println("        	let formattedBase = formatIndianNumber(base)");
             out.println("            let mobileMasked = r['Mobile'] || '';");
             out.println("            if(mobileMasked.length > 4) {");
             out.println("                mobileMasked = '*'.repeat(mobileMasked.length - 4) + mobileMasked.slice(-4);");
@@ -771,9 +809,11 @@ public class GeneratePlayerHtml {
             out.println("            let unavailability = r['Unavailability'] || 'Full Availability';");  // <-- new row
 
             out.println("            html += `<div style='flex:1 1 200px; border:1px solid #ccc; border-radius:10px; padding:10px; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); font-size:14px;'>`;");
-            out.println("            html += `<p style='margin:2px 0;'><b>Player No:</b> ${index+1}</p>`;");
+            if (!isAllPlayersSoldOut) {
+            	out.println("            html += `<p style='margin:2px 0;'><b>Player No:</b> ${index+1}</p>`;");
+            }
             out.println("            html += `<p style='margin:2px 0;'><b>Name:</b> ${r['Name'] || ''}</p>`;");
-            out.println("            html += `<p style='margin:2px 0;'><b>Mobile:</b> ${mobileMasked}</p>`;");
+            //out.println("            html += `<p style='margin:2px 0;'><b>Mobile:</b> ${mobileMasked}</p>`;");
             out.println("            html += `<p style='margin:2px 0;'><b>Bid Amount:</b> ${formattedBid}</p>`;");
             out.println("            if(!IsAuctionData) html += `<p style='margin:2px 0;'><b>Base Price:</b> ${formattedBase}</p>`;");
             out.println("            html += `<p style='margin:2px 0;'><b>Unavailability:</b> ${unavailability}</p>`;"); // new row
@@ -798,7 +838,7 @@ public class GeneratePlayerHtml {
             out.println("    separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';");
             out.println("    soldOutArea.appendChild(separator);");
             
-            out.println("    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: "+ + players.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count() +"</h3>`;");
+            out.println("    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: "+ playerList.stream().filter(p -> p.soldAt != null && !p.soldAt.trim().isEmpty()).count() +"</h3>`;");
 
             out.println("    const soldContainer = document.createElement('div');");
             out.println("    soldContainer.style.display = 'flex';");
@@ -820,8 +860,8 @@ public class GeneratePlayerHtml {
             out.println("            card.style.background = '#fff';");
 
             out.println("            let photo = p.photo && p.photo.trim() !== '' ? p.photo : 'Image_Not_Given.png';");
-            out.println("            let formattedBid = p.soldAt ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(Number(p.soldAt.replace(/,/g,''))) : '';");
-
+            //out.println("            let formattedBid = p.soldAt ? new Intl.NumberFormat('en-IN', { style:'currency', currency:'INR', maximumFractionDigits:0 }).format(Number(p.soldAt.replace(/,/g,''))) : '';");
+            out.println("            let formattedBid = formatIndianNumber(p.soldAt)");
             out.println("            card.innerHTML = `<p style='margin:4px 0; font-weight:bold;'>${p.name}</p>` +");
             out.println("                             `<div style='position:relative;'><img src='PlayersPhoto/${photo}' style='width:100%; border-radius:8px;'>` +");
             out.println("                             `<div style='position:absolute; top:0; left:-40px; transform:rotate(-45deg); width:200%; text-align:center; background:rgba(255,0,0,0.7); color:white; font-weight:bold; font-size:16px;'>SOLD</div></div>` +");
