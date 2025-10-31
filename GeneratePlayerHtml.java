@@ -15,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -105,12 +104,12 @@ public class GeneratePlayerHtml {
             System.out.println("Using default player list: " + excelPath);
         }
 
-        List<Player> players = readPlayersFromExcel(excelPath, IsAuctionData);
+        List<Player> playersList = readPlayersFromExcel(excelPath, IsAuctionData);
 
         // Read owner data from Owner sheet in both cases
         Map<String, OwnerData> ownerDataMap = readOwnerSheetsFromExcel(excelPath);
 
-        generateHtml(players, ownerDataMap, outputPath, IsAuctionData);
+        generateHtml(playersList, ownerDataMap, outputPath, IsAuctionData);
 
         System.out.println("HTML generated successfully.");
         System.out.println("Source File: " + excelPath);
@@ -326,26 +325,26 @@ public class GeneratePlayerHtml {
                 if(row.getRowNum()==0) {
                 	continue;
                 }
-                Player p = new Player();
-                p.name = getValue(formatter, row, colMap.get("Name"));
-                if(p.name==null || p.name.trim()=="") {
+                Player player = new Player();
+                player.name = getValue(formatter, row, colMap.get("Name"));
+                if(player.name==null || player.name.trim()=="") {
                 	continue;
                 }
-                
-                p.towerFlat = getValue(formatter, row, colMap.get("TowerFlat"));
-                p.mobile = getValue(formatter, row, colMap.get("Mobile"));
-                p.unavailability = getValue(formatter, row, colMap.get("Unavailability"));
-                p.photoURL = getValue(formatter, row, colMap.get("PhotoURL"));
-                p.role = getValue(formatter, row, colMap.get("Role"));
-                p.soldAt = getValue(formatter, row, colMap.get("FinalBid"));
-                p.toTeam = getValue(formatter, row, colMap.get("SoldToTeam"));
-                p.toOwner = getValue(formatter, row, colMap.get("TeamOwnerName"));
-                p.ownerMobile = getValue(formatter, row, colMap.get("TeamOwnerMobile"));
-                p.bidAmount = getValue(formatter, row, colMap.get("BidAmount"));
-                if (!IsAuctionData) {
-                    p.basePrice = getValue(formatter, row, colMap.get("BasePrice"));
-                }
-                playerList.add(p);
+                player.playerType = getValue(formatter, row, colMap.get("PlayerType"));
+                player.towerFlat = getValue(formatter, row, colMap.get("TowerFlat"));
+                player.mobile = getValue(formatter, row, colMap.get("Mobile"));
+                player.unavailability = getValue(formatter, row, colMap.get("Unavailability"));
+                player.photoURL = getValue(formatter, row, colMap.get("PhotoURL"));
+                player.role = getValue(formatter, row, colMap.get("Role"));
+                player.soldAt = getValue(formatter, row, colMap.get("FinalBid"));
+                player.toTeam = getValue(formatter, row, colMap.get("SoldToTeam"));
+                player.toOwner = getValue(formatter, row, colMap.get("TeamOwnerName"));
+                player.ownerMobile = getValue(formatter, row, colMap.get("TeamOwnerMobile"));
+                player.bidAmount = getValue(formatter, row, colMap.get("BidAmount"));
+                //if (!IsAuctionData) {
+                	player.basePrice = getValue(formatter, row, colMap.get("BasePrice"));
+                //}
+                playerList.add(player);
             }
             totalNumberOfPlayers = playerList.size();
             //Check if at least one player get sold out so that we can show a message "Auction is started"
@@ -376,7 +375,7 @@ public class GeneratePlayerHtml {
             e.printStackTrace();
         }
 
-        playerList.sort(Comparator.comparing(p -> Optional.ofNullable(p.name).orElse("").toLowerCase()));
+        //playerList.sort(Comparator.comparing(player -> Optional.ofNullable(player.playerType).orElse("").toLowerCase()));
         return playerList;
     }
 
@@ -462,7 +461,35 @@ public class GeneratePlayerHtml {
         Cell cell = row.getCell(colIndex, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
         return formatter.formatCellValue(cell).trim();
     }
+    
+    public static String formatAmount(String amountStr, String name) {
+    	try {
+			double amount = Double.parseDouble(amountStr);
+			String result;
+			String rupeeSymbol = "Rs ";
+			//String rupeeSymbol = "\u20B9";
+			if (amount >= 1_00_00_000) { // 1 crore = 1,00,00,000
+			    result = String.format(rupeeSymbol+"%.2fCr", amount / 1_00_00_000);
+			} else if (amount >= 1_00_000) { // 1 lakh = 1,00,000
+			    result = String.format(rupeeSymbol+"%.2flakh", amount / 1_00_000);
+			} else if (amount >= 1_000) { // 1 thousand = 1,000
+			    result = String.format(rupeeSymbol+"%.2fK", amount / 1_000);
+			} else {
+			    result = String.format(rupeeSymbol+"%.2f", amount);
+			}
 
+			// Remove unnecessary ".00" if not needed
+			if (result.contains(".00")) {
+			    result = result.replace(".00", "");
+			}
+
+			return result;
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return name;
+		}
+    }
+    
     private static void generateHtml(List<Player> playerList, Map<String, OwnerData> ownerDataMap, String outputPath, boolean IsAuctionData) {
         
         try (PrintWriter out = new PrintWriter(new FileWriter(outputPath))) {
@@ -597,14 +624,18 @@ public class GeneratePlayerHtml {
 
             // --- Player dropdown ---
             
-            if(IsAuctionData == true){
+            if(IsAuctionData){
             	if (!isAllPlayersSoldOut) {
 	            	// --- Dropdown 1: Not yet Auctioned players ---
 	            	out.println("    <select id='playerSelect' onchange='showDetails()'>");
 	                out.println("    <option value=''>Select Players (Not yet Auctioned)</option>");
 	                for (Player p : playerList) {
 	                    if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt ==null ||  p.soldAt.trim()=="")) {
-	                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+	                    	String display = p.name;
+	                    	if(p.basePrice!=null && p.basePrice.trim()!="") {
+	                    		display = p.name + " - " + formatAmount(p.basePrice, display);
+	                    	}
+	                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(display));
 	                    }
 	                }
 	                out.println("    </select>");
@@ -614,7 +645,11 @@ public class GeneratePlayerHtml {
                 out.println("      <option value=''>Select Players (Sold Out)</option>");
                 for (Player p : playerList) {
                     if (p.name != null && !p.name.trim().isEmpty() && (p.soldAt != null && !p.soldAt.trim().isEmpty())) {
-                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+                    	String display = p.name;
+                    	if(p.soldAt!=null && p.soldAt.trim()!="") {
+                    		display = p.name + " - " + formatAmount(p.soldAt, display);
+                    	}
+                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(display));
                     }
                 }
                 out.println("    </select>");
@@ -624,7 +659,11 @@ public class GeneratePlayerHtml {
             	out.println("      <option value=''>-- Select Player --</option>");
             	for (Player p : playerList) {
                     if (p.name != null && !p.name.trim().isEmpty()) {
-                        out.printf("      <option value=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name));
+                    	String display = p.name;
+                    	if(p.basePrice!=null && p.basePrice.trim()!="") {
+                    		display = p.name + " - " + formatAmount(p.basePrice,display);
+                    	}
+                        out.printf("      <option value=\"%s\" playername=\"%s\">%s</option>%n", escapeHtmlAttr(p.name), escapeHtml(p.name), escapeHtml(display));
                     }
                 }
             	 out.println("    </select>");
@@ -953,6 +992,7 @@ public class GeneratePlayerHtml {
 
     static class Player {
         String name = "";
+        String playerType = "";
         String towerFlat = "";
         String mobile = "";
         String unavailability = "";
