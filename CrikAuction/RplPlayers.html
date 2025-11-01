@@ -46,11 +46,16 @@
     </div>
 <div class='auction-dancing'>
 <div style='text-align:center; padding:16px; border-radius:12px; margin:20px 0; color:white;'>
-<div style='font-size:18px; font-weight:bold;'>Auction is Scheduled at below</div>
+<div style='font-size:18px; font-weight:bold;'>Auction is started and in Progress</div>
 <div style='display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:12px;'>
 <div style='background: #4caf50; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>1st Nov, 2025</b><br>11:30am to 2:30pm </b><br>
-Location - @Trendy Community hall
+<b>Total Players</b><br>48
+</div>
+<div style='background: #2196f3; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
+<b>Sold Players</b><br>2
+</div>
+<div style='background: #ff9800; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
+<b>Remaining Players</b><br>46
 </div>
 </div>
 </div>
@@ -68,55 +73,58 @@ Location - @Trendy Community hall
     </select>
     <div id='ownerArea'></div>
     <select id='playerSelect' onchange='showDetails()'>
-      <option value=''>-- Select Player --</option>
-      <option value="Amit Kumar" playername="Amit Kumar">Amit Kumar - Rs 5lakh</option>
-      <option value="Kailash Konapure" playername="Kailash Konapure">Kailash Konapure - Rs 5lakh</option>
-      <option value="Priyank Joshi" playername="Priyank Joshi">Priyank Joshi - Rs 5lakh</option>
-      <option value="Sumit Kumar" playername="Sumit Kumar">Sumit Kumar - Rs 5lakh</option>
-      <option value="Saurav Lonkar" playername="Saurav Lonkar">Saurav Lonkar - Rs 2.50lakh</option>
-      <option value="HIMANSHU MUKATI" playername="HIMANSHU MUKATI">HIMANSHU MUKATI - Rs 2.50lakh</option>
-      <option value="Dhananjay Atole" playername="Dhananjay Atole">Dhananjay Atole - Rs 2.50lakh</option>
-      <option value="Deokant Kumar" playername="Deokant Kumar">Deokant Kumar - Rs 2.50lakh</option>
-      <option value="Rajeev Kumar" playername="Rajeev Kumar">Rajeev Kumar - Rs 2.50lakh</option>
-      <option value="Praveen Dubey" playername="Praveen Dubey">Praveen Dubey - Rs 2.50lakh</option>
-      <option value="Aditya Vasekar" playername="Aditya Vasekar">Aditya Vasekar - Rs 2.50lakh</option>
-      <option value="Sujit Dessai" playername="Sujit Dessai">Sujit Dessai - Rs 50K</option>
-      <option value="Ravikant Kadbe" playername="Ravikant Kadbe">Ravikant Kadbe - Rs 50K</option>
-      <option value="Deepak Rout" playername="Deepak Rout">Deepak Rout - Rs 50K</option>
-      <option value="Sarabjeet Sond" playername="Sarabjeet Sond">Sarabjeet Sond - Rs 50K</option>
-      <option value="Mitanshu Sharma" playername="Mitanshu Sharma">Mitanshu Sharma - Rs 50K</option>
-      <option value="Suraj Devgan" playername="Suraj Devgan">Suraj Devgan - Rs 50K</option>
-      <option value="Jatin Sorathiya" playername="Jatin Sorathiya">Jatin Sorathiya - Rs 50K</option>
-      <option value="Dhaval Suchak" playername="Dhaval Suchak">Dhaval Suchak - Rs 50K</option>
-      <option value="Tushar pund" playername="Tushar pund">Tushar pund - Rs 50K</option>
-      <option value="Avik Bhowmik" playername="Avik Bhowmik">Avik Bhowmik - Rs 50K</option>
-      <option value="Amit Mundra" playername="Amit Mundra">Amit Mundra - Rs 50K</option>
-      <option value="Deepak Gidwani" playername="Deepak Gidwani">Deepak Gidwani - Rs 50K</option>
-      <option value="Amit Jadhav" playername="Amit Jadhav">Amit Jadhav - Rs 50K</option>
-      <option value="Vedant Kunjir" playername="Vedant Kunjir">Vedant Kunjir - Rs 50K</option>
-      <option value="Ganesh Andhare" playername="Ganesh Andhare">Ganesh Andhare - Rs 50K</option>
-      <option value="Sujit Jadhav" playername="Sujit Jadhav">Sujit Jadhav - Rs 50K</option>
-      <option value="Akshay Zolekar" playername="Akshay Zolekar">Akshay Zolekar - Rs 50K</option>
-      <option value="Gyanesh Samal" playername="Gyanesh Samal">Gyanesh Samal - Rs 50K</option>
-      <option value="Sachin Mulay" playername="Sachin Mulay">Sachin Mulay - Rs 50K</option>
-      <option value="Aarit Vijay Phalke" playername="Aarit Vijay Phalke">Aarit Vijay Phalke - Rs 50K</option>
-      <option value="Neeraj Vishwakarma" playername="Neeraj Vishwakarma">Neeraj Vishwakarma - Rs 50K</option>
-      <option value="Piyush Mane" playername="Piyush Mane">Piyush Mane - Rs 50K</option>
-      <option value="Himanshu Bhugra" playername="Himanshu Bhugra">Himanshu Bhugra - Rs 50K</option>
-      <option value="Ravindra Mane" playername="Ravindra Mane">Ravindra Mane - Rs 50K</option>
-      <option value="Soumik Saha" playername="Soumik Saha">Soumik Saha - Rs 50K</option>
-      <option value="Mangesh Rane" playername="Mangesh Rane">Mangesh Rane - Rs 50K</option>
-      <option value="Ashish Bajaj" playername="Ashish Bajaj">Ashish Bajaj - Rs 50K</option>
-      <option value="Mayur Paithankar" playername="Mayur Paithankar">Mayur Paithankar - Rs 50K</option>
-      <option value="Deepak Jha" playername="Deepak Jha">Deepak Jha - Rs 50K</option>
-      <option value="Ankit patel" playername="Ankit patel">Ankit patel - Rs 50K</option>
-      <option value="Kunal Andhare" playername="Kunal Andhare">Kunal Andhare - Rs 50K</option>
-      <option value="Sameer Wagh" playername="Sameer Wagh">Sameer Wagh - Rs 50K</option>
-      <option value="Manish Hemnani" playername="Manish Hemnani">Manish Hemnani - Rs 50K</option>
-      <option value="Mayank Devgan" playername="Mayank Devgan">Mayank Devgan - Rs 50K</option>
-      <option value="Mahendra" playername="Mahendra">Mahendra - Rs 50K</option>
-      <option value="Gaurav Lonkar" playername="Gaurav Lonkar">Gaurav Lonkar - Rs 50K</option>
-      <option value="Madane Saheb" playername="Madane Saheb">Madane Saheb - Rs 50K</option>
+    <option value=''>Select Players (Not yet Auctioned)</option>
+      <option value="Kailash Konapure">Kailash Konapure - Rs 5lakh</option>
+      <option value="Sumit Kumar">Sumit Kumar - Rs 5lakh</option>
+      <option value="Saurav Lonkar">Saurav Lonkar - Rs 2.50lakh</option>
+      <option value="HIMANSHU MUKATI">HIMANSHU MUKATI - Rs 2.50lakh</option>
+      <option value="Dhananjay Atole">Dhananjay Atole - Rs 2.50lakh</option>
+      <option value="Deokant Kumar">Deokant Kumar - Rs 2.50lakh</option>
+      <option value="Rajeev Kumar">Rajeev Kumar - Rs 2.50lakh</option>
+      <option value="Praveen Dubey">Praveen Dubey - Rs 2.50lakh</option>
+      <option value="Aditya Vasekar">Aditya Vasekar - Rs 2.50lakh</option>
+      <option value="Sujit Dessai">Sujit Dessai - Rs 50K</option>
+      <option value="Ravikant Kadbe">Ravikant Kadbe - Rs 50K</option>
+      <option value="Deepak Rout">Deepak Rout - Rs 50K</option>
+      <option value="Sarabjeet Sond">Sarabjeet Sond - Rs 50K</option>
+      <option value="Mitanshu Sharma">Mitanshu Sharma - Rs 50K</option>
+      <option value="Suraj Devgan">Suraj Devgan - Rs 50K</option>
+      <option value="Jatin Sorathiya">Jatin Sorathiya - Rs 50K</option>
+      <option value="Dhaval Suchak">Dhaval Suchak - Rs 50K</option>
+      <option value="Tushar pund">Tushar pund - Rs 50K</option>
+      <option value="Avik Bhowmik">Avik Bhowmik - Rs 50K</option>
+      <option value="Amit Mundra">Amit Mundra - Rs 50K</option>
+      <option value="Deepak Gidwani">Deepak Gidwani - Rs 50K</option>
+      <option value="Amit Jadhav">Amit Jadhav - Rs 50K</option>
+      <option value="Vedant Kunjir">Vedant Kunjir - Rs 50K</option>
+      <option value="Ganesh Andhare">Ganesh Andhare - Rs 50K</option>
+      <option value="Sujit Jadhav">Sujit Jadhav - Rs 50K</option>
+      <option value="Akshay Zolekar">Akshay Zolekar - Rs 50K</option>
+      <option value="Gyanesh Samal">Gyanesh Samal - Rs 50K</option>
+      <option value="Sachin Mulay">Sachin Mulay - Rs 50K</option>
+      <option value="Aarit Vijay Phalke">Aarit Vijay Phalke - Rs 50K</option>
+      <option value="Neeraj Vishwakarma">Neeraj Vishwakarma - Rs 50K</option>
+      <option value="Piyush Mane">Piyush Mane - Rs 50K</option>
+      <option value="Himanshu Bhugra">Himanshu Bhugra - Rs 50K</option>
+      <option value="Ravindra Mane">Ravindra Mane - Rs 50K</option>
+      <option value="Soumik Saha">Soumik Saha - Rs 50K</option>
+      <option value="Mangesh Rane">Mangesh Rane - Rs 50K</option>
+      <option value="Ashish Bajaj">Ashish Bajaj - Rs 50K</option>
+      <option value="Mayur Paithankar">Mayur Paithankar - Rs 50K</option>
+      <option value="Deepak Jha">Deepak Jha - Rs 50K</option>
+      <option value="Ankit patel">Ankit patel - Rs 50K</option>
+      <option value="Kunal Andhare">Kunal Andhare - Rs 50K</option>
+      <option value="Sameer Wagh">Sameer Wagh - Rs 50K</option>
+      <option value="Manish Hemnani">Manish Hemnani - Rs 50K</option>
+      <option value="Mayank Devgan">Mayank Devgan - Rs 50K</option>
+      <option value="Mahendra">Mahendra - Rs 50K</option>
+      <option value="Gaurav Lonkar">Gaurav Lonkar - Rs 50K</option>
+      <option value="Madane Saheb">Madane Saheb - Rs 50K</option>
+    </select>
+    <select id='playerSelectCompleted' onchange='showDetails()' style='margin:0px;'>
+      <option value=''>Select Players (Sold Out)</option>
+      <option value="Amit Kumar">Amit Kumar - Rs 7.20lakh</option>
+      <option value="Priyank Joshi">Priyank Joshi - Rs 7.50lakh</option>
     </select>
     <div id='contentArea'></div>
   <script>
@@ -143,11 +151,11 @@ function removeTrailingZero(value) {
   return value % 1 === 0 ? value.toFixed(0) : value.toFixed(2);
 }
 
-    const IsAuctionData = false;
+    const IsAuctionData = true;
     const players = {
-      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
+      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "720000", toTeam: "Rajgad Capital", toOwner: "Umesh Jadhav", ownerMobile: "7030366880", basePrice: "500000" },
       "Kailash Konapure": { name: "Kailash Konapure", towerFlat: "T30-507", mobile: "7083147157", unavailability: "", role: "All Rounder", photo: "Kailash_Konapure.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
-      "Priyank Joshi": { name: "Priyank Joshi", towerFlat: "T37-1609", mobile: "9979504953", unavailability: "", role: "All Rounder", photo: "IMG_5652 - Priyank Joshi.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
+      "Priyank Joshi": { name: "Priyank Joshi", towerFlat: "T37-1609", mobile: "9979504953", unavailability: "", role: "All Rounder", photo: "IMG_5652 - Priyank Joshi.jpeg", soldAt: "750000", toTeam: "Janjira Marines", toOwner: "Sandesh Kadam", ownerMobile: "7276476383", basePrice: "500000" },
       "Sumit Kumar": { name: "Sumit Kumar", towerFlat: "T31-1904", mobile: "8149759914", unavailability: "Available in all", role: "All Rounder", photo: "Sumit_Kumar_Photo.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
       "Saurav Lonkar": { name: "Saurav Lonkar", towerFlat: "38-2003", mobile: "7557441144", unavailability: "", role: "All Rounder", photo: "20231112_230203 - Saurav 7.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "250000" },
       "HIMANSHU MUKATI": { name: "HIMANSHU MUKATI", towerFlat: "T32-0507", mobile: "9039827276", unavailability: "Full availability", role: "Batsman", photo: "IMG_2681 - himanshu mukati.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "250000" },
@@ -197,12 +205,12 @@ function removeTrailingZero(value) {
     const owners = {
       "Rajmachi Lions": { teamName: "Rajmachi Lions", photoURL: "Atul_gupta.JPG", basePrice: "250000", sheetData: [] },
       "Torna Tigers": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", basePrice: "300000", sheetData: [] },
-      "Janjira Marines": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", basePrice: "250000", sheetData: [] },
+      "Janjira Marines": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", basePrice: "250000", sheetData: [{"AuctionedTimestamp":"2025-11-01 08:31:16","Unavailability":"","BidAmount":"750000","Mobile":"9979504953","Name":"Priyank Joshi","TowerFlat":"T37-1609"}] },
       "Lohgad Giants": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", basePrice: "350000", sheetData: [] },
       "Shivaneri Lions": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", basePrice: "400000", sheetData: [] },
       "Suvarnadurg Chams": { teamName: "Suvarnadurg Chams", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [] },
       "Pratapgad Warrior": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", basePrice: "400000", sheetData: [] },
-      "Rajgad Capital": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [] },
+      "Rajgad Capital": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [{"AuctionedTimestamp":"2025-11-01 08:50:17","Unavailability":"","BidAmount":"720000","Mobile":"9155673500","Name":"Amit Kumar","TowerFlat":"32-1503"}] },
     };
 function showDetails() {
     const select1 = document.getElementById('playerSelect');
@@ -325,7 +333,7 @@ if(IsAuctionData) {
     separator.style.borderRadius = '6px';
     separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
     soldOutArea.appendChild(separator);
-    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 0</h3>`;
+    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 2</h3>`;
     const soldContainer = document.createElement('div');
     soldContainer.style.display = 'flex';
     soldContainer.style.flexWrap = 'wrap';
