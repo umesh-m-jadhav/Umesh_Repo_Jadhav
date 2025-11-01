@@ -52,10 +52,10 @@
 <b>Total Players</b><br>48
 </div>
 <div style='background: #2196f3; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>Sold Players</b><br>1
+<b>Sold Players</b><br>2
 </div>
 <div style='background: #ff9800; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>Remaining Players</b><br>47
+<b>Remaining Players</b><br>46
 </div>
 </div>
 </div>
@@ -74,7 +74,6 @@
     <div id='ownerArea'></div>
     <select id='playerSelect' onchange='showDetails()'>
     <option value=''>Select Players (Not yet Auctioned)</option>
-      <option value="Amit Kumar">Amit Kumar - Rs 5lakh</option>
       <option value="Kailash Konapure">Kailash Konapure - Rs 5lakh</option>
       <option value="Sumit Kumar">Sumit Kumar - Rs 5lakh</option>
       <option value="Saurav Lonkar">Saurav Lonkar - Rs 2.50lakh</option>
@@ -124,6 +123,7 @@
     </select>
     <select id='playerSelectCompleted' onchange='showDetails()' style='margin:0px;'>
       <option value=''>Select Players (Sold Out)</option>
+      <option value="Amit Kumar">Amit Kumar - Rs 7.20lakh</option>
       <option value="Priyank Joshi">Priyank Joshi - Rs 7.50lakh</option>
     </select>
     <div id='contentArea'></div>
@@ -153,7 +153,7 @@ function removeTrailingZero(value) {
 
     const IsAuctionData = true;
     const players = {
-      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
+      "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "720000", toTeam: "Rajgad Capital", toOwner: "Umesh Jadhav", ownerMobile: "7030366880", basePrice: "500000" },
       "Kailash Konapure": { name: "Kailash Konapure", towerFlat: "T30-507", mobile: "7083147157", unavailability: "", role: "All Rounder", photo: "Kailash_Konapure.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
       "Priyank Joshi": { name: "Priyank Joshi", towerFlat: "T37-1609", mobile: "9979504953", unavailability: "", role: "All Rounder", photo: "IMG_5652 - Priyank Joshi.jpeg", soldAt: "750000", toTeam: "Janjira Marines", toOwner: "Sandesh Kadam", ownerMobile: "7276476383", basePrice: "500000" },
       "Sumit Kumar": { name: "Sumit Kumar", towerFlat: "T31-1904", mobile: "8149759914", unavailability: "Available in all", role: "All Rounder", photo: "Sumit_Kumar_Photo.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "500000" },
@@ -210,7 +210,7 @@ function removeTrailingZero(value) {
       "Shivaneri Lions": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", basePrice: "400000", sheetData: [] },
       "Suvarnadurg Chams": { teamName: "Suvarnadurg Chams", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [] },
       "Pratapgad Warrior": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", basePrice: "400000", sheetData: [] },
-      "Rajgad Capital": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [] },
+      "Rajgad Capital": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [{"AuctionedTimestamp":"2025-11-01 08:50:17","Unavailability":"","BidAmount":"720000","Mobile":"9155673500","Name":"Amit Kumar","TowerFlat":"32-1503"}] },
     };
 function showDetails() {
     const select1 = document.getElementById('playerSelect');
@@ -333,7 +333,7 @@ if(IsAuctionData) {
     separator.style.borderRadius = '6px';
     separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
     soldOutArea.appendChild(separator);
-    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 1</h3>`;
+    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 2</h3>`;
     const soldContainer = document.createElement('div');
     soldContainer.style.display = 'flex';
     soldContainer.style.flexWrap = 'wrap';
