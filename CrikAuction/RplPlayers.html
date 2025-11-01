@@ -52,10 +52,10 @@
 <b>Total Players</b><br>48
 </div>
 <div style='background: #2196f3; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>Sold Players</b><br>13
+<b>Sold Players</b><br>15
 </div>
 <div style='background: #ff9800; padding:10px 16px; border-radius:8px; width:160px; font-size:14px;'>
-<b>Remaining Players</b><br>35
+<b>Remaining Players</b><br>33
 </div>
 </div>
 </div>
@@ -92,14 +92,12 @@
       <option value="Sujit Jadhav">Sujit Jadhav - Rs 50K</option>
       <option value="Akshay Zolekar">Akshay Zolekar - Rs 50K</option>
       <option value="Gyanesh Samal">Gyanesh Samal - Rs 50K</option>
-      <option value="Sachin Mulay">Sachin Mulay - Rs 50K</option>
       <option value="Aarit Vijay Phalke">Aarit Vijay Phalke - Rs 50K</option>
       <option value="Piyush Mane">Piyush Mane - Rs 50K</option>
       <option value="Himanshu Bhugra">Himanshu Bhugra - Rs 50K</option>
       <option value="Ravindra Mane">Ravindra Mane - Rs 50K</option>
       <option value="Soumik Saha">Soumik Saha - Rs 50K</option>
       <option value="Mangesh Rane">Mangesh Rane - Rs 50K</option>
-      <option value="Mayur Paithankar">Mayur Paithankar - Rs 50K</option>
       <option value="Deepak Jha">Deepak Jha - Rs 50K</option>
       <option value="Ankit patel">Ankit patel - Rs 50K</option>
       <option value="Kunal Andhare">Kunal Andhare - Rs 50K</option>
@@ -123,8 +121,10 @@
       <option value="Rajeev Kumar">Rajeev Kumar - Rs 2.60lakh</option>
       <option value="Praveen Dubey">Praveen Dubey - Rs 2.60lakh</option>
       <option value="Aditya Vasekar">Aditya Vasekar - Rs 3lakh</option>
+      <option value="Sachin Mulay">Sachin Mulay - Rs 1.40lakh</option>
       <option value="Neeraj Vishwakarma">Neeraj Vishwakarma - Rs 2.40lakh</option>
       <option value="Ashish Bajaj">Ashish Bajaj - Rs 1.10lakh</option>
+      <option value="Mayur Paithankar">Mayur Paithankar - Rs 50K</option>
     </select>
     <div id='contentArea'></div>
   <script>
@@ -182,7 +182,7 @@ function removeTrailingZero(value) {
       "Sujit Jadhav": { name: "Sujit Jadhav", towerFlat: "T33-1706", mobile: "9028050517", unavailability: "", role: "Batsman", photo: "Sujit_Jadhav_photo.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Akshay Zolekar": { name: "Akshay Zolekar", towerFlat: "32-1403", mobile: "7620098286", unavailability: "", role: "All Rounder", photo: "IMG_0654 - Akshay Zolekar.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Gyanesh Samal": { name: "Gyanesh Samal", towerFlat: "T36-1505", mobile: "8550990717", unavailability: "Available in above dates", role: "All Rounder", photo: "IMG-20250928-WA0000 - Gyanesh Samal.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
-      "Sachin Mulay": { name: "Sachin Mulay", towerFlat: "T33-0803", mobile: "8308844860", unavailability: "All dates available", role: "All Rounder", photo: "Sac-Image - Sachin Mulay.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
+      "Sachin Mulay": { name: "Sachin Mulay", towerFlat: "T33-0803", mobile: "8308844860", unavailability: "All dates available", role: "All Rounder", photo: "Sac-Image - Sachin Mulay.jpg", soldAt: "140000", toTeam: "Torna Tigers", toOwner: "Atharva Kunjir", ownerMobile: "7083882345", basePrice: "50000" },
       "Aarit Vijay Phalke": { name: "Aarit Vijay Phalke", towerFlat: "T31-2108", mobile: "8605451999", unavailability: "", role: "All Rounder", photo: "IMG20250914175258 - Vijay Phalke.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Neeraj Vishwakarma": { name: "Neeraj Vishwakarma", towerFlat: "T30-0305", mobile: "9049831155", unavailability: "Yes", role: "All Rounder", photo: "IMG_9618 - Neeraj Vishwakarma.jpeg", soldAt: "240000", toTeam: "Lohgad Giants", toOwner: "Swapnil Chafale", ownerMobile: "9766698699", basePrice: "50000" },
       "Piyush Mane": { name: "Piyush Mane", towerFlat: "T36-1307", mobile: "8767983156", unavailability: "", role: "Batsman", photo: "IMG_20250930_070252 - Mane Piyush7707.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
@@ -191,7 +191,7 @@ function removeTrailingZero(value) {
       "Soumik Saha": { name: "Soumik Saha", towerFlat: "T33-707", mobile: "9477438689", unavailability: "NA", role: "All Rounder", photo: "IMG-20231115-WA0024 - Soumik Saha.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Mangesh Rane": { name: "Mangesh Rane", towerFlat: "33-607", mobile: "7030427755", unavailability: "", role: "Bowler", photo: "IMG-20241206-WA0021 - mangesh rane.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Ashish Bajaj": { name: "Ashish Bajaj", towerFlat: "T33-1902", mobile: "9545412374", unavailability: "TBD", role: "All Rounder", photo: "63d588eb-fb7a-4954-a446-8b8baf79b41b - ASHISH BAJAJ.jpeg", soldAt: "110000", toTeam: "Shivaneri Lions", toOwner: "Yogesh Lalwani", ownerMobile: "9920485544", basePrice: "50000" },
-      "Mayur Paithankar": { name: "Mayur Paithankar", towerFlat: "T36-0703", mobile: "9766205604", unavailability: "", role: "All Rounder", photo: "Mayur_Phot_cp.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
+      "Mayur Paithankar": { name: "Mayur Paithankar", towerFlat: "T36-0703", mobile: "9766205604", unavailability: "", role: "All Rounder", photo: "Mayur_Phot_cp.JPG", soldAt: "50000", toTeam: "Suvarnadurg Champs", toOwner: "Manish Kadu", ownerMobile: "9607401470", basePrice: "50000" },
       "Deepak Jha": { name: "Deepak Jha", towerFlat: "T33- 1004", mobile: "9820779419", unavailability: "", role: "All Rounder", photo: "Deepak - Deepak Jha.jpg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Ankit patel": { name: "Ankit patel", towerFlat: "T-31,308", mobile: "7415555965", unavailability: "", role: "All Rounder", photo: "IMG_2087 - Ankit Patel.jpeg", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
       "Kunal Andhare": { name: "Kunal Andhare", towerFlat: "T39-1902", mobile: "8177811940", unavailability: "", role: "Batsman", photo: "Kunal Andhare.JPG", soldAt: "", toTeam: "", toOwner: "", ownerMobile: "", basePrice: "50000" },
@@ -204,12 +204,12 @@ function removeTrailingZero(value) {
     };
     const owners = {
       "Rajmachi Lions": { teamName: "Rajmachi Lions", photoURL: "Atul_gupta.JPG", basePrice: "250000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:25:06","Unavailability":"Available in all","BidAmount":"710000","Mobile":"8149759914","Name":"Sumit Kumar","TowerFlat":"T31-1904"},{"AuctionedTimestamp":"2025-11-01 12:45:06","Unavailability":"","BidAmount":"300000","Mobile":"9405928504","Name":"Aditya Vasekar","TowerFlat":"T30-1308"}] },
-      "Torna Tigers": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", basePrice: "300000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:32:21","Unavailability":"","BidAmount":"890000","Mobile":"7083147157","Name":"Kailash Konapure","TowerFlat":"T30-507"}] },
+      "Torna Tigers": { teamName: "Torna Tigers", photoURL: "IMG_7883 - ATHARVA KUNJIR.jpg", basePrice: "300000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:32:21","Unavailability":"","BidAmount":"890000","Mobile":"7083147157","Name":"Kailash Konapure","TowerFlat":"T30-507"},{"AuctionedTimestamp":"2025-11-01 12:56:21","Unavailability":"All dates available","BidAmount":"140000","Mobile":"8308844860","Name":"Sachin Mulay","TowerFlat":"T33-0803"}] },
       "Janjira Marines": { teamName: "Janjira Marines", photoURL: "Sandesh_Kadam.JPG", basePrice: "250000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:28:58","Unavailability":"","BidAmount":"760000","Mobile":"9979504953","Name":"Priyank Joshi","TowerFlat":"T37-1609"},{"AuctionedTimestamp":"2025-11-01 12:37:08","Unavailability":"","BidAmount":"480000","Mobile":"8975210368","Name":"Deokant Kumar","TowerFlat":"33 2204"}] },
       "Lohgad Giants": { teamName: "Lohgad Giants", photoURL: "SwapnilAva - Swapnil Chafale.jpg", basePrice: "350000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:35:32","Unavailability":"Full availability","BidAmount":"500000","Mobile":"9039827276","Name":"HIMANSHU MUKATI","TowerFlat":"T32-0507"},{"AuctionedTimestamp":"2025-11-01 12:47:00","Unavailability":"All Rounder","BidAmount":"260000","Mobile":"9669554995","Name":"Praveen Dubey","TowerFlat":"T30-806"},{"AuctionedTimestamp":"2025-11-01 12:53:51","Unavailability":"Yes","BidAmount":"240000","Mobile":"9049831155","Name":"Neeraj Vishwakarma","TowerFlat":"T30-0305"}] },
       "Shivaneri Lions": { teamName: "Shivaneri Lions", photoURL: "20240213_103018 - yogesh lalwani.jpg", basePrice: "400000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:27:30","Unavailability":"","BidAmount":"690000","Mobile":"9155673500","Name":"Amit Kumar","TowerFlat":"32-1503"},{"AuctionedTimestamp":"2025-11-01 12:46:03","Unavailability":"8th Nov","BidAmount":"260000","Mobile":"8961144553","Name":"Rajeev Kumar","TowerFlat":"T31-1006"},{"AuctionedTimestamp":"2025-11-01 12:54:53","Unavailability":"TBD","BidAmount":"110000","Mobile":"9545412374","Name":"Ashish Bajaj","TowerFlat":"T33-1902"}] },
       "Pratapgad Warrior": { teamName: "Pratapgad Warrior", photoURL: "Athrva Jadhav.JPG", basePrice: "400000", sheetData: [] },
-      "Suvarnadurg Champs": { teamName: "Suvarnadurg Champs", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:52:05","Unavailability":"","BidAmount":"1250000","Mobile":"7722043321","Name":"Dhananjay Atole","TowerFlat":"T39-2503"}] },
+      "Suvarnadurg Champs": { teamName: "Suvarnadurg Champs", photoURL: "IMG_1293 - manishb kadu.JPG", basePrice: "500000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:52:05","Unavailability":"","BidAmount":"1250000","Mobile":"7722043321","Name":"Dhananjay Atole","TowerFlat":"T39-2503"},{"AuctionedTimestamp":"2025-11-01 12:56:53","Unavailability":"","BidAmount":"50000","Mobile":"9766205604","Name":"Mayur Paithankar","TowerFlat":"T36-0703"}] },
       "Rajgad Capital": { teamName: "Rajgad Capital", photoURL: "Umesh_Jadhav.JPG", basePrice: "700000", sheetData: [{"AuctionedTimestamp":"2025-11-01 12:42:49","Unavailability":"","BidAmount":"1050000","Mobile":"7557441144","Name":"Saurav Lonkar","TowerFlat":"38-2003"}] },
     };
 function showDetails() {
@@ -333,7 +333,7 @@ if(IsAuctionData) {
     separator.style.borderRadius = '6px';
     separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
     soldOutArea.appendChild(separator);
-    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 13</h3>`;
+    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 15</h3>`;
     const soldContainer = document.createElement('div');
     soldContainer.style.display = 'flex';
     soldContainer.style.flexWrap = 'wrap';
