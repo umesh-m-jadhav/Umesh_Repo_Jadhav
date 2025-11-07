@@ -39,23 +39,25 @@ public class GeneratePlayerHtml {
 	
 	private static String baseFolder = "F:\\social\\AuctionCode\\CrikAuction\\";
 	private static String defaultExcelPath = baseFolder + "DataFile\\Player_List.xlsx";
-	private static  String auctionFolder = "C:\\Users\\Admin\\Downloads";
+	//private static  String auctionFolder = "C:\\Users\\Admin\\Downloads";
+	private static  String auctionFolder = "F:\\social\\AuctionCode\\CrikAuction\\DataFile";
 	private static String outputPath = baseFolder + OUTPUT_HTML_FILE;
    	
 	private static final String GITHUB_API_URL = "https://api.github.com/repos/umesh-m-jadhav/Umesh_Repo_Jadhav/contents/CrikAuction/";
 	private static final String BRANCH = "main"; // branch to upload to
 	private static ScheduledExecutorService scheduler;
 	  
-	private static String token = "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";
+	private static String token = "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";
 	
 	private static boolean isAtleastOneSoldDataAvailable = false;
 	private static boolean isAllPlayersSoldOut = false;
 	
-	private static boolean IsAuctionStarted = false;
-	private static boolean IsAuctionData = false;
+	private static boolean IsAuctionStarted = true;
+	private static boolean IsAuctionData = true;
 	private static boolean isUploadToGit = false;
-	private static boolean testSupportNeeded = false;
+	private static boolean testSupportNeeded = true;
 	private static boolean isRefreshNeeded = false;
+	private static boolean isWinnerListToDisplay = true;
 	
 	private static HttpURLConnection getConn = null;
 	private static HttpURLConnection conn = null;
@@ -108,8 +110,17 @@ public class GeneratePlayerHtml {
 
         // Read owner data from Owner sheet in both cases
         Map<String, OwnerData> ownerDataMap = readOwnerSheetsFromExcel(excelPath);
+               
+     // Winner lists
+        List<Map<String, Object>> teamWinnerList = new ArrayList<>();
+        List<Map<String, String>> playerWinnerList = new ArrayList<>();
+        
+        if(isWinnerListToDisplay) {
+	        readWinnerFromExcel(excelPath, teamWinnerList, playerWinnerList, ownerDataMap, playersList);
+	        System.out.println("Winner List Populated....");
+        }
 
-        generateHtml(playersList, ownerDataMap, outputPath, IsAuctionData);
+        generateHtml(playersList, ownerDataMap, outputPath, IsAuctionData, teamWinnerList, playerWinnerList);
 
         System.out.println("HTML generated successfully.");
         System.out.println("Source File: " + excelPath);
@@ -137,6 +148,7 @@ public class GeneratePlayerHtml {
                     System.out.println("[" + new java.util.Date() + "] isUploadToGit..." + isUploadToGit);
                     System.out.println("[" + new java.util.Date() + "] testSupportNeeded..." + testSupportNeeded);
                     System.out.println("[" + new java.util.Date() + "] SCHEDULER_TIMING_IN_SEC..." + SCHEDULER_TIMING_IN_SEC);
+                    System.out.println("[" + new java.util.Date() + "] isWinnerListToDisplay..." + isWinnerListToDisplay);
                     
                     mainAuctionLogic();
                     System.out.println("[" + new java.util.Date() + "] Upload task finished successfully.");
@@ -293,7 +305,7 @@ public class GeneratePlayerHtml {
             if (!excelFiles.isEmpty()) {
                 return excelFiles.get(0).toAbsolutePath().toString();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -455,6 +467,88 @@ public class GeneratePlayerHtml {
 
         return ownerDataMap;
     }
+    
+    private static void readWinnerFromExcel(String excelFilePath,  List<Map<String, Object>> teamWinnerList, 
+    											List<Map<String, String>> playerWinnerList, 
+    											Map<String, OwnerData> ownerDataMap,
+    											List<Player> playersList) {
+        DataFormatter formatter = new DataFormatter();
+
+        try (FileInputStream fis = new FileInputStream(excelFilePath);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheet("Winner");
+            Iterator<Row> iterator = sheet.iterator();
+            if (!iterator.hasNext()) return;
+
+            Row headerRow = iterator.next();
+            Map<String, Integer> colMap = new HashMap<>();
+            for (Cell cell : headerRow) {
+                String header = formatter.formatCellValue(cell).trim();
+                colMap.put(header, cell.getColumnIndex());
+            }
+           
+            for (Row row : sheet) {
+            	if(row==null) {
+                	continue;
+                }
+            	//Do not consider header in loop
+                if(row.getRowNum()==0) {
+                	continue;
+                }
+                               
+                String type = getValue(formatter, row, colMap.get("Type"));
+                if(type==null || type.trim()=="") {
+                	continue;
+                }
+                String name = getValue(formatter, row, colMap.get("Name"));
+                String winnerType = getValue(formatter, row, colMap.get("WinnerType"));
+                
+                if(type.trim().equalsIgnoreCase("Team")) {
+                	Map<String, Object> team1 = new HashMap<>();
+                	OwnerData ownerData = ownerDataMap.get(name);
+                    team1.put("teamName", name);
+                    team1.put("owner", ownerData.name);
+                    team1.put("title", winnerType);
+                    team1.put("ownerPhoto", "PlayersPhoto/"+ownerData.photoURL); // relative path
+                    
+                    List<Map<String, String>> sheetData = ownerData.sheetData;
+                    List<Map<String, String>> players1 = new ArrayList<>();
+                    for (Map<String, String> rowData : sheetData) {
+                        for (Map.Entry<String, String> entry : rowData.entrySet()) {
+                            String key = entry.getKey();
+                            if(key.equalsIgnoreCase("Name")) {
+	                            Map<String, String> p11 = new HashMap<>();
+	                            String playerName = entry.getValue();
+	                            p11.put("name", entry.getValue());
+	                            Player matchedPlayer = playersList.stream()
+	                            	    .filter(player -> player.name.equalsIgnoreCase(playerName))
+	                            	    .collect(Collectors.toList()).get(0);
+
+	                            p11.put("photo", "PlayersPhoto/"+ matchedPlayer.photoURL);
+	                            players1.add(p11);
+                            }
+                        }
+                    }
+                    team1.put("players", players1);
+                    teamWinnerList.add(team1);
+                    
+                }else if(type.trim().equalsIgnoreCase("Player")) {
+                	if(name!=null && name.trim()!="") {
+                		Map<String, String> player1 = new HashMap<>();
+                	    player1.put("playerName", name.trim());
+                	    player1.put("team", "Janjira Marines");
+                	    player1.put("award", winnerType);
+                	    playerWinnerList.add(player1);
+                	}
+                }
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error readWinnerFromExcel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     private static String getValue(DataFormatter formatter, Row row, Integer colIndex) {
         if (colIndex == null || colIndex < 0) return "";
@@ -489,8 +583,10 @@ public class GeneratePlayerHtml {
 			return name;
 		}
     }
-    
-    private static void generateHtml(List<Player> playerList, Map<String, OwnerData> ownerDataMap, String outputPath, boolean IsAuctionData) {
+  
+    private static void generateHtml(List<Player> playerList, Map<String, OwnerData> ownerDataMap, 
+    					String outputPath, boolean IsAuctionData,
+    					List<Map<String, Object>> teamWinnerList, List<Map<String, String>> playerWinnerList) {
         
         try (PrintWriter out = new PrintWriter(new FileWriter(outputPath))) {
 
@@ -537,6 +633,57 @@ public class GeneratePlayerHtml {
             out.println("      display: inline-block;");
             out.println("      margin-bottom: 12px;");
             out.println("    }");
+            
+            out.println(".playerCard {");
+            out.println(" display: flex;");
+            out.println(" flex-direction: column;");
+            out.println(" align-items: center;");
+             out.println("justify-content: center;");
+            out.println(" background: #fff;");
+            out.println(" border-radius: 12px;");
+            out.println(" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);");
+            out.println(" padding: 12px;");
+            out.println(" margin: 10px;");
+            out.println(" width: 100px; ");
+            out.println(" transition: transform 0.2s ease, box-shadow 0.2s ease;");
+           out.println("}");
+
+           out.println(".playerCard:hover {");
+            out.println(" transform: translateY(-3px);");
+            out.println(" box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);");
+           out.println("}");
+            	
+            out.println(".playerImg {");
+            out.println("width: 70px;");
+            out.println("height: 70px;");
+            out.println("border-radius: 50%;");
+            out.println("overflow: hidden;   ");
+            out.println("display: flex;");
+            out.println(" align-items: center;");
+            out.println(" justify-content: center;");
+            out.println(" background-color: #f5f5f5; ");
+            out.println("	}");
+            
+            out.println(" .playerImg img {");
+            out.println(" width: 100%;");
+            out.println("  height: 100%;");
+            out.println(" object-fit: contain;");
+            out.println("  border-radius: 50%;");
+            out.println(" }");
+            
+            out.println("  @media (max-width: 600px) {.playerImg {width: 60px;} ");
+            out.println(" .playerImg span {font-size: 12px;}");
+            
+            out.println(".playerContainer {");
+            out.println(" display: flex;");
+            out.println(" flex-wrap: wrap;");
+            out.println(" justify-content: flex-start;");
+            out.println(" align-items: flex-start;");
+            out.println(" gap: 16px;");
+            out.println(" overflow-x: auto;");
+            out.println(" padding: 10px;");
+            out.println("}");
+            
             out.println("  </style>");
             out.println("</head>");
             out.println("<body>");
@@ -669,8 +816,6 @@ public class GeneratePlayerHtml {
             	 out.println("    </select>");
             }
             
-            
-           
             out.println("    <div id='contentArea'></div>");
 
             // --- JS ---
@@ -701,6 +846,7 @@ public class GeneratePlayerHtml {
             out.println("");
             
             out.println("    const IsAuctionData = " + IsAuctionData + ";");
+            out.println("    const isWinnerListToDisplay = " + isWinnerListToDisplay + ";");
             
             // Players data
             out.println("    const players = {");
@@ -863,12 +1009,95 @@ public class GeneratePlayerHtml {
             out.println("    html += `</div>`;");
             out.println("    ownerArea.innerHTML = html;");
             out.println("}");
-                    
+            
+            // --- Winner List Section --- //
+            out.println("if(isWinnerListToDisplay) {");
+            out.println("    const winnerListArea = document.createElement('div');");
+            out.println("    winnerListArea.style.marginTop = '40px';");
+            out.println("    const separatorWinner = document.createElement('div');");
+            out.println("    separatorWinner.style.height = '6px';");
+            out.println("    separatorWinner.style.width = '60%';");
+            out.println("    separatorWinner.style.margin = '0 auto 20px auto';");
+            out.println("    separatorWinner.style.borderRadius = '6px';");
+            out.println("    separatorWinner.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';");
+            out.println("    winnerListArea.appendChild(separatorWinner);");
+            out.println("    winnerListArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Winner List: </h3>`;");
+            out.println("    document.body.appendChild(winnerListArea);");
+            
+            // ========== TEAM WINNERS ==========
+            out.println("    const teamWinnerDiv = document.createElement('div');");
+                        
+            for (Map<String, Object> team : teamWinnerList) {
+                String teamName = (String) team.get("teamName");
+                String owner = (String) team.get("owner");
+                String title = (String) team.get("title");
+                String ownerPhoto = (String) team.get("ownerPhoto");
+
+                out.println("    {");
+                out.println("      const teamCard = document.createElement('div');");
+                out.println("      teamCard.style.border = '1px solid #ccc';");
+                out.println("      teamCard.style.borderRadius = '12px';");
+                out.println("      teamCard.style.padding = '15px';");
+                out.println("      teamCard.style.margin = '15px auto';");
+                out.println("      teamCard.style.background = '#fff';");
+                out.println("      teamCard.style.width = '80%';");
+                out.println("      teamCard.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';");
+
+                if (ownerPhoto != null && !ownerPhoto.isEmpty()) {
+                    out.println("      const img = document.createElement('img');");
+                    out.println("      img.src = '" + ownerPhoto + "';");
+                    out.println("      img.alt = 'Owner Photo';");
+                    out.println("      img.style.width = '100px';");
+                    out.println("      img.style.height = '100px';");
+                    out.println("      img.style.borderRadius = '50%';");
+                    out.println("      img.style.display = 'block';");
+                    out.println("      img.style.margin = '0 auto 10px auto';");
+                    out.println("      teamCard.appendChild(img);");
+                }
+
+                out.println("      const titleEl = document.createElement('h4');");
+                out.println("      titleEl.textContent = '" + title + "';");
+                out.println("      titleEl.style.textAlign = 'center';");
+                out.println("      titleEl.style.color = '#ff1744';");
+                out.println("      teamCard.appendChild(titleEl);");
+
+                out.println("      const teamEl = document.createElement('h3');");
+                out.println("      teamEl.textContent = '" + teamName + "';");
+                out.println("      teamEl.style.textAlign = 'center';");
+                out.println("      teamCard.appendChild(teamEl);");
+
+                out.println("      const ownerEl = document.createElement('p');");
+                out.println("      ownerEl.innerHTML = `<strong>Owner:</strong> " + owner + "`;");
+                out.println("      ownerEl.style.textAlign = 'center';");
+                out.println("      teamCard.appendChild(ownerEl);");
+                StringBuilder sb = new StringBuilder();
+                sb.append("<div class='playerContainer'>");
+                
+                List<Map<String, String>> players = (List<Map<String, String>>) team.get("players");
+                for (Map<String, String> player : players) {
+                    String playerName = player.get("name");
+                    String playerPhoto = player.get("photo");
+                    sb.append("<div class='playerCard'>");
+                    sb.append("<div class='playerImg'><img src='" + playerPhoto + "' alt='\" + playerName + \"'></div>");
+                    sb.append("<div class='playerName'>" + playerName + "</div>");
+                    sb.append("</div>");
+                }
+                sb.append("</div>");
+                out.println("teamCard.innerHTML += `"+sb.toString()+"`");
+                out.println("      teamWinnerDiv.appendChild(teamCard);");
+                out.println("    }");
+            }
+
+            out.println("    winnerListArea.appendChild(teamWinnerDiv);");
+            
+            
+            out.println("}");
+            
          // --- Sold Out Players Section ---
             out.println("if(IsAuctionData) {");
             out.println("    const soldOutArea = document.createElement('div');");
             out.println("    soldOutArea.style.marginTop = '40px';");
-         // Stylish separator added
+         
             out.println("    const separator = document.createElement('div');");
             out.println("    separator.style.height = '6px';");
             out.println("    separator.style.width = '60%';");
@@ -1013,4 +1242,5 @@ public class GeneratePlayerHtml {
         String basePrice = ""; // new
         List<Map<String, String>> sheetData = new ArrayList<>();
     }
+  
 }
