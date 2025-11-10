@@ -392,8 +392,10 @@ if(isWinnerListToDisplay) {
     winnerListArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Winner List: </h3>`;
     document.body.appendChild(winnerListArea);
     const teamWinnerDiv = document.createElement('div');
+    teamWinnerDiv.id ='winnerDiv' 
     {
       const teamCard = document.createElement('div');
+      teamCard.id ='Shivaneri Lions' 
       teamCard.style.border = '1px solid #ccc';
       teamCard.style.borderRadius = '12px';
       teamCard.style.padding = '15px';
@@ -424,10 +426,11 @@ if(isWinnerListToDisplay) {
       ownerEl.style.textAlign = 'center';
       teamCard.appendChild(ownerEl);
 teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Amit_Kumar_Trendy.jpeg' alt='" + playerName + "'></div><div class='playerName'>Amit Kumar</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Rajeev_Kumar_Trendy.JPG' alt='" + playerName + "'></div><div class='playerName'>Rajeev Kumar</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/29B5D81A-0ADB-444E-A336-8A133F0F36A3 - Suraj Devgan.jpeg' alt='" + playerName + "'></div><div class='playerName'>Suraj Devgan</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_7882 - jatin sorathiya.JPG' alt='" + playerName + "'></div><div class='playerName'>Jatin Sorathiya</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_0654 - Akshay Zolekar.JPG' alt='" + playerName + "'></div><div class='playerName'>Akshay Zolekar</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Himanshu_bhai.jpeg' alt='" + playerName + "'></div><div class='playerName'>Himanshu Bhugra</div></div></div>`
-      teamWinnerDiv.appendChild(teamCard);
+teamWinnerDiv.appendChild(teamCard);
     }
     {
       const teamCard = document.createElement('div');
+      teamCard.id ='Lohgad Giants' 
       teamCard.style.border = '1px solid #ccc';
       teamCard.style.borderRadius = '12px';
       teamCard.style.padding = '15px';
@@ -458,9 +461,133 @@ teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div
       ownerEl.style.textAlign = 'center';
       teamCard.appendChild(ownerEl);
 teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_2681 - himanshu mukati.JPG' alt='" + playerName + "'></div><div class='playerName'>HIMANSHU MUKATI</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Pravin_dubhe.JPG' alt='" + playerName + "'></div><div class='playerName'>Praveen Dubey</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/77201571-C4E5-425E-83A3-493FE2026B8C - Tushar Pund.jpeg' alt='" + playerName + "'></div><div class='playerName'>Tushar pund</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_9618 - Neeraj Vishwakarma.jpeg' alt='" + playerName + "'></div><div class='playerName'>Neeraj Vishwakarma</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_20250930_070252 - Mane Piyush7707.jpg' alt='" + playerName + "'></div><div class='playerName'>Piyush Mane</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Kunal Andhare.JPG' alt='" + playerName + "'></div><div class='playerName'>Kunal Andhare</div></div></div>`
-      teamWinnerDiv.appendChild(teamCard);
+teamWinnerDiv.appendChild(teamCard);
     }
     winnerListArea.appendChild(teamWinnerDiv);
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Amit Kumar' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Amit_Kumar_Trendy.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Amit Kumar';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Achievement:</strong> Man of the Match
+vs abc`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Kailash Konapure' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Kailash_Konapure.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Kailash Konapure';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Achievement:</strong> Man of the Match
+vs abc1`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Priyank Joshi' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_5652 - Priyank Joshi.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Priyank Joshi';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Achievement:</strong> Man of the Match
+vs abc2`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Umesh Jadhav' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Umesh_Jadhav.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Umesh Jadhav';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Achievement:</strong> Man of the Match
+vs abc1`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
 }
 if(IsAuctionData) {
     const soldOutArea = document.createElement('div');
