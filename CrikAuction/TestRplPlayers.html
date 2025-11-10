@@ -48,12 +48,17 @@ flex-direction: column;
  padding: 12px;
  margin: 10px;
  width: 110px;
- box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
  transition: transform 0.3s ease, box-shadow 0.3s ease;
 overflow: hidden;
+border: 2px solid transparent;
+background-image: linear-gradient(#fff, #fff),
+linear-gradient(135deg, #ff1744, #00e5ff);
+background-origin: border-box;
+background-clip: content-box, border-box;
 }
-.playerCard::before {
-content: ;
+.playerCard1::before {
+content:"" ;
 position: absolute;
 top: -2px;
 left: -2px;
@@ -99,7 +104,6 @@ display: flex;
  flex-wrap: wrap;
  justify-content: center;
  align-items: center;
- gap: 16px;
  overflow-x: auto;
  padding: 10px;
 }
