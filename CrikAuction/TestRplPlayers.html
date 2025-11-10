@@ -39,20 +39,44 @@
     }
 .playerCard {
  display: flex;
- flex-direction: column;
+flex-direction: column;
  align-items: center;
-justify-content: center;
+ justify-content: center;
  background: #fff;
  border-radius: 12px;
- box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ position: relative;
  padding: 12px;
  margin: 10px;
- width: 100px; 
- transition: transform 0.2s ease, box-shadow 0.2s ease;
+ width: 110px;
+ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+}
+.playerCard::before {
+content: ;
+position: absolute;
+top: -2px;
+left: -2px;
+right: -2px;
+bottom: -2px;
+border-radius: 12px;
+ background: linear-gradient(90deg, #ff1744, #ff9100, #00e5ff, #76ff03, #ff1744);
+background-size: 300% 300%;
+ animation: borderRun 4s linear infinite;
+z-index: 0;
+}
+.playerCard > * {
+position: relative;
+z-index: 1;
 }
 .playerCard:hover {
- transform: translateY(-3px);
- box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+transform: translateY(-4px);
+box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+@keyframes borderRun {
+0% { background-position: 0% 50%; }
+ 50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
 }
 .playerImg {
 width: 70px;
@@ -70,13 +94,14 @@ display: flex;
  object-fit: contain;
   border-radius: 50%;
  }
-  @media (max-width: 600px) {.playerImg {width: 60px;} 
- .playerImg span {font-size: 12px;}
 .playerContainer {
  display: flex;
  flex-wrap: wrap;
- justify-content: flex-start;
+ justify-content: center;
+ align-items: center;
  gap: 16px;
+ overflow-x: auto;
+ padding: 10px;
 }
   </style>
 </head>
@@ -89,7 +114,7 @@ display: flex;
     <div class='header'>
       <h2>RPL (R21 Premium League) Catalogue</h2>
     </div>
-<div style='text-align:center; font-size:26px; font-weight:bold; color:white; background: linear-gradient(90deg, #ff1744, #f50057); padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); letter-spacing:1px;'>The auction is officially over! 48 players has been successfully sold.</div>
+<div style='text-align:center; font-size:26px; font-weight:bold; color:white; background: linear-gradient(90deg, #ff1744, #f50057); padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); letter-spacing:1px;'> Tournament completed. Winner list published.</div>
     <select id='ownerSelect' onchange='showOwnerDetails()'>
       <option value=''>-- Select Team - Owner --</option>
       <option value="Janjira Marines" ownerName="Sandesh Kadam">Janjira Marines - Sandesh Kadam</option>
