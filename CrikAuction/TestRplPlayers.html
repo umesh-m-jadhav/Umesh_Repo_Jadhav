@@ -37,6 +37,13 @@
       display: inline-block;
       margin-bottom: 12px;
     }
+@keyframes glow {
+  0% { color: #ff0000; text-shadow: 0 0 20px #ff0000; }
+  25% { color: #ff8000; text-shadow: 0 0 20px #ff8000; }
+  50% { color: #00ff00; text-shadow: 0 0 20px #00ff00; }
+  75% { color: #0080ff; text-shadow: 0 0 20px #0080ff; }
+  100% { color: #8000ff; text-shadow: 0 0 20px #8000ff; }
+}
 .playerCard {
  display: flex;
 flex-direction: column;
@@ -413,7 +420,7 @@ if(isWinnerListToDisplay) {
       img.style.margin = '0 auto 10px auto';
       teamCard.appendChild(img);
       const titleEl = document.createElement('h4');
-      titleEl.textContent = 'RCL 2025 Champion';
+      titleEl.textContent = 'RCL 2025 Champion Team';
       titleEl.style.textAlign = 'center';
       titleEl.style.color = '#ff1744';
       teamCard.appendChild(titleEl);
@@ -448,7 +455,7 @@ teamWinnerDiv.appendChild(teamCard);
       img.style.margin = '0 auto 10px auto';
       teamCard.appendChild(img);
       const titleEl = document.createElement('h4');
-      titleEl.textContent = 'RCL 2025 RunnerUp';
+      titleEl.textContent = 'RCL 2025 RunnerUp Team';
       titleEl.style.textAlign = 'center';
       titleEl.style.color = '#ff1744';
       teamCard.appendChild(titleEl);
@@ -464,6 +471,15 @@ teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div
 teamWinnerDiv.appendChild(teamCard);
     }
     winnerListArea.appendChild(teamWinnerDiv);
+    {
+      const IndividualAwardDiv = document.createElement('div');
+      IndividualAwardDiv.id ='IndividualAwardDiv'
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Individual Award:<p style='font-size: 30px;font-weight: bold;animation: glow 1.5s infinite alternate;text-align: center;'>&#128071</p></strong>`;
+      ownerEl.style.textAlign = 'center';
+      IndividualAwardDiv.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(IndividualAwardDiv);
+    }
     {
       const playerAward = document.createElement('div');
       playerAward.id ='Amit Kumar' 
