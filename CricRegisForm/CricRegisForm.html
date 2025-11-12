@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Responsive Registration Form</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      width: 90%;
+      max-width: 650px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 20px 25px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      margin-bottom: 25px;
+      border: 1px solid #e1e1e1;
+      border-radius: 10px;
+      padding: 15px;
+      background: #fafafa;
+    }
+
+    .section h3 {
+      margin-top: 0;
+      color: #0052cc;
+      border-bottom: 2px solid #0052cc;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+
+    .rules { margin-top: 10px; line-height: 1.6; color: #444; font-size: 15px; }
+    .rules li { margin-bottom: 8px; }
+
+    .qr-section { text-align: center; }
+
+    .qr-section img {
+      width: 200px;
+      height: 200px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      margin-bottom: 15px;
+      object-fit: cover;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+
+    .btn-download { background: #28a745; color: #fff; }
+    .btn-download:hover { background: #218838; }
+    .btn-share { background: #007bff; color: #fff; }
+    .btn-share:hover { background: #0069d9; }
+    .btn-phonepay { background: #5e35b1; color: #fff; }
+    .btn-phonepay:hover { background: #4527a0; }
+    .btn-gpay { background: #00a65a; color: #fff; }
+    .btn-gpay:hover { background: #00924f; }
+
+    .separator { border-top: 1px solid #ccc; margin: 15px 0; }
+
+    .step-header {
+      color: #d84315;
+      font-weight: bold;
+      text-align: left;
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+
+    .payment-highlight {
+      border: 3px solid;
+      border-image: linear-gradient(45deg, #ff6f61, #ffca28, #66bb6a, #29b6f6) 1;
+      border-radius: 10px;
+      padding: 12px;
+      animation: borderGlow 4s linear infinite;
+      background: #fffef8;
+    }
+
+    @keyframes borderGlow {
+      0% { border-image-source: linear-gradient(45deg, #ff6f61, #ffca28, #66bb6a, #29b6f6); }
+      50% { border-image-source: linear-gradient(135deg, #29b6f6, #66bb6a, #ffca28, #ff6f61); }
+      100% { border-image-source: linear-gradient(45deg, #ff6f61, #ffca28, #66bb6a, #29b6f6); }
+    }
+
+    .payment-highlight p {
+      font-weight: bold;
+      color: #333;
+      margin: 0 0 8px 0;
+      text-align: center;
+    }
+
+    .payment-highlight label { margin-right: 15px; font-weight: 500; font-size: 15px; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+
+    .form-group label { font-weight: 600; margin-bottom: 5px; }
+
+    .form-group input,
+    .form-group textarea {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .skills-options label { margin-right: 15px; }
+
+    .submit-btn {
+      width: 100%;
+      background: #ff9800;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover { background: #fb8c00; }
+
+    @media (max-width: 600px) {
+      .form-container { padding: 15px; }
+      .qr-section img { width: 150px; height: 150px; }
+      .btn { width: 45%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Event Registration</h2>
+
+    <!-- General Section -->
+    <div class="section">
+      <h3>1️⃣ General (Rules & Regulations)</h3>
+      <ul class="rules">
+        <li>Each participant must complete the registration before the deadline.</li>
+        <li>Entry fees must be paid in full to confirm registration.</li>
+        <li>Participants should carry a valid ID during the event.</li>
+        <li>Organizers reserve the right to modify rules if required.</li>
+        <li>Decisions made by the committee will be final and binding.</li>
+      </ul>
+    </div>
+
+    <!-- Payment Section -->
+    <div class="section">
+      <h3>2️⃣ Payment</h3>
+      <div class="qr-section">
+        <div class="step-header">Step 1 - Download below QR</div>
+        <img src="QR_Umesh_Jadhav.jpg" alt="QR Code">
+        <div>
+          <button class="btn btn-download" onclick="downloadQR()">⬇️ Download</button>
+          <button class="btn btn-share" onclick="shareQR()">📤 Share</button>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="step-header">Step 2</div>
+        <button class="btn btn-phonepay" onclick="openPhonePay()">📱 Open PhonePe</button>
+        <button class="btn btn-gpay" onclick="openGPay()">💰 Open GPay</button>
+
+        <div class="separator"></div>
+
+        <div class="step-header">Step 3</div>
+        <p>Scan downloaded QR in app and pay ₹500.</p>
+      </div>
+    </div>
+
+    <!-- Registration Section -->
+    <div class="section">
+      <h3>3️⃣ Registration</h3>
+
+      <div class="payment-highlight">
+        <p>Please confirm if you have done payment:</p>
+        <label><input type="radio" name="paymentStatus" value="yes" id="paymentYes" onclick="setPaymentStatus(true)"> ✅ Yes, Payment done</label>
+        <label><input type="radio" name="paymentStatus" value="no" id="paymentNo" onclick="setPaymentStatus(false)"> ❌ No, Payment not done</label>
+      </div>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Enter your name" onclick="checkPaymentStatus()">
+      </div>
+
+      <div class="form-group">
+        <label>WhatsApp Number</label>
+        <input type="tel" id="whatsapp" placeholder="Enter WhatsApp number" onclick="checkPaymentStatus()">
+      </div>
+
+      <div class="form-group">
+        <label>
+          CricHeroes linked Mobile Number 
+          <input type="checkbox" id="sameNumber" onchange="copyNumber()" onclick="checkPaymentStatus()">
+          <span>Same as WhatsApp Number</span>
+        </label>
+        <input type="tel" id="cricHeroes" placeholder="Enter CricHeroes number" onclick="checkPaymentStatus()">
+      </div>
+
+      <div class="form-group">
+        <label>Tower & Flat No. (e.g. T30-1308)</label>
+        <input type="text" onclick="checkPaymentStatus()">
+      </div>
+
+      <div class="form-group">
+        <label>
+          Please mention date unavailability  
+          (Tournament Dates: November 8th (Saturday), November 9th (Sunday), November 16th (Sunday))
+        </label>
+        <textarea rows="3" onclick="checkPaymentStatus()"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Upload your image for Auction</label>
+        <input type="file" accept="image/*" onclick="checkPaymentStatus()">
+      </div>
+
+      <div class="form-group">
+        <label>Skills</label>
+        <div class="skills-options">
+          <label><input type="radio" name="skills" value="batsman" onclick="checkPaymentStatus()"> Batsman</label>
+          <label><input type="radio" name="skills" value="bowler" onclick="checkPaymentStatus()"> Bowler</label>
+          <label><input type="radio" name="skills" value="allrounder" onclick="checkPaymentStatus()"> All Rounder</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><input type="checkbox" onclick="checkPaymentStatus()"> Confirm if you agree with our customized box cricket rules</label>
+      </div>
+
+      <button class="submit-btn" onclick="checkPaymentStatus()">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    let paymentConfirmed = false;
+
+    function setPaymentStatus(status) {
+      paymentConfirmed = status;
+    }
+
+    function checkPaymentStatus() {
+	 const yes = document.getElementById('paymentYes');
+     const no = document.getElementById('paymentNo');
+
+      if (!yes.checked && !no.checked) {
+        alert('Please confirm if you have done payment.');
+      }
+	  /**
+      if (!paymentConfirmed) {
+        alert("⚠️ Please confirm if you have done payment.");
+        event.preventDefault();
+      } **/
+    }
+		
+    function copyNumber() {
+      const same = document.getElementById("sameNumber");
+      const w = document.getElementById("whatsapp");
+      const c = document.getElementById("cricHeroes");
+      if (same.checked) c.value = w.value;
+      else c.value = "";
+    }
+
+    function downloadQR() { alert("QR Download initiated"); }
+    function shareQR() { alert("QR Share initiated"); }
+    function openPhonePay() { alert("Opening PhonePe"); }
+    function openGPay() { alert("Opening GPay"); }
+  </script>
+</body>
+</html>
