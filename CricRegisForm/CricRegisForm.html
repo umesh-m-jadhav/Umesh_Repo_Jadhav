@@ -201,13 +201,18 @@
     <div class="section">
       <h3>3️⃣ Registration</h3>
 
-      <div class="payment-highlight">
-        <p>Please confirm if you have done payment:</p>
-        <label><input type="radio" name="paymentStatus" value="yes" id="paymentYes" onclick="setPaymentStatus(true)"> ✅ Yes, Payment done</label>
-        <label><input type="radio" name="paymentStatus" value="no" id="paymentNo" onclick="setPaymentStatus(false)"> ❌ No, Payment not done</label>
-      </div>
+<div class="payment-highlight">
+  <p>Please confirm if you have done payment:</p>
+  <div style="margin-bottom: 20px;">
+    <label><input type="radio" name="paymentStatus" value="yes" id="paymentYes" onclick="setPaymentStatus(true)"> ✅ Yes, Payment done</label>
+  </div>
+  <div style="margin-bottom: 20px;">
+    <label><input type="radio" name="paymentStatus" value="no" id="paymentNo" onclick="setPaymentStatus(false)"> ❌ No, Payment not done</label>
+  </div>
+</div>
 
-      <div class="form-group">
+
+      <div class="form-group" style="margin-top: 10px;">
         <label>Full Name</label>
         <input type="text" placeholder="Enter your name" onclick="checkPaymentStatus()">
       </div>
@@ -247,10 +252,17 @@
       <div class="form-group">
         <label>Skills</label>
         <div class="skills-options">
-          <label><input type="radio" name="skills" value="batsman" onclick="checkPaymentStatus()"> Batsman</label>
-          <label><input type="radio" name="skills" value="bowler" onclick="checkPaymentStatus()"> Bowler</label>
-          <label><input type="radio" name="skills" value="allrounder" onclick="checkPaymentStatus()"> All Rounder</label>
-        </div>
+  <div style="margin-bottom: 20px;">
+    <label><input type="radio" name="skills" value="batsman" onclick="checkPaymentStatus()"> Batsman</label>
+  </div>
+  <div style="margin-bottom: 20px;">
+    <label><input type="radio" name="skills" value="bowler" onclick="checkPaymentStatus()"> Bowler</label>
+  </div>
+  <div style="margin-bottom: 20px;">
+    <label><input type="radio" name="skills" value="allrounder" onclick="checkPaymentStatus()"> All Rounder</label>
+  </div>
+</div>
+
       </div>
 
       <div class="form-group">
