@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Responsive Registration Form</title>
+  <title>Registration Form</title>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -91,7 +91,19 @@
       margin-bottom: 10px;
       margin-top: 10px;
     }
-
+	
+	.crikHeroesNote-highlight {
+	margin-top: 10px;
+    padding: 10px;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #ff6f61, #ffca28, #66bb6a, #29b6f6) 1;
+    border-radius: 10px;
+    background: #fffef8;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+	}
+	
     .payment-highlight {
       border: 3px solid;
       border-image: linear-gradient(45deg, #ff6f61, #ffca28, #66bb6a, #29b6f6) 1;
@@ -186,14 +198,12 @@
 
         <div class="separator"></div>
 
-        <div class="step-header">Step 2</div>
+        <div class="step-header">Step 2- Scan downloaded QR in below app and pay ₹500.</div>
         <button class="btn btn-phonepay" onclick="openPhonePay()">📱 Open PhonePe</button>
         <button class="btn btn-gpay" onclick="openGPay()">💰 Open GPay</button>
 
         <div class="separator"></div>
 
-        <div class="step-header">Step 3</div>
-        <p>Scan downloaded QR in app and pay ₹500.</p>
       </div>
     </div>
 
@@ -204,10 +214,10 @@
 <div class="payment-highlight">
   <p>Please confirm if you have done payment:</p>
   <div style="margin-bottom: 20px;">
-    <label><input type="radio" name="paymentStatus" value="yes" id="paymentYes" onclick="setPaymentStatus(true)"> ✅ Yes, Payment done</label>
+    <label><input type="radio" name="paymentStatus" value="yes" id="paymentYes" onclick="onClickPaymentStatus(true)"> ✅ Yes, Payment done</label>
   </div>
   <div style="margin-bottom: 20px;">
-    <label><input type="radio" name="paymentStatus" value="no" id="paymentNo" onclick="setPaymentStatus(false)"> ❌ No, Payment not done</label>
+    <label><input type="radio" name="paymentStatus" value="no" id="paymentNo" onclick="onClickPaymentStatus(false)"> ❌ No, Payment not done</label>
   </div>
 </div>
 
@@ -218,18 +228,29 @@
       </div>
 
       <div class="form-group">
-        <label>WhatsApp Number</label>
-        <input type="tel" id="whatsapp" placeholder="Enter WhatsApp number" onclick="checkPaymentStatus()">
-      </div>
+  <label>WhatsApp Number</label>
+  <input type="tel" id="whatsapp" placeholder="Enter WhatsApp number" 
+         maxlength="12" pattern="[0-9]*" inputmode="numeric"
+         onkeypress="return isNumberKey(event)" onclick="checkPaymentStatus()">
+</div>
 
       <div class="form-group">
-        <label>
-          CricHeroes linked Mobile Number 
-          <input type="checkbox" id="sameNumber" onchange="copyNumber()" onclick="checkPaymentStatus()">
-          <span>Same as WhatsApp Number</span>
-        </label>
-        <input type="tel" id="cricHeroes" placeholder="Enter CricHeroes number" onclick="checkPaymentStatus()">
-      </div>
+  <label>
+    CricHeroes linked Mobile Number
+	<BR>
+    <input type="checkbox" id="sameNumber" onchange="copyNumber()" onclick="checkPaymentStatus()">
+    <span>Same as WhatsApp Number</span>
+  </label>
+  <input type="tel" id="cricHeroes" placeholder="Enter CricHeroes number" 
+         maxlength="12" pattern="[0-9]*" inputmode="numeric"
+         onkeypress="return isNumberKey(event)" onclick="checkPaymentStatus()">
+		 
+		 <div class="crikHeroesNote-highlight">
+    <strong>Note:</strong> We are using the <strong>CricHeroes</strong> app for cricket scoring.
+    If you don’t already have a <strong>CricHeroes</strong> account, please download the <strong>CricHeroes</strong> app in you mobile and create your account.<br>Make sure to <strong>upload your photo</strong> to your CricHeroes profile as well.
+  </div>
+  
+</div>
 
       <div class="form-group">
         <label>Tower & Flat No. (e.g. T30-1308)</label>
@@ -245,9 +266,10 @@
       </div>
 
       <div class="form-group">
-        <label>Upload your image for Auction</label>
-        <input type="file" accept="image/*" onclick="checkPaymentStatus()">
-      </div>
+  <label>Upload your image for Auction</label>
+  <input type="file" accept="image/*" id="playerImage" onclick="checkPaymentStatus()"
+         onchange="validateImage(this)">
+</div>
 
       <div class="form-group">
         <label>Skills</label>
@@ -276,8 +298,11 @@
   <script>
     let paymentConfirmed = false;
 
-    function setPaymentStatus(status) {
-      paymentConfirmed = status;
+    function onClickPaymentStatus(status) {
+		paymentConfirmed = status;
+		if(!paymentConfirmed){
+			alert("Requesting you kindly make a Payment using above Payment QR code to avoid followup.");
+		}
     }
 
     function checkPaymentStatus() {
@@ -287,11 +312,7 @@
       if (!yes.checked && !no.checked) {
         alert('Please confirm if you have done payment.');
       }
-	  /**
-      if (!paymentConfirmed) {
-        alert("⚠️ Please confirm if you have done payment.");
-        event.preventDefault();
-      } **/
+	  
     }
 		
     function copyNumber() {
@@ -301,6 +322,23 @@
       if (same.checked) c.value = w.value;
       else c.value = "";
     }
+	
+	function isNumberKey(evt) {
+    const charCode = evt.which ? evt.which : evt.keyCode;
+    if (charCode < 48 || charCode > 57) return false; // block non-numeric
+    return true;
+  }
+
+  function validateImage(input) {
+    const file = input.files[0];
+    if (file) {
+      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/bmp'];
+      if (!validTypes.includes(file.type)) {
+        alert("❌ Please upload image files only (JPG, PNG, GIF, WEBP, BMP).");
+        input.value = "";
+      }
+    }
+  }
 
     function downloadQR() { alert("QR Download initiated"); }
     function shareQR() { alert("QR Share initiated"); }
