@@ -216,12 +216,14 @@
     <!-- Registration Section -->
     <div class="section">
       <h3>3️⃣ Registration</h3>
-
+	  
+	  <form id="registrationForm">
+<!--
 <form id="registrationForm" 
       method="POST" 
       enctype="multipart/form-data"
       action="https://script.google.com/macros/s/AKfycby4a2XPZDf1WNv4GkUfmL_qa0oMbZWDxThZj9kSFIZudg1UpX6j2aNItN1gIDsgyk6E/exec"
-	  >
+	  > -->
       <!--onsubmit="return validateForm();"> -->
 
 <div class="payment-highlight">
@@ -429,27 +431,20 @@ document.getElementById('registrationForm').onsubmit = function(e) {
 	  
     }
 	
-/**
-   async function submitRegistration(e) {
-  e.preventDefault(); // stop form reload
+document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+  e.preventDefault(); // stop page reload
+  
+  const formData = new FormData(this); // includes file + all fields
+  const scriptURL = 'https://script.google.com/macros/s/AKfycby4a2XPZDf1WNv4GkUfmL_qa0oMbZWDxThZj9kSFIZudg1UpX6j2aNItN1gIDsgyk6E/exec';
+  
+  const response = await fetch(scriptURL, {
+    method: 'POST',
+    body: formData
+  });
 
-  const form = document.getElementById("registrationForm"); // get form by ID
-  const formData = new FormData(form);
-
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwJHBOSrEALHN7zSCyi7yxYYJ9Wf0jnKgBy9iXfjPGaFmjUET5ujIYfxd5Mp0vVIJTg/exec";
-
-  try {
-    const response = await fetch(scriptURL, { method: "POST", body: formData });
-    const resultText = await response.text();
-    document.getElementById("responseMsg").innerHTML =
-      `<span style="color:green;">✅ ${resultText}</span>`;
-  } catch (error) {
-    document.getElementById("responseMsg").innerHTML =
-      `<span style="color:red;">❌ Error submitting form. Please try again.</span>`;
-    console.error(error);
-  }
-}
-**/		
+  const result = await response.text();
+  alert(result);
+});		
 
     function copyNumber() {
       const same = document.getElementById("sameNumber");
