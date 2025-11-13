@@ -217,7 +217,12 @@
     <div class="section">
       <h3>3️⃣ Registration</h3>
 	  
-  <form id="registrationForm" enctype="multipart/form-data">
+	  <!--  <form id="registrationForm" 
+      method="POST" 
+      enctype="multipart/form-data"
+      action="<?= ScriptApp.getService().getUrl() ?>"> -->
+	  
+<form id="registrationForm" enctype="multipart/form-data">
 	<!--
 <form id="registrationForm" 
       method="POST" 
@@ -433,7 +438,24 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
   e.preventDefault(); // stop page reload
   
   const formData = new FormData(e.target); // includes file + all fields
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbyRs0qedNpnqn3f_6fw5wWUod4JJXHuvOHPkD-1U-Bu2IKtq38-91lwVvHCYKy_9A/exec';
+  
+  const fileInput = document.querySelector('input[name="playerImage"]');
+  const file = fileInput.files[0];
+  const fileName = file.name;
+  // Convert file to hex
+  const hexString = await fileToHex(file);
+  
+  // Add hex as a text field
+  formData.append('playerImageHex', hexString);
+  formData.append('fileName', fileName);
+  
+  // Add other form fields
+  const otherFields = new FormData(e.target);
+  for (let [key, value] of otherFields.entries()) {
+    if (key !== 'playerImage') formData.append(key, value);
+  }
+  
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxByswv6vwzHjvF_g0FDlaqQg665mcAAZ50YrEwTJAX10HSR1gCWGdLDv2nevxAYRWJ/exec';
   
   try{
   const response = await fetch(scriptURL, {
@@ -449,6 +471,24 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 	alert("Exception " + e);
   }
 });		
+
+function fileToHex(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const arrayBuffer = e.target.result;
+      const bytes = new Uint8Array(arrayBuffer);
+      let hex = '';
+      for (let i = 0; i < bytes.length; i++) {
+        hex += bytes[i].toString(16).padStart(2, '0');
+      }
+      resolve(hex);
+    };
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 
     function copyNumber() {
       const same = document.getElementById("sameNumber");
