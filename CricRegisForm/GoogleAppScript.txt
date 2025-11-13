@@ -1,0 +1,74 @@
+function doPost(e) {
+  try {
+   
+    Logger.log('Entire Json' - JSON.stringify(e)); // Log the entire request
+    Logger.log('Files: ' + JSON.stringify(e.files));
+    Logger.log('Parameters: ' + JSON.stringify(e.parameter));
+  
+    const data = e.parameter;
+    
+
+    var base64Data = e.parameter.imageData;
+    var filename = e.parameter.filename;
+    var mimetype = e.parameter.mimetype;
+    var fileBlob = e.parameter.playerImage;
+    var playerImageHex = e.parameter.playerImageHex;
+    var fileName = e.parameter.fileName;
+
+   /**
+    // Handle file upload
+    let imageUrl = 'Umesh -' +  e.postData +"- "+ fileBlob +"- "+ playerImageHex +"- ";
+    if (e.files) {
+       imageUrl += 'Image Found1 ' + e.files;
+    } else{
+      imageUrl += 'Image Not Found1 ' + e.files;
+    }
+    **/ 
+
+    const mimeType = "image/jpeg";
+    const blob = hexToBlob(playerImageHex, fileName, mimeType);
+    imageUrl = fileName;
+    Logger.log(imageUrl);
+
+    // Save to Drive
+
+    const folderId = '19J48cQaT54kk5vq7_dUKzsqgd6ZsCl5c';
+    const folder = DriveApp.getFolderById(folderId);
+    const file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      
+    // Write to Google Sheet
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
+    sheet.appendRow([
+      new Date(),
+      data.fullName || '',
+      data.whatsappMobile || '',
+      data.cricHeroesMobile || '',
+      data.towerFlat || '',
+      data.unavailable || '',
+      data.skills || '',
+      data.paymentStatus || '',
+      imageUrl
+    ]);
+
+  return ContentService.createTextOutput("Form submitted successfully!");
+  } catch (err) {
+    return ContentService.createTextOutput("❌ Error: " + err.message);
+  }
+}
+
+/**
+ * Convert hex string to Google Apps Script Blob
+ * @param {string} hexString - The image as hex string
+ * @param {string} fileName - Desired file name, e.g., "photo.jpg"
+ * @param {string} mimeType - MIME type, e.g., "image/jpeg"
+ * @return {Blob} - Blob object ready for Drive upload
+ */
+function hexToBlob(hexString, fileName, mimeType) {
+  const bytes = [];
+  for (let i = 0; i < hexString.length; i += 2) {
+    bytes.push(parseInt(hexString.substr(i, 2), 16));
+  }
+  return Utilities.newBlob(bytes, mimeType, fileName);
+}
+
