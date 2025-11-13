@@ -167,6 +167,12 @@
       .qr-section img { width: 150px; height: 150px; }
       .btn { width: 45%; }
     }
+	
+	input[type="tel"] {
+	letter-spacing: 2px; /* adds spacing between digits */
+	}
+
+
   </style>
 </head>
 <body>
@@ -221,81 +227,184 @@
   </div>
 </div>
 
-
-      <div class="form-group" style="margin-top: 10px;">
-        <label>Full Name</label>
-        <input type="text" placeholder="Enter your name" onclick="checkPaymentStatus()">
-      </div>
-
-      <div class="form-group">
-  <label>WhatsApp Number</label>
-  <input type="tel" id="whatsapp" placeholder="Enter WhatsApp number" 
-         maxlength="12" pattern="[0-9]*" inputmode="numeric"
-         onkeypress="return isNumberKey(event)" onclick="checkPaymentStatus()">
+<form id="registrationForm" 
+      method="POST" 
+      enctype="multipart/form-data"
+      action="https://script.google.com/macros/s/AKfycbwJHBOSrEALHN7zSCyi7yxYYJ9Wf0jnKgBy9iXfjPGaFmjUET5ujIYfxd5Mp0vVIJTg/exec"
+      onsubmit="return validateForm();">
+	  
+<div class="form-group" style="margin-top: 10px;">
+  <label>Full Name <span style="color:red">*</span></label>
+  <input type="text" placeholder="Enter your name" onclick="checkPaymentStatus()" required name="fullName">
 </div>
 
-      <div class="form-group">
+<div class="form-group">
+  <label>WhatsApp Number <span style="color:red">*</span></label>
+  <input type="tel" id="whatsapp" placeholder="Enter WhatsApp number" 
+         maxlength="12" inputmode="numeric"
+         onkeypress="return isNumberKey(event)" onclick="checkPaymentStatus()" required name="whatsappNumber">
+</div>
+
+<div class="form-group">
   <label>
-    CricHeroes linked Mobile Number
-	<BR>
+    CricHeroes linked Mobile Number <span style="color:red">*</span>
+    <br>
     <input type="checkbox" id="sameNumber" onchange="copyNumber()" onclick="checkPaymentStatus()">
     <span>Same as WhatsApp Number</span>
   </label>
   <input type="tel" id="cricHeroes" placeholder="Enter CricHeroes number" 
-         maxlength="12" pattern="[0-9]*" inputmode="numeric"
-         onkeypress="return isNumberKey(event)" onclick="checkPaymentStatus()">
-		 
-		 <div class="crikHeroesNote-highlight">
-    <strong>Note:</strong> We are using the <strong>CricHeroes</strong> app for cricket scoring.
-    If you don’t already have a <strong>CricHeroes</strong> account, please download the <strong>CricHeroes</strong> app in you mobile and create your account.<br>Make sure to <strong>upload your photo</strong> to your CricHeroes profile as well.
-  </div>
-  
+         maxlength="12" inputmode="numeric"
+         onkeypress="return isNumberKey(event)" onclick="checkPaymentStatus()" required name="cricHeroesNumber">
 </div>
 
-      <div class="form-group">
-        <label>Tower & Flat No. (e.g. T30-1308)</label>
-        <input type="text" onclick="checkPaymentStatus()">
-      </div>
+<div class="form-group">
+  <label>Tower & Flat No. (e.g. T30-1308) <span style="color:red">*</span></label>
+  <input type="text" onclick="checkPaymentStatus()" required name="towerFlat">
+</div>
 
-      <div class="form-group">
-        <label>
-          Please mention date unavailability  
-          (Tournament Dates: November 8th (Saturday), November 9th (Sunday), November 16th (Sunday))
-        </label>
-        <textarea rows="3" onclick="checkPaymentStatus()"></textarea>
-      </div>
+<div class="form-group">
+  <label>
+    Please mention date unavailability  
+    (Tournament Dates: November 8th (Saturday), November 9th (Sunday), November 16th (Sunday)) <span style="color:red">*</span>
+  </label>
+  <textarea rows="3" onclick="checkPaymentStatus()" required name="unavailability"></textarea>
+</div>
 
-      <div class="form-group">
-  <label>Upload your image for Auction</label>
+<div class="form-group">
+  <label>Upload your image for Auction <span style="color:red">*</span></label>
   <input type="file" accept="image/*" id="playerImage" onclick="checkPaymentStatus()"
-         onchange="validateImage(this)">
+         onchange="validateImage(this)" required name="playerImage">
 </div>
 
-      <div class="form-group">
-        <label>Skills</label>
-        <div class="skills-options">
-  <div style="margin-bottom: 20px;">
-    <label><input type="radio" name="skills" value="batsman" onclick="checkPaymentStatus()"> Batsman</label>
-  </div>
-  <div style="margin-bottom: 20px;">
-    <label><input type="radio" name="skills" value="bowler" onclick="checkPaymentStatus()"> Bowler</label>
-  </div>
-  <div style="margin-bottom: 20px;">
-    <label><input type="radio" name="skills" value="allrounder" onclick="checkPaymentStatus()"> All Rounder</label>
-  </div>
-</div>
-
-      </div>
-
-      <div class="form-group">
-        <label><input type="checkbox" onclick="checkPaymentStatus()"> Confirm if you agree with our customized box cricket rules</label>
-      </div>
-
-      <button class="submit-btn" onclick="checkPaymentStatus()">Submit</button>
+<div class="form-group">
+  <label>Skills <span style="color:red">*</span></label>
+  <div class="skills-options">
+    <div style="margin-bottom: 20px;">
+      <label><input type="radio" name="skills" value="batsman" onclick="checkPaymentStatus()" required> Batsman</label>
+    </div>
+    <div style="margin-bottom: 20px;">
+      <label><input type="radio" name="skills" value="bowler" onclick="checkPaymentStatus()"> Bowler</label>
+    </div>
+    <div style="margin-bottom: 20px;">
+      <label><input type="radio" name="skills" value="allrounder" onclick="checkPaymentStatus()"> All Rounder</label>
     </div>
   </div>
+</div>
+
+<div class="form-group">
+  <label><input type="checkbox" onclick="checkPaymentStatus()" required> Confirm if you agree with our customized box cricket rules <span style="color:red">*</span></label>
+</div>
+
+      <!--<button class="submit-btn" onclick="submitRegistration(event)">Submit</button> -->
+	  <button class="submit-btn">Submit</button>
+    </div>
+  </div>
+</form>
 
   <script>
+  
+  document.getElementById('whatsapp').addEventListener('input', function() {
+    formatMobileNumber(this);
+});
+
+document.getElementById('cricHeroes').addEventListener('input', function() {
+    formatMobileNumber(this);
+});
+
+  function formatMobileNumber(input) {
+    let value = input.value.replace(/\D/g, ''); // remove non-digits
+    if (value.length > 4 && value.length <= 7) {
+        value = value.slice(0, 4) + ' ' + value.slice(4);
+    } else if (value.length > 6) {
+        value = value.slice(0, 4) + ' ' + value.slice(4, 6) + ' ' + value.slice(6, 10);
+    }
+    input.value = value;
+}
+  
+function validateForm() {
+  // 1. Full Name
+  const fullName = document.querySelector('input[name="fullName"]').value.trim();
+  if (!fullName) {
+    alert("⚠️ Please enter your Full Name");
+    return false;
+  }
+
+// 2. WhatsApp Number
+  const whatsapp = document.querySelector('input[name="whatsappNumber"]').value.replace(/\s/g,'');
+  if (!/^\d{10}$/.test(whatsapp)) {
+    alert("⚠️ Please enter a valid 10-digit WhatsApp Number");
+    return false;
+  }
+
+  // 3. CricHeroes linked Mobile Number
+  const cricHeroes = document.querySelector('input[name="cricHeroesNumber"]').value.replace(/\s/g,'');
+  if (!/^\d{10}$/.test(cricHeroes)) {
+    alert("⚠️ Please enter a valid 10-digit CricHeroes Mobile Number");
+    return false;
+  }
+  
+  // 4. Tower & Flat No.
+  const towerFlat = document.querySelector('input[name="towerFlat"]').value.trim();
+  if (!towerFlat) {
+    alert("⚠️ Please enter your Tower & Flat No.");
+    return false;
+  }
+
+  // 5. Date Unavailability
+  const unavailability = document.querySelector('textarea[name="unavailability"]').value.trim();
+  if (!unavailability) {
+    alert("⚠️ Please mention your date unavailability");
+    return false;
+  }
+
+  // 6. Upload Image
+  const playerImage = document.querySelector('input[name="playerImage"]').files[0];
+  if (!playerImage) {
+    alert("⚠️ Please upload your image for Auction");
+    return false;
+  }
+  const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp', 'image/bmp'];
+  if (!validTypes.includes(playerImage.type)) {
+    alert("❌ Invalid image type. Allowed: JPG, PNG, GIF, WEBP, BMP");
+    return false;
+  }
+
+  // 7. Skills
+  const skills = document.querySelector('input[name="skills"]:checked');
+  if (!skills) {
+    alert("⚠️ Please select your Skill (Batsman, Bowler, or Allrounder)");
+    return false;
+  }
+
+  // 8. Confirm rules checkbox
+  const confirmRules = document.querySelector('input[type="checkbox"][onclick*="checkPaymentStatus"]');
+  if (!confirmRules.checked) {
+    alert("⚠️ Please confirm that you agree with our customized box cricket rules");
+    return false;
+  }
+
+  // 9. Payment confirmation
+  if (!paymentConfirmed) {
+    alert("⚠️ Please confirm your payment using the QR code above before submitting");
+    return false;
+  }
+  
+  // Remove spaces from numbers before submission
+  document.querySelector('input[name="whatsappNumber"]').value = whatsapp;
+  document.querySelector('input[name="cricHeroesNumber"]').value = cricHeroes;
+  
+  return true; // All validations passed
+}
+
+// Hook this to your form
+document.getElementById('registrationForm').onsubmit = function(e) {
+  if (!validateForm()) {
+    e.preventDefault(); // prevent form submission if validation fails
+  }
+};
+
+
+
     let paymentConfirmed = false;
 
     function onClickPaymentStatus(status) {
@@ -304,8 +413,8 @@
 			alert("Requesting you kindly make a Payment using above Payment QR code to avoid followup.");
 		}
     }
-
-    function checkPaymentStatus() {
+	
+	function checkPaymentStatus() {
 	 const yes = document.getElementById('paymentYes');
      const no = document.getElementById('paymentNo');
 
@@ -314,7 +423,29 @@
       }
 	  
     }
-		
+	
+/**
+   async function submitRegistration(e) {
+  e.preventDefault(); // stop form reload
+
+  const form = document.getElementById("registrationForm"); // get form by ID
+  const formData = new FormData(form);
+
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwJHBOSrEALHN7zSCyi7yxYYJ9Wf0jnKgBy9iXfjPGaFmjUET5ujIYfxd5Mp0vVIJTg/exec";
+
+  try {
+    const response = await fetch(scriptURL, { method: "POST", body: formData });
+    const resultText = await response.text();
+    document.getElementById("responseMsg").innerHTML =
+      `<span style="color:green;">✅ ${resultText}</span>`;
+  } catch (error) {
+    document.getElementById("responseMsg").innerHTML =
+      `<span style="color:red;">❌ Error submitting form. Please try again.</span>`;
+    console.error(error);
+  }
+}
+**/		
+
     function copyNumber() {
       const same = document.getElementById("sameNumber");
       const w = document.getElementById("whatsapp");
