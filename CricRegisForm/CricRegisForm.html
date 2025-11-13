@@ -435,15 +435,21 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
   e.preventDefault(); // stop page reload
   
   const formData = new FormData(this); // includes file + all fields
-  const scriptURL = 'https://script.google.com/macros/s/AKfycby4a2XPZDf1WNv4GkUfmL_qa0oMbZWDxThZj9kSFIZudg1UpX6j2aNItN1gIDsgyk6E/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyvu9VNV4zR6VKvJItbGSJH0JSc8j3Mf-Mxy-S3aUawW9KIbK_S7tg4mAvncRxwa-sg/exec';
   
+  try{
   const response = await fetch(scriptURL, {
-    method: 'POST',
-    body: formData
-  });
+				  method: 'POST',
+				  body: formData,
+				  mode: 'no-cors'
+				});
 
   const result = await response.text();
   alert(result);
+  }catch(e){
+	console.log(e);
+	alert("Exception " + e);
+  }
 });		
 
     function copyNumber() {
