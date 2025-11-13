@@ -217,13 +217,13 @@
     <div class="section">
       <h3>3️⃣ Registration</h3>
 	  
-	<!--  <form id="registrationForm" enctype="multipart/form-data"> -->
-
+  <form id="registrationForm" enctype="multipart/form-data">
+	<!--
 <form id="registrationForm" 
       method="POST" 
       enctype="multipart/form-data"
       action="https://script.google.com/macros/s/AKfycbyIgfc__cvXz91rFsejOGM-RMxFX8hwxuPJebf4C2ROl_-Ua1Wawl1F2KveS5W41G7H/exec"
-	  > 
+	  >   -->
       <!--onsubmit="return validateForm();"> -->
 
 <div class="payment-highlight">
@@ -300,7 +300,7 @@
 </div>
 
       <!--<button class="submit-btn" onclick="submitRegistration(event)">Submit</button> -->
-	  <button class="submit-btn">Submit</button>
+	  <button type="submit" class="submit-btn">Submit</button>
     </div>
   </div>
 </form>
@@ -429,7 +429,7 @@ document.getElementById('registrationForm').onsubmit = function(e) {
 	  
     }
 	
-document.getElementById('registrationForm').addEventListener('submit123', async function(e) {
+document.getElementById('registrationForm').addEventListener('submit', async function(e) {
   e.preventDefault(); // stop page reload
   
   const formData = new FormData(e.target); // includes file + all fields
