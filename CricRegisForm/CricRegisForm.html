@@ -275,8 +275,9 @@
 
 <div class="form-group">
   <label>Upload your image for Auction <span style="color:red">*</span></label>
-  <input type="file" accept="image/*" id="playerImage"
-         onchange="validateImage(this)" name="playerImage" required>
+  <!-- <input type="file" accept="image/*" id="playerImage"
+         onchange="validateImage(this)" name="playerImage" required> -->
+		 <input type="file" accept="image/*" id="playerImage" name="playerImage" required>
 </div>
 
 <div class="form-group">
@@ -409,9 +410,6 @@ document.getElementById('registrationForm').onsubmit = function(e) {
     e.preventDefault(); // prevent form submission if validation fails
   }
 };
-
-
-
     let paymentConfirmed = false;
 
     function onClickPaymentStatus(status) {
@@ -434,14 +432,14 @@ document.getElementById('registrationForm').onsubmit = function(e) {
 document.getElementById('registrationForm').addEventListener('submit', async function(e) {
   e.preventDefault(); // stop page reload
   
-  const formData = new FormData(this); // includes file + all fields
+  const formData = new FormData(e.target); // includes file + all fields
   const scriptURL = 'https://script.google.com/macros/s/AKfycbyRs0qedNpnqn3f_6fw5wWUod4JJXHuvOHPkD-1U-Bu2IKtq38-91lwVvHCYKy_9A/exec';
   
   try{
   const response = await fetch(scriptURL, {
 				  method: 'POST',
 				  body: formData,
-				  mode: 'no-cors'
+				  mode: 'cors',
 				});
 
   const result = await response.text();
