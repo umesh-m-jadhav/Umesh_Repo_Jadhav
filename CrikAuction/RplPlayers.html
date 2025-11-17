@@ -3,7 +3,7 @@
 <head>
   <meta charset='UTF-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-  <title>RPL (R21 Premium League) Catalogue</title>
+  <title>RCL (R21 Cricket League) Season 1 (Nov, 2025)</title>
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background: #f5f7fa; color: #333; }
     .container { max-width: 820px; margin: auto; }
@@ -37,16 +37,99 @@
       display: inline-block;
       margin-bottom: 12px;
     }
+@keyframes glow {
+  0% { color: #ff0000; text-shadow: 0 0 20px #ff0000; }
+  25% { color: #ff8000; text-shadow: 0 0 20px #ff8000; }
+  50% { color: #00ff00; text-shadow: 0 0 20px #00ff00; }
+  75% { color: #0080ff; text-shadow: 0 0 20px #0080ff; }
+  100% { color: #8000ff; text-shadow: 0 0 20px #8000ff; }
+}
+.playerCard {
+ display: flex;
+flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ background: #fff;
+ border-radius: 12px;
+ position: relative;
+ padding: 12px;
+ margin: 10px;
+ width: 110px;
+ box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+ transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid transparent;
+background-image: linear-gradient(#fff, #fff),
+linear-gradient(135deg, #ff1744, #00e5ff);
+background-origin: border-box;
+background-clip: content-box, border-box;
+}
+.playerCard1::before {
+content:"" ;
+position: absolute;
+top: -2px;
+left: -2px;
+right: -2px;
+bottom: -2px;
+border-radius: 12px;
+ background: linear-gradient(90deg, #ff1744, #ff9100, #00e5ff, #76ff03, #ff1744);
+background-size: 300% 300%;
+ animation: borderRun 4s linear infinite;
+z-index: 0;
+}
+.playerCard > * {
+position: relative;
+z-index: 1;
+}
+.playerCard:hover {
+transform: translateY(-4px);
+box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+@keyframes borderRun {
+0% { background-position: 0% 50%; }
+ 50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+.playerImg {
+width: 70px;
+height: 70px;
+border-radius: 50%;
+overflow: hidden;   
+display: flex;
+ align-items: center;
+ justify-content: center;
+ background-color: #f5f5f5; 
+	}
+ .playerImg img {
+ width: 100%;
+  height: 100%;
+ object-fit: contain;
+  border-radius: 50%;
+ }
+.playerContainer {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ align-items: center;
+ overflow-x: auto;
+ padding: 10px;
+}
+.rainbow-text {
+ text-align: center;
+font-weight: bold;
+background: linear-gradient(90deg, #ff1744, #ff9100, #00c853, #2979ff);
+-webkit-background-clip: text;
+color: transparent;
   </style>
 </head>
 <body>
   <div class='container'>
     <div class='header'>
-      <h2>RPL (R21 Premium League) Catalogue</h2>
+      <h2>RCL (R21 Cricket League) Season 1 (Nov, 2025)</h2>
     </div>
-<div style='text-align:center; font-size:26px; font-weight:bold; color:white; background: linear-gradient(90deg, #ff1744, #f50057); padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); letter-spacing:1px;'>The auction is officially over! 48 players has been successfully sold.</div>
+<div style='text-align:center; font-size:26px; font-weight:bold; color:white; background: linear-gradient(90deg, #ff1744, #f50057); padding:16px; border-radius:12px; margin:20px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.25); letter-spacing:1px;'> Tournament completed. Winner list published.</div>
     <select id='ownerSelect' onchange='showOwnerDetails()'>
-      <option value=''>-- Select Team - Owner --</option>
+      <option value=''>-- Participated Team - Owner --</option>
       <option value="Janjira Marines" ownerName="Sandesh Kadam">Janjira Marines - Sandesh Kadam</option>
       <option value="Lohgad Giants" ownerName="Swapnil Chafale">Lohgad Giants - Swapnil Chafale</option>
       <option value="Pratapgad Warrior" ownerName="Atharva jadhav">Pratapgad Warrior - Atharva jadhav</option>
@@ -58,7 +141,7 @@
     </select>
     <div id='ownerArea'></div>
     <select id='playerSelectCompleted' onchange='showDetails()' style='margin:0px;'>
-      <option value=''>Select Players (Sold Out)</option>
+      <option value=''>Participated Players</option>
       <option value="Amit Kumar">Amit Kumar - Rs 6.90lakh</option>
       <option value="Kailash Konapure">Kailash Konapure - Rs 8.90lakh</option>
       <option value="Priyank Joshi">Priyank Joshi - Rs 7.60lakh</option>
@@ -134,6 +217,7 @@ function removeTrailingZero(value) {
 }
 
     const IsAuctionData = true;
+    const isWinnerListToDisplay = true;
     const players = {
       "Amit Kumar": { name: "Amit Kumar", towerFlat: "32-1503", mobile: "9155673500", unavailability: "", role: "All Rounder", photo: "Amit_Kumar_Trendy.jpeg", soldAt: "690000", toTeam: "Shivaneri Lions", toOwner: "Yogesh Lalwani", ownerMobile: "9920485544", basePrice: "500000" },
       "Kailash Konapure": { name: "Kailash Konapure", towerFlat: "T30-507", mobile: "7083147157", unavailability: "", role: "All Rounder", photo: "Kailash_Konapure.JPG", soldAt: "890000", toTeam: "Torna Tigers", toOwner: "Atharva Kunjir", ownerMobile: "7083882345", basePrice: "500000" },
@@ -304,6 +388,922 @@ function showOwnerDetails() {
     html += `</div>`;
     ownerArea.innerHTML = html;
 }
+if(isWinnerListToDisplay) {
+    const winnerListArea = document.createElement('div');
+    winnerListArea.style.marginTop = '40px';
+    const separatorWinner = document.createElement('div');
+    separatorWinner.style.height = '6px';
+    separatorWinner.style.width = '60%';
+    separatorWinner.style.margin = '0 auto 20px auto';
+    separatorWinner.style.borderRadius = '6px';
+    separatorWinner.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
+    winnerListArea.appendChild(separatorWinner);
+    winnerListArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Winner List: </h3>`;
+    document.body.appendChild(winnerListArea);
+    const teamWinnerDiv = document.createElement('div');
+    teamWinnerDiv.id ='winnerDiv' 
+    {
+      const teamCard = document.createElement('div');
+      teamCard.id ='Pratapgad Warrior' 
+      teamCard.style.border = '1px solid #ccc';
+      teamCard.style.borderRadius = '12px';
+      teamCard.style.padding = '15px';
+      teamCard.style.margin = '15px auto';
+      teamCard.style.background = '#fff';
+      teamCard.style.width = '80%';
+      teamCard.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Athrva Jadhav.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      teamCard.appendChild(img);
+      const titleEl = document.createElement('h4');
+      titleEl.innerHTML = 'RCL 2025 Champion</br>Awarded Cash 5K';
+titleEl.className = 'rainbow-text';
+      teamCard.appendChild(titleEl);
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Pratapgad Warrior';
+      teamEl.style.textAlign = 'center';
+      teamCard.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Owner:</strong> Atharva jadhav`;
+      ownerEl.style.textAlign = 'center';
+      teamCard.appendChild(ownerEl);
+teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Deepak Raut Trendy Cricket.jpeg' alt='" + playerName + "'></div><div class='playerName'>Deepak Rout</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_20170813_202640 - The wanderers.jpg' alt='" + playerName + "'></div><div class='playerName'>Mitanshu Sharma</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Dhaval Suchak.JPG' alt='" + playerName + "'></div><div class='playerName'>Dhaval Suchak</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Sujit_Jadhav_photo.jpeg' alt='" + playerName + "'></div><div class='playerName'>Sujit Jadhav</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG20250914175258 - Vijay Phalke.jpg' alt='" + playerName + "'></div><div class='playerName'>Aarit Vijay Phalke</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_20251002_001200 - Mahendra Dabhekar.jpg' alt='" + playerName + "'></div><div class='playerName'>Mahendra</div></div></div>`
+teamWinnerDiv.appendChild(teamCard);
+    }
+    {
+      const teamCard = document.createElement('div');
+      teamCard.id ='Rajmachi Lions' 
+      teamCard.style.border = '1px solid #ccc';
+      teamCard.style.borderRadius = '12px';
+      teamCard.style.padding = '15px';
+      teamCard.style.margin = '15px auto';
+      teamCard.style.background = '#fff';
+      teamCard.style.width = '80%';
+      teamCard.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Atul_gupta.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      teamCard.appendChild(img);
+      const titleEl = document.createElement('h4');
+      titleEl.innerHTML = 'RCL 2025 Runner Up</br>Awarded Cash 3K';
+titleEl.className = 'rainbow-text';
+      teamCard.appendChild(titleEl);
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Rajmachi Lions';
+      teamEl.style.textAlign = 'center';
+      teamCard.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Owner:</strong> Atul Gupta`;
+      ownerEl.style.textAlign = 'center';
+      teamCard.appendChild(ownerEl);
+teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Sumit_Kumar_Photo.JPG' alt='" + playerName + "'></div><div class='playerName'>Sumit Kumar</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Aditya_Vasekar.JPG' alt='" + playerName + "'></div><div class='playerName'>Aditya Vasekar</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/20250605_233115 - CA Amit Mundra.jpg' alt='" + playerName + "'></div><div class='playerName'>Amit Mundra</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_2087 - Ankit Patel.jpeg' alt='" + playerName + "'></div><div class='playerName'>Ankit patel</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Manish_Hemangi.JPG' alt='" + playerName + "'></div><div class='playerName'>Manish Hemnani</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Mayank Devgan.jpeg' alt='" + playerName + "'></div><div class='playerName'>Mayank Devgan</div></div></div>`
+teamWinnerDiv.appendChild(teamCard);
+    }
+    {
+      const teamCard = document.createElement('div');
+      teamCard.id ='Lohgad Giants' 
+      teamCard.style.border = '1px solid #ccc';
+      teamCard.style.borderRadius = '12px';
+      teamCard.style.padding = '15px';
+      teamCard.style.margin = '15px auto';
+      teamCard.style.background = '#fff';
+      teamCard.style.width = '80%';
+      teamCard.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/SwapnilAva - Swapnil Chafale.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      teamCard.appendChild(img);
+      const titleEl = document.createElement('h4');
+      titleEl.innerHTML = 'RCL 2025 Fighting Team Award</br>Awarded Cash 1K';
+titleEl.className = 'rainbow-text';
+      teamCard.appendChild(titleEl);
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Lohgad Giants';
+      teamEl.style.textAlign = 'center';
+      teamCard.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Owner:</strong> Swapnil Chafale`;
+      ownerEl.style.textAlign = 'center';
+      teamCard.appendChild(ownerEl);
+teamCard.innerHTML += `<div class='playerContainer'><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_2681 - himanshu mukati.JPG' alt='" + playerName + "'></div><div class='playerName'>HIMANSHU MUKATI</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Pravin_dubhe.JPG' alt='" + playerName + "'></div><div class='playerName'>Praveen Dubey</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/77201571-C4E5-425E-83A3-493FE2026B8C - Tushar Pund.jpeg' alt='" + playerName + "'></div><div class='playerName'>Tushar pund</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_9618 - Neeraj Vishwakarma.jpeg' alt='" + playerName + "'></div><div class='playerName'>Neeraj Vishwakarma</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/IMG_20250930_070252 - Mane Piyush7707.jpg' alt='" + playerName + "'></div><div class='playerName'>Piyush Mane</div></div><div class='playerCard'><div class='playerImg'><img src='PlayersPhoto/Kunal Andhare.JPG' alt='" + playerName + "'></div><div class='playerName'>Kunal Andhare</div></div></div>`
+teamWinnerDiv.appendChild(teamCard);
+    }
+    winnerListArea.appendChild(teamWinnerDiv);
+    {
+      const leaderAwardDiv = document.createElement('div');
+      leaderAwardDiv.id ='IndividualAwardDiv'
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Leadership Award:<span style='font-size: 30px;font-weight: bold;animation: glow 1.5s infinite alternate;text-align: center;'>&#128071</span></strong>`;
+      ownerEl.style.textAlign = 'center';
+      leaderAwardDiv.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAwardDiv);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Mahendra' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_20251002_001200 - Mahendra Dabhekar.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Mahendra';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Most Valuable Player (MVP)`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Sumit Kumar' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Sumit_Kumar_Photo.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Sumit Kumar';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Highest Scoring Batsman`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Soumik Saha' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG-20231115-WA0024 - Soumik Saha.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Soumik Saha';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Highest Wicket-Taking Bowler`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Atul Gupta' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Atul_gupta.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Atul Gupta';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Best Fielder`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Ravindra Mane' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_4036 - Ravindra Mane.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Ravindra Mane';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Best Skilled Batsman`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Mayank Devgan' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Mayank Devgan.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Mayank Devgan';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Best Sixer`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Aarit Vijay Phalke' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG20250914175258 - Vijay Phalke.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Aarit Vijay Phalke';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Best Catch`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Madane Saheb' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Madane_saheb.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Madane Saheb';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Best Wicket Keeper`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Dhananjay Atole' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/534c6720-0054-4016-bfc4-b0d9e504082e - Dhananjay Atole.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Dhananjay Atole';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Highest Bid (12.5 lack)`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const leaderAward = document.createElement('div');
+      leaderAward.id ='Sujit Jadhav' 
+      leaderAward.style.border = '1px solid #ccc';
+      leaderAward.style.borderRadius = '12px';
+      leaderAward.style.padding = '15px';
+      leaderAward.style.margin = '15px auto';
+      leaderAward.style.background = '#fff';
+      leaderAward.style.width = '80%';
+      leaderAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Sujit_Jadhav_photo.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      leaderAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Sujit Jadhav';
+      teamEl.style.textAlign = 'center';
+      leaderAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` RCL 2025 Most Match-Turning Sixes`;
+      ownerEl.style.textAlign = 'center';
+      leaderAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(leaderAward);
+    }
+    {
+      const IndividualAwardDiv = document.createElement('div');
+      IndividualAwardDiv.id ='IndividualAwardDiv'
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML = `<strong>Individual Award:<span style='font-size: 30px;font-weight: bold;animation: glow 1.5s infinite alternate;text-align: center;'>&#128071</span></strong>`;
+      ownerEl.style.textAlign = 'center';
+      IndividualAwardDiv.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(IndividualAwardDiv);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Aditya Vasekar' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Aditya_Vasekar.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Aditya Vasekar';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs RAJMACHI LIONS (16 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Amit Kumar' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Amit_Kumar_Trendy.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Amit Kumar';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs RAJMACHI LIONS (9 Nov)<br>2. vs PRATAPGAD WARRIORS  (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Ankit patel' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_2087 - Ankit Patel.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Ankit patel';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs TORNA TIGERS (8 Nov)<br>2. vs SHIVANERI LIONS (16 Nov, SemiFinal 2nd)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Deepak Rout' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Deepak Raut Trendy Cricket.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Deepak Rout';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs SUVARNADURGA CHAMPION (8 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Dhananjay Atole' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/534c6720-0054-4016-bfc4-b0d9e504082e - Dhananjay Atole.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Dhananjay Atole';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs JANJIRA MARIN  (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Dhaval Suchak' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Dhaval Suchak.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Dhaval Suchak';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs LOHGAD GIANTS (16 Nov)<br>2. vs LOHGAD GIANTS (16 Nov, SemiFinal 1st)<br>3. vs LOHGAD GIANTS (16 Nov, Final)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Jatin Sorathiya' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_7882 - jatin sorathiya.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Jatin Sorathiya';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs TORNA TIGERS (8 Nov)<br>2. va RAJGAD CAPITAL (16 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Mahendra' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_20251002_001200 - Mahendra Dabhekar.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Mahendra';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs JANJIRA MARIN (8 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Neeraj Vishwakarma' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_9618 - Neeraj Vishwakarma.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Neeraj Vishwakarma';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs SHIVANERI LIONS (8 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Piyush Mane' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_20250930_070252 - Mane Piyush7707.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Piyush Mane';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs SUVARNADURGA CHAMPION  (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Priyank Joshi' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG_5652 - Priyank Joshi.jpeg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Priyank Joshi';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs TORNA TIGERS  (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Ravikant Kadbe' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Ravikant Kadbe.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Ravikant Kadbe';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs LOHGAD GIANTS (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Saurav Lonkar' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/20231112_230203 - Saurav 7.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Saurav Lonkar';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs SUVARNADURGA CHAMPION (8 Nov)<br>2. vs RAJMACHI LIONS  (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Soumik Saha' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/IMG-20231115-WA0024 - Soumik Saha.jpg';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Soumik Saha';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs JANJIRA MARIN (8 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Sumit Kumar' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Sumit_Kumar_Photo.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Sumit Kumar';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs LOHGAD GIANTS (8 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+    {
+      const playerAward = document.createElement('div');
+      playerAward.id ='Umesh Jadhav' 
+      playerAward.style.border = '1px solid #ccc';
+      playerAward.style.borderRadius = '12px';
+      playerAward.style.padding = '15px';
+      playerAward.style.margin = '15px auto';
+      playerAward.style.background = '#fff';
+      playerAward.style.width = '80%';
+      playerAward.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+      const img = document.createElement('img');
+      img.src = 'PlayersPhoto/Umesh_Jadhav.JPG';
+      img.alt = 'Owner Photo';
+      img.style.width = '100px';
+      img.style.height = '100px';
+      img.style.borderRadius = '50%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto 10px auto';
+      playerAward.appendChild(img);
+      const titleEl = document.createElement('h4');
+      const teamEl = document.createElement('h3');
+      teamEl.textContent = 'Umesh Jadhav';
+      teamEl.style.textAlign = 'center';
+      playerAward.appendChild(teamEl);
+      const ownerEl = document.createElement('p');
+      ownerEl.innerHTML += ` Man of the Match <br>1. vs PRATAPGAD WARRIORS (9 Nov)`;
+      ownerEl.style.textAlign = 'center';
+      playerAward.appendChild(ownerEl);
+	   teamWinnerDiv.appendChild(playerAward);
+    }
+}
 if(IsAuctionData) {
     const soldOutArea = document.createElement('div');
     soldOutArea.style.marginTop = '40px';
@@ -314,7 +1314,7 @@ if(IsAuctionData) {
     separator.style.borderRadius = '6px';
     separator.style.background = 'linear-gradient(90deg, #ff1744, #f50057, #ff9100, #00e5ff, #76ff03)';
     soldOutArea.appendChild(separator);
-    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Sold Out Players: 48</h3>`;
+    soldOutArea.innerHTML += `<h3 style='text-align:center; color:red; margin-bottom:20px;'>Auctioned - Sold Out Players: 48</h3>`;
     const soldContainer = document.createElement('div');
     soldContainer.style.display = 'flex';
     soldContainer.style.flexWrap = 'wrap';
