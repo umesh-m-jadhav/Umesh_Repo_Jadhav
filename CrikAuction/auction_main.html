@@ -1897,7 +1897,8 @@ responsive-box-title {
 <input type="hidden" id="TOURNAMENT_NAME_FULL_FORM" value="">
 <input type="hidden" id="TOTAL_TEAM_COUNT" value="">
 <input type="hidden" id="AUCTION_ACTION" value="">
- 
+<input type="hidden" id="WANT_TO_DISPLAY_PLAYER_TYPE" value="">
+
  <!-- 1st Row -->
  <div id="top-div-id" class="responsive-div">
 <div id="left">
@@ -2211,7 +2212,6 @@ const AUCTION_ACTION_UNSOLD_PLAYER = "AUCTION_ACTION_UNSOLD_PLAYER";
 
 const Fresh_Player_List_Title = "Fresh Player List";
 const Player_List_from_Auctioned_File_Title = "Player List from Auctioned File"
-
  
 function formatINR1(n){
   if(n === null || n === undefined || n === '-') return '-';
@@ -2467,6 +2467,7 @@ document.getElementById('auction-file-id').addEventListener('change', event=>{
 });
 
 function sortDataByPlayerType(dataArray){
+	var v123444 = "";
 	dataArray.sort((a, b) => {
 		const PlayerTypeA = a.PlayerType.toLowerCase();
 		const PlayerTypeB = b.PlayerType.toLowerCase();
@@ -2567,6 +2568,7 @@ function renderPlayers(renderType){
   const sheet = workbook.Sheets[mainSheetName];
   const rowData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
   const data = sortDataByPlayerType(rowData);
+  var WANT_TO_DISPLAY_PLAYER_TYPE_VAL = document.getElementById('WANT_TO_DISPLAY_PLAYER_TYPE').value
   
   const tbody = document.querySelector('#playerTable tbody');
   tbody.innerHTML = '';
@@ -2621,7 +2623,9 @@ function renderPlayers(renderType){
 
     tr.innerHTML = `
       <td playerval="${name}">${index}>&nbsp;&nbsp;&nbsp;${playerNameToDisplay}</td>
-	  <td>${PlayerType}</td>
+	  <td playertypeInTd="${PlayerType}">${['YES', 'Y'].includes((WANT_TO_DISPLAY_PLAYER_TYPE_VAL || '').trim().toUpperCase())
+        ? PlayerType
+        : ''}</td>
 	  <td>${mobile}</td>
       <td>${role}</td>
       <td>${formatINR(base)}</td>
@@ -3526,7 +3530,8 @@ function highlightRandomRow() {
 	var playerType = "";
 	for (let i = 0; i < rows.length; i++) {
 		const row = rows[i];
-		const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
+		//const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
+		const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].getAttribute('playertypeInTd');
 		const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
 		
 		if(playerCategory.startsWith("A-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
@@ -3542,7 +3547,8 @@ function highlightRandomRow() {
 		var isGoldPlayerAvailableForAuction=false;
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
-			const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
+			//const playerCategory = row.cells[PLAYER_TYPE_INDEX].textContent;
+			const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].getAttribute('playertypeInTd');
 			const soldValueOfEachRow = row.cells[SOLD_INDEX].getAttribute('soldval');
 			
 			if(playerCategory.startsWith("B-") && (soldValueOfEachRow == null || soldValueOfEachRow.trim()=="")){
@@ -4023,6 +4029,7 @@ const rightPlayerDiv = document.getElementById('rightPlayer');
 								
 								if(document.getElementById(key)!=null){
 									document.getElementById(key).value=value;
+									//alert(key +"  : " + document.getElementById(key).value);
 								}
 							}
 						});
@@ -4549,7 +4556,8 @@ teamCards.forEach(card => {
 					
 					for (let i = index; i <totalPlayers; i++) {
 						const playerName = rows[i].cells[PLAYER_NAME_INDEX].getAttribute('playerval');
-						const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].textContent;
+						//const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].textContent;
+						const playerCategory = rows[i].cells[PLAYER_TYPE_INDEX].getAttribute('playertypeInTd');
 						const playerPrice = rows[i].cells[PLAYER_BASE_PRICE_INDEX].textContent;
 						
 						const playerDiv = document.createElement('div');
@@ -4665,7 +4673,7 @@ function newSpinnerDesign() {
 
 function checkMissingKeys() {
   // Define array of element IDs
-  const keys = ['TOTAL_TEAM_COUNT','TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION','AUCTION_ALLOCATED_BALANCE','NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER','PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW','INCREMENTAL_DECREMENTAL_BID_AMOUNT','TOURNAMENT_NAME','TOURNAMENT_NAME_FULL_FORM'];
+  const keys = ['TOTAL_TEAM_COUNT','TOTAL_NUMBER_OF_PLAYER_FOR_AUCTION','AUCTION_ALLOCATED_BALANCE','NUM_OF_PLAYER_PER_TEAM_INCLUDING_OWNER','PLAYER_MIN_PRICE_CAN_NOT_REDUCE_BELOW','INCREMENTAL_DECREMENTAL_BID_AMOUNT','TOURNAMENT_NAME','TOURNAMENT_NAME_FULL_FORM','WANT_TO_DISPLAY_PLAYER_TYPE'];
 
   // Loop through each key
   for (let i = 0; i < keys.length; i++) {
